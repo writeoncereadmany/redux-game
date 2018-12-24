@@ -43,6 +43,8 @@ tests:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -F
+    - -pgmF htfpp
     dependencies:
     - Redux
     - HTF

@@ -1,7 +1,3 @@
-{-# OPTIONS_GHC -F -pgmF htfpp #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE RankNTypes #-}
-
 module TimerTest (htf_thisModulesTests) where
 
 import Control.Lens
