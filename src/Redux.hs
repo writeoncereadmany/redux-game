@@ -11,54 +11,43 @@ class (Typeable a) => ReduxEvent a
 type DynEvent = ConstrainedDynamic ReduxEvent
 
 instance ReduxEvent Event
-
 data TimeStep = TimeStep Float deriving ReduxEvent
 
-type EventsT m w = WriterT (DList DynEvent) m w
-type IOEvents w = EventsT IO w
-type Events w = forall m . Monad m => EventsT m w
+type Events w = WriterT (DList DynEvent) IO w
 type Updater a b = forall l . (Functor l, Applicative l) => LensLike' l b a
 
-type Redux' w = DynEvent -> w -> IOEvents w
+type Redux w = DynEvent -> w -> Events w
 
-noOp :: Monad m => a -> b -> m b
-noOp = const return
-
-infixl 4 \->
-
-(\->) :: Monad m => (a -> b -> m b) -> (a -> b -> m b) -> (a -> b -> m b)
-(\->) f g i w = do w' <- f i w; g i w'
-
-focusM :: (ReduxEvent a, Monad m) => (a -> b -> m b) -> DynEvent -> b -> m b
-focusM f e w = case (fromDynamic e) of
+focus :: (ReduxEvent a) => (a -> b -> Events b) -> Redux b
+focus f e w = case (fromDynamic e) of
   Just x -> f x w
   Nothing -> return w
 
-focus :: (ReduxEvent a) => (a -> b -> b) -> DynEvent -> b -> b
-focus f e w = case (fromDynamic e) of
+pureFocus :: (ReduxEvent a) => (a -> b -> b) -> DynEvent -> b -> b
+pureFocus f e w = case (fromDynamic e) of
   Just x -> f x w
   Nothing -> w
 
 fireEvent :: ReduxEvent a => a -> Events ()
 fireEvent = tell . singleton . toDyn
 
-handleRemainingEvents' :: Redux' w -> w -> DList DynEvent -> IO w
-handleRemainingEvents' f w es = do (w', es') <- runWriterT $ foldM (flip f) w es
-                                   case es' of
-                                     Nil -> return w'
-                                     otherwise -> handleRemainingEvents' f w' es'
+handleRemainingEvents :: Redux w -> w -> DList DynEvent -> IO w
+handleRemainingEvents f world events = do
+  (world', events') <- runWriterT $ foldM (flip f) world events
+  case events' of
+    Nil -> return world'
+    otherwise -> handleRemainingEvents f world' events'
 
-reduxDo' :: Redux' w -> w -> Events () -> IO w
-reduxDo' r w a = case runWriter a of
-  ((), events) -> handleRemainingEvents' r w events
+reduxDo :: Redux w -> w -> Events () -> IO w
+reduxDo r w a = do
+  ((), events) <- runWriterT a
+  handleRemainingEvents r w events
 
+reduxUpdate :: Redux w -> Float -> w -> IO w
+reduxUpdate f timestep world = reduxDo f world (fireEvent $ TimeStep timestep)
 
-reduxUpdate :: Redux' w -> Float -> w -> IO w
-reduxUpdate f t w = handleRemainingEvents' f w (singleton $ toDyn $ TimeStep t)
+reduxListen :: Redux w -> Event -> w -> IO w
+reduxListen f event world = reduxDo f world (fireEvent event)
 
-reduxListen :: Redux' w -> Event -> w -> IO w
-reduxListen f e w = handleRemainingEvents' f w (singleton $ toDyn $ e)
-
-
-lensing :: (Functor f, Applicative f) => Updater a b -> (i -> a -> f a) -> i -> (b -> f b)
-lensing lens f e = lens %%~ (f e)
+connect :: Updater a b -> Redux a -> Redux b
+connect lens f e = lens %%~ (f e)

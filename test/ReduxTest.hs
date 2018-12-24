@@ -33,17 +33,18 @@ listenEvent e w = do
   fireEvent (show e)
   return $ systemEvents %~ (e :) $ w
 
-reduceNumber :: Float -> TestThing -> IOEvents TestThing
+reduceNumber :: Float -> TestThing -> Events TestThing
 reduceNumber t w = return $ timeEvents %~ (t :) $ w
 
-reduceString :: String -> TestThing -> IOEvents TestThing
+reduceString :: String -> TestThing -> Events TestThing
 reduceString s w = return $ loggedEvents %~ (s :) $ w
 
-testRedux :: Redux' TestThing
-testRedux = focusM updateTime
-        \-> focusM listenEvent
-        \-> focusM reduceNumber
-        \-> focusM reduceString
+testRedux :: Redux TestThing
+testRedux e w = return w
+        >>= focus updateTime e
+        >>= focus listenEvent e
+        >>= focus reduceNumber e
+        >>= focus reduceString e
 
 test_update_via_redux' = do
   let initialTestThing = TestThing 0 [] [] []
