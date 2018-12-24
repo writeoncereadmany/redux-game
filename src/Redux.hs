@@ -53,11 +53,11 @@ reduxDo' r w a = case runWriter a of
   ((), events) -> handleRemainingEvents' r w events
 
 
-reduxUpdate' :: Redux' w -> Float -> w -> IO w
-reduxUpdate' f t w = handleRemainingEvents' f w (singleton $ toDyn $ TimeStep t)
+reduxUpdate :: Redux' w -> Float -> w -> IO w
+reduxUpdate f t w = handleRemainingEvents' f w (singleton $ toDyn $ TimeStep t)
 
-reduxListen' :: Redux' w -> Event -> w -> IO w
-reduxListen' f e w = handleRemainingEvents' f w (singleton $ toDyn $ e)
+reduxListen :: Redux' w -> Event -> w -> IO w
+reduxListen f e w = handleRemainingEvents' f w (singleton $ toDyn $ e)
 
 
 lensing :: (Functor f, Applicative f) => Updater a b -> (i -> a -> f a) -> i -> (b -> f b)
