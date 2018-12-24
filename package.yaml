@@ -30,6 +30,7 @@ dependencies:
 default-extensions:
 - TemplateHaskell
 - RankNTypes
+- DeriveAnyClass
 
 library:
   source-dirs: src

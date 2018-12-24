@@ -6,7 +6,6 @@ import Graphics.Gloss.Interface.IO.Game
 import Control.Monad.Writer
 import Control.Lens
 import Data.DList
-
 class (Typeable a) => ReduxEvent a
 
 type DynEvent = ConstrainedDynamic ReduxEvent
