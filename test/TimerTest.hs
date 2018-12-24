@@ -28,10 +28,10 @@ reduceString :: String -> TestThing -> Events TestThing
 reduceString s w = return $ fired %~ (s :) $ w
 
 testRedux :: Redux TestThing
-testRedux e w = return w
-            >>= connect timer timerRedux e
-            >>= focus updateTime e
-            >>= focus reduceString e
+testRedux = redux
+        |+> connect timer timerRedux
+        |-> updateTime
+        |-> reduceString
 
 test_timer_works = do
   let initialTestThing = TestThing (Just (3, "event")) newTimer []

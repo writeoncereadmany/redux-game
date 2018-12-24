@@ -36,11 +36,11 @@ reduceString :: String -> TestThing -> Events TestThing
 reduceString s w = return $ loggedEvents %~ (s :) $ w
 
 testRedux :: Redux TestThing
-testRedux e w = return w
-            >>= focus updateTime e
-            >>= focus listenEvent e
-            >>= focus reduceNumber e
-            >>= focus reduceString e
+testRedux = redux
+        |-> updateTime
+        |-> listenEvent
+        |-> reduceNumber
+        |-> reduceString 
 
 test_update_via_redux' = do
   let initialTestThing = TestThing 0 [] [] []

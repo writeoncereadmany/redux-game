@@ -49,5 +49,21 @@ reduxUpdate f timestep world = reduxDo f world (fireEvent $ TimeStep timestep)
 reduxListen :: Redux w -> Event -> w -> IO w
 reduxListen f event world = reduxDo f world (fireEvent event)
 
-connect :: Updater a b -> Redux a -> Redux b
+connect :: Updater a b -> (i -> a -> Events a) -> (i -> b -> Events b)
 connect lens f e = lens %%~ (f e)
+
+redux :: Redux a
+redux = const return
+
+infixl 1 |->
+
+(|->) :: ReduxEvent a => Redux w -> (a -> w -> Events w) -> Redux w
+(|->) redux f e w = return w
+                >>= redux e
+                >>= focus f e
+
+infixl 1 |+>
+(|+>) :: Redux w -> Redux w -> Redux w
+(|+>) redux1 redux2 e w = return w
+                      >>= redux1 e
+                      >>= redux2 e
