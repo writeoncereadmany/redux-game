@@ -46,6 +46,6 @@ updateTimer (TimeStep step) (Timer elapsed pending) = do
   return $ Timer elapsed' pending'
 
 timerRedux :: Redux Timer
-timerRedux e w = return w
-             >>= focus reduceTimer e
-             >>= focus updateTimer e
+timerRedux = redux
+         |-> updateTimer
+         |-> reduceTimer

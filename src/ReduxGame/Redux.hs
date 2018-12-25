@@ -1,4 +1,17 @@
-module ReduxGame.Redux where
+module ReduxGame.Redux
+  ( Redux
+  , ReduxEvent
+  , TimeStep (TimeStep)
+  , Events
+  , fireEvent
+  , reduxDo
+  , reduxListen
+  , reduxUpdate
+  , redux
+  , connect
+  , (|->)
+  , (|+>)
+  )where
 
 import Data.Dynamic (Typeable)
 import Data.ConstrainedDynamic
