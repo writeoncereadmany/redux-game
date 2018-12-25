@@ -1,23 +1,40 @@
 module Examples.Orrery.Orrery where
 
-import Graphics.Gloss
+import Graphics.Gloss (color, yellow, blue, circleSolid, Picture (Pictures, Blank))
 import Control.Lens
 
 import ReduxGame.Redux
 import ReduxGame.Timer
+import ReduxGame.Shape.Shape
+import ReduxGame.Renderer.ShapeRenderer
 import ReduxGame.Renderer.Renderable
+
+import Examples.Orrery.Planet
 
 data Orrery = Orrery
   { _timer :: Timer
+  , _planets :: [ Planet ]
   }
 
 makeLenses ''Orrery
 
 orrery :: Orrery
-orrery = Orrery newTimer
+orrery = Orrery newTimer [Planet { _orbitDistance = 300, _year = 10, _hue = blue, _radius = 20 }]
+
+drawPlanet :: Float -> Planet -> Picture
+drawPlanet elapsed planet =
+  let planetCircle = circle (0, 0) (planet ^. radius)
+      season = (elapsed / planet ^. year) * (2 * pi)
+      x = (planet ^. orbitDistance) * sin season
+      y = (planet ^. orbitDistance) * cos season
+      planetCircle' = move (x, y) planetCircle
+   in color (planet ^. hue) (render planetCircle')
 
 instance Renderable Orrery where
-  render _ = color yellow $ circleSolid 50
+  render orrery =
+    let sunPic = color yellow $ circleSolid 50
+        planetPics = drawPlanet (orrery ^. timer . elapsed) <$> (orrery ^. planets)
+     in Pictures (sunPic : planetPics)
 
 orreryRedux :: Redux Orrery
 orreryRedux = redux
