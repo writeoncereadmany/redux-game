@@ -5,6 +5,9 @@ import Graphics.Gloss.Data.Vector
 
 import ReduxGame.Shape.NumVectorInstance
 
+-- Helper functions to create coherent polygons (consistently wound, known to
+-- be convex, and with outward-facing normals)
+
 duplicateEnd :: [ Vector ] -> [ Vector ]
 duplicateEnd [] = []
 duplicateEnd xs = (last xs) : xs
