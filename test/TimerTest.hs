@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -F -pgmF htfpp #-}
+
 module TimerTest (htf_thisModulesTests) where
 
 import Control.Lens
