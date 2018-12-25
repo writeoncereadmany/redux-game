@@ -3,4 +3,4 @@ packages:
 - .
 extra-deps:
 - constrained-dynamic-0.1.0.0
-resolver: lts-12.24
+resolver: lts-13.0
