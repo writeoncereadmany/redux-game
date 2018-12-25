@@ -36,6 +36,17 @@ default-extensions:
 library:
   source-dirs: src
 
+executables:
+  Redux-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - Redux
+
 tests:
   Redux-test:
     main:                Spec.hs

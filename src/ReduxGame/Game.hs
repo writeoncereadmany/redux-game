@@ -8,6 +8,9 @@ import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Renderer.Renderable
 import ReduxGame.Redux
+import ReduxGame.Exit
 
-startGame :: Renderable w => w -> Redux w -> (w -> Picture) -> IO ()
-startGame world redux renderer = playIO FullScreen black 60 world (pure . render) (reduxListen redux) (reduxUpdate redux)
+startGame :: Renderable w => w -> Redux w -> IO ()
+startGame world redux = do
+  let redux' = redux |+> exitRedux 'q'
+  playIO FullScreen black 60 world (pure . render) (reduxListen redux') (reduxUpdate redux')
