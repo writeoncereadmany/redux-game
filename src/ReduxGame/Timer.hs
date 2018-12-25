@@ -1,4 +1,10 @@
-module ReduxGame.Timer where
+module ReduxGame.Timer
+  ( elapsed
+  , await
+  , timerRedux
+  , Timer
+  , newTimer
+  ) where
 
 import Control.Lens
 import Data.Dynamic (Typeable)
