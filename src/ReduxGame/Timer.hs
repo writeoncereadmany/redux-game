@@ -1,8 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE RankNTypes #-}
-
-module Timer where
+module ReduxGame.Timer where
 
 import Control.Lens
 import Data.Dynamic (Typeable)
@@ -10,7 +6,7 @@ import Data.ConstrainedDynamic
 import Data.DList
 import Control.Monad.Writer
 
-import Redux
+import ReduxGame.Redux
 
 data Await = Await Float (Events ()) deriving ReduxEvent
 data Pending = Pending Float (Events ()) deriving ReduxEvent

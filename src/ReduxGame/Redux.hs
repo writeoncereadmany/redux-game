@@ -1,4 +1,4 @@
-module Redux where
+module ReduxGame.Redux where
 
 import Data.Dynamic (Typeable)
 import Data.ConstrainedDynamic

@@ -4,7 +4,7 @@ import Control.Lens
 import Test.Framework
 
 import Data.Dynamic
-import Redux
+import ReduxGame.Redux
 import Graphics.Gloss.Interface.IO.Game
 
 instance (Typeable a, Show a) => ReduxEvent [ a ]
@@ -40,9 +40,9 @@ testRedux = redux
         |-> updateTime
         |-> listenEvent
         |-> reduceNumber
-        |-> reduceString 
+        |-> reduceString
 
-test_update_via_redux' = do
+test_update_via_redux = do
   let initialTestThing = TestThing 0 [] [] []
   updated <- reduxUpdate testRedux 3 initialTestThing
 

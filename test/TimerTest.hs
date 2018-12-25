@@ -4,8 +4,8 @@ import Control.Lens
 import Test.Framework
 import Data.Dynamic
 
-import Redux
-import Timer
+import ReduxGame.Redux
+import ReduxGame.Timer
 import Graphics.Gloss.Interface.IO.Game
 
 data TestThing = TestThing
