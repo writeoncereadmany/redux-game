@@ -1,6 +1,7 @@
 module Examples.Orrery.Orrery where
 
-import Graphics.Gloss (color, yellow, blue, circleSolid, Picture (Pictures, Blank))
+import Graphics.Gloss (color, yellow, blue, makeColor)
+import Graphics.Gloss (circleSolid, Picture (Pictures, Blank))
 import Control.Lens
 
 import ReduxGame.Redux
@@ -19,7 +20,12 @@ data Orrery = Orrery
 makeLenses ''Orrery
 
 orrery :: Orrery
-orrery = Orrery newTimer [Planet { _orbitDistance = 300, _year = 10, _hue = blue, _radius = 20 }]
+orrery = Orrery newTimer
+  [ Planet { _orbitDistance = 300, _year = 10, _hue = makeColor 0.6 0.8 1 1, _radius = 20 }
+  , Planet { _orbitDistance = 150, _year = 12, _hue = makeColor 0.7 1 0.5 1, _radius = 15 }
+  , Planet { _orbitDistance = 100, _year = 7,  _hue = makeColor 1 1 0.4 1,   _radius = 8}
+  , Planet { _orbitDistance = 400, _year = 13, _hue = makeColor 1 0.4 0.5 1, _radius = 18 }
+  ]
 
 drawPlanet :: Float -> Planet -> Picture
 drawPlanet elapsed planet =
