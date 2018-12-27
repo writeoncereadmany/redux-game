@@ -6,13 +6,13 @@ import ReduxGame.Redux
 import ReduxGame.Timer
 import ReduxGame.Renderer.Renderable
 
-data LoadingScreen = LoadingScreen [ String ] Bool
+data LoadingScreen = LoadingScreen [ String ]
 
 data AssetLoaded = AssetLoaded String deriving ReduxEvent
 data FinishedLoading = FinishedLoading deriving ReduxEvent
 
 instance Renderable LoadingScreen where
-  render (LoadingScreen msgs _) =
+  render (LoadingScreen msgs) =
     let indexed = zip [1..] msgs
      in translate (-300) 300 $ color yellow $ Pictures (textline <$> indexed) where
        textline :: (Integer, String) -> Picture
@@ -26,7 +26,7 @@ initialiseLoadingScreen = do
   await 4 $ fireEvent $ FinishedLoading
 
 assetLoaded :: AssetLoaded -> LoadingScreen -> LoadingScreen
-assetLoaded (AssetLoaded asset) (LoadingScreen text finished) = LoadingScreen (text ++ [asset]) finished
+assetLoaded (AssetLoaded asset) (LoadingScreen text) = LoadingScreen (text ++ [asset])
 
 loadingScreenRedux :: Redux LoadingScreen
 loadingScreenRedux = redux

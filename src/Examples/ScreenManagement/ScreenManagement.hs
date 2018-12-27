@@ -60,7 +60,7 @@ instance Renderable Session where
 
 session :: Session
 session = Session
-  { _screen = Loading $ LoadingScreen [ "Loading: " ] False
+  { _screen = Loading $ LoadingScreen [ "Loading: " ]
   , _timer = newTimer
   }
 
