@@ -19,5 +19,5 @@ listenForQuit _ _ = return ()
 
 exitRedux :: Char -> Redux a
 exitRedux quitButton = redux
-                   |-> doing (listenForQuit quitButton)
-                   |-> doing exit
+                   |=> doing (listenForQuit quitButton)
+                   |=> doing exit

@@ -9,6 +9,7 @@ module ReduxGame.Redux
   , reduxUpdate
   , redux
   , connect
+  , (|=>)
   , (|->)
   , (|+>)
   )where
@@ -74,12 +75,18 @@ connect lens f e = lens %%~ (f e)
 redux :: Redux a
 redux = const return
 
-infixl 1 |->
+infixl 1 |=>
 
-(|->) :: ReduxEvent a => Redux w -> (a -> w -> Events w) -> Redux w
-(|->) redux f e w = return w
+(|=>) :: ReduxEvent a => Redux w -> (a -> w -> Events w) -> Redux w
+(|=>) redux f e w = return w
                 >>= redux e
                 >>= focus f e
+
+infixl 1 |->
+
+(|->) :: ReduxEvent a => Redux w -> (a -> w -> w) -> Redux w
+(|->) redux f e w = (|=>) redux (\a w -> return $ f a w) e w
+
 
 infixl 1 |+>
 (|+>) :: Redux w -> Redux w -> Redux w

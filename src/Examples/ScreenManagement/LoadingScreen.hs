@@ -25,10 +25,13 @@ initialiseLoadingScreen = do
   await 3 $ fireEvent $ AssetLoaded "Levels loaded"
   await 4 $ fireEvent $ FinishedLoading
 
-assetLoaded :: AssetLoaded -> LoadingScreen -> Events LoadingScreen
-assetLoaded (AssetLoaded asset) (LoadingScreen text finished) =
-  return $ LoadingScreen (text ++ [asset]) finished
+assetLoaded :: AssetLoaded -> LoadingScreen -> LoadingScreen
+assetLoaded (AssetLoaded asset) (LoadingScreen text finished) = LoadingScreen (text ++ [asset]) finished
+
+finishedLoading :: FinishedLoading -> LoadingScreen -> LoadingScreen
+finishedLoading _ (LoadingScreen text _) = LoadingScreen text True
 
 loadingScreenRedux :: Redux LoadingScreen
 loadingScreenRedux = redux
                  |-> assetLoaded
+                 |-> finishedLoading
