@@ -13,7 +13,7 @@ import ReduxGame.Exit
 
 startGame :: Renderable w => w -> Redux w -> IO ()
 startGame world redux = do
-  let redux' = redux |+> exitRedux 'q'
+  let redux' = redux |:: exitRedux 'q'
   playIO FullScreen black 60 world (pure . render) (reduxListen redux') (reduxUpdate redux')
 
 initialiseGame :: Renderable w => w -> Redux w -> Events () -> IO ()

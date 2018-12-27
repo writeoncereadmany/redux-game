@@ -35,7 +35,7 @@ makePrisms ''Screen
 
 screenRedux :: Redux Screen
 screenRedux = redux
-          |+> connect _Loading loadingScreenRedux
+          |:: connect _Loading loadingScreenRedux
 
 
 instance Renderable Screen where
@@ -62,5 +62,5 @@ session = Session
 
 sessionRedux :: Redux Session
 sessionRedux = redux
-           |+> connect timer timerRedux
-           |+> connect (screen . _Loading) loadingScreenRedux
+           |:: connect timer timerRedux
+           |:: connect screen screenRedux

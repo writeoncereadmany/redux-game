@@ -44,4 +44,4 @@ instance Renderable Orrery where
 
 orreryRedux :: Redux Orrery
 orreryRedux = redux
-          |+> connect timer timerRedux
+          |:: connect timer timerRedux

@@ -11,7 +11,7 @@ module ReduxGame.Redux
   , connect
   , (|=>)
   , (|->)
-  , (|+>)
+  , (|::)
   )where
 
 import Data.Dynamic (Typeable)
@@ -88,8 +88,8 @@ infixl 1 |->
 (|->) redux f e w = (|=>) redux (\a w -> return $ f a w) e w
 
 
-infixl 1 |+>
-(|+>) :: Redux w -> Redux w -> Redux w
-(|+>) redux1 redux2 e w = return w
+infixl 1 |::
+(|::) :: Redux w -> Redux w -> Redux w
+(|::) redux1 redux2 e w = return w
                       >>= redux1 e
                       >>= redux2 e
