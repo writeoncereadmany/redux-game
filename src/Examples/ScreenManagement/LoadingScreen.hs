@@ -6,12 +6,13 @@ import ReduxGame.Redux
 import ReduxGame.Timer
 import ReduxGame.Renderer.Renderable
 
+import Examples.ScreenManagement.Transitions
 import Examples.ScreenManagement.RenderTextLines
 
 data LoadingScreen = LoadingScreen [ String ]
 
 data AssetLoaded = AssetLoaded String deriving ReduxEvent
-data ToTitleScreen = ToTitleScreen deriving ReduxEvent
+
 
 instance Renderable LoadingScreen where
   render (LoadingScreen msgs) = translate (-300) 300

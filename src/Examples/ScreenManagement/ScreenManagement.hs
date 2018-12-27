@@ -11,6 +11,7 @@ import ReduxGame.Redux
 import ReduxGame.Timer
 import ReduxGame.Renderer.Renderable
 
+import Examples.ScreenManagement.Transitions
 import Examples.ScreenManagement.LoadingScreen
 import Examples.ScreenManagement.TitleScreen
 

@@ -5,12 +5,10 @@ import Graphics.Gloss
 import ReduxGame.Renderer.Renderable
 import ReduxGame.Redux
 
+import Examples.ScreenManagement.Transitions
 import Examples.ScreenManagement.RenderTextLines
 
 data TitleScreen = TitleScreen
-
-data StartGame = StartGame deriving ReduxEvent
-data ViewScores = ViewScores deriving ReduxEvent
 
 instance Renderable TitleScreen where
   render TitleScreen = translate (-500) 300
