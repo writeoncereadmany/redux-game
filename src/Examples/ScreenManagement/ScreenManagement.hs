@@ -12,13 +12,10 @@ import ReduxGame.Timer
 import ReduxGame.Renderer.Renderable
 
 import Examples.ScreenManagement.LoadingScreen
+import Examples.ScreenManagement.TitleScreen
 
-data TitleScreen = TitleScreen
 data GameScreen = GameScreen
 data HighScoreScreen = HighScoreScreen
-
-instance Renderable TitleScreen where
-  render TitleScreen = color white $ text "Title screen"
 
 instance Renderable GameScreen where
   render GameScreen = color green $ text "Game screen"
@@ -27,19 +24,28 @@ instance Renderable HighScoreScreen where
   render HighScoreScreen = color red $ text "High score screen"
 
 data Screen = Loading LoadingScreen
-             | Title TitleScreen
-             | Game GameScreen
-             | HighScores HighScoreScreen
+            | Title TitleScreen
+            | Game GameScreen
+            | HighScores HighScoreScreen
 
 makePrisms ''Screen
 
-toTitleScreen :: FinishedLoading -> Screen -> Screen
-toTitleScreen _ (Loading _) = Title TitleScreen
+toTitleScreen :: ToTitleScreen -> Screen -> Screen
+toTitleScreen _ _ = Title TitleScreen
+
+toGameScreen :: StartGame -> Screen -> Screen
+toGameScreen _ _ = Game GameScreen
+
+toHighScores :: ViewScores -> Screen -> Screen
+toHighScores _ _ = HighScores HighScoreScreen
 
 screenRedux :: Redux Screen
 screenRedux = redux
           |:: connect _Loading loadingScreenRedux
+          |:: connect _Title titleScreenRedux
           |-> toTitleScreen
+          |-> toGameScreen
+          |-> toHighScores
 
 
 instance Renderable Screen where

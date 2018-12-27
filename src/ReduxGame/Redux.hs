@@ -9,6 +9,7 @@ module ReduxGame.Redux
   , reduxUpdate
   , redux
   , connect
+  , onButton
   , (|=>)
   , (|->)
   , (|::)
@@ -63,11 +64,11 @@ reduxUpdate f timestep world = reduxDo f world (fireEvent $ TimeStep timestep)
 reduxListen :: Redux w -> Event -> w -> IO w
 reduxListen f event world = reduxDo f world (fireEvent event)
 
-onButton :: Char -> (a -> Events a) -> Event -> a -> Events a
-onButton expected f (EventKey (Char actual) _ _ _) = if (expected == actual)
-  then f
-  else pure
-onButton _ _ _ = pure
+onButton :: Char -> Events () -> Event -> a -> Events a
+onButton expected action (EventKey (Char actual) _ _ _) a = do
+  when (expected == actual) action
+  return a
+onBuddon _ _ _ a = return a
 
 connect :: Updater a b -> (i -> a -> Events a) -> (i -> b -> Events b)
 connect lens f e = lens %%~ (f e)
