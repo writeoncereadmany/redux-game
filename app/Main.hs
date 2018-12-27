@@ -9,4 +9,4 @@ import Examples.ScreenManagement.ScreenManagement
 main :: IO ()
 main = getArgs >>= run where
   run ["orrery"] = startGame orrery orreryRedux
-  run ["screens"] = startGame session sessionRedux
+  run ["screens"] = initialiseGame session sessionRedux initialiseLoadingScreen

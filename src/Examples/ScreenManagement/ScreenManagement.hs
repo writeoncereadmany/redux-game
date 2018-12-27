@@ -1,21 +1,21 @@
-module Examples.ScreenManagement.ScreenManagement where
+module Examples.ScreenManagement.ScreenManagement
+ ( session
+ , sessionRedux
+ , Examples.ScreenManagement.LoadingScreen.initialiseLoadingScreen
+ ) where
 
 import Graphics.Gloss
 import Control.Lens
 
 import ReduxGame.Redux
+import ReduxGame.Timer
 import ReduxGame.Renderer.Renderable
 
-data LoadingScreen = LoadingScreen
+import Examples.ScreenManagement.LoadingScreen
+
 data TitleScreen = TitleScreen
 data GameScreen = GameScreen
 data HighScoreScreen = HighScoreScreen
-
-instance Renderable LoadingScreen where
-  render LoadingScreen = color yellow $ text "Loading screen "
-
-loadingScreenRedux :: Redux LoadingScreen
-loadingScreenRedux = redux
 
 instance Renderable TitleScreen where
   render TitleScreen = color white $ text "Title screen"
@@ -44,13 +44,23 @@ instance Renderable Screen where
   render (Game g) = render g
   render (HighScores h) = render h
 
-data Session = Session Screen
+data Session = Session
+  { _screen :: Screen
+  , _timer :: Timer
+  }
+
+makeLenses ''Session
 
 instance Renderable Session where
-  render (Session s) = render s
+  render s = render (s ^. screen)
 
 session :: Session
-session = Session $ Loading LoadingScreen
+session = Session
+  { _screen = Loading $ LoadingScreen [ "Loading: " ] False
+  , _timer = newTimer
+  }
 
 sessionRedux :: Redux Session
 sessionRedux = redux
+           |+> connect timer timerRedux
+           |+> connect (screen . _Loading) loadingScreenRedux
