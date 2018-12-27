@@ -1,7 +1,12 @@
 module Main where
 
+import System.Environment
+
 import ReduxGame.Game
 import Examples.Orrery.Orrery
+import Examples.ScreenManagement.ScreenManagement
 
 main :: IO ()
-main = startGame orrery orreryRedux
+main = getArgs >>= run where
+  run ["orrery"] = startGame orrery orreryRedux
+  run ["screens"] = startGame session sessionRedux

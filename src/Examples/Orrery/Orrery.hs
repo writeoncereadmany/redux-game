@@ -22,9 +22,9 @@ makeLenses ''Orrery
 orrery :: Orrery
 orrery = Orrery newTimer
   [ Planet { _orbitDistance = 300, _year = 10, _hue = makeColor 0.6 0.8 1 1, _radius = 20 }
-  , Planet { _orbitDistance = 150, _year = 12, _hue = makeColor 0.7 1 0.5 1, _radius = 15 }
-  , Planet { _orbitDistance = 100, _year = 7,  _hue = makeColor 1 1 0.4 1,   _radius = 8}
-  , Planet { _orbitDistance = 400, _year = 13, _hue = makeColor 1 0.4 0.5 1, _radius = 18 }
+  , Planet { _orbitDistance = 250, _year = 12, _hue = makeColor 0.7 1 0.5 1, _radius = 15 }
+  , Planet { _orbitDistance = 200, _year = 7,  _hue = makeColor 1 1 0.4 1,   _radius = 8}
+  , Planet { _orbitDistance = 450, _year = 13, _hue = makeColor 1 0.4 0.5 1, _radius = 18 }
   ]
 
 drawPlanet :: Float -> Planet -> Picture

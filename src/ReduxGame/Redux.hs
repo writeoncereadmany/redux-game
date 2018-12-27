@@ -62,6 +62,12 @@ reduxUpdate f timestep world = reduxDo f world (fireEvent $ TimeStep timestep)
 reduxListen :: Redux w -> Event -> w -> IO w
 reduxListen f event world = reduxDo f world (fireEvent event)
 
+onButton :: Char -> (a -> Events a) -> Event -> a -> Events a
+onButton expected f (EventKey (Char actual) _ _ _) = if (expected == actual)
+  then f
+  else pure
+onButton _ _ _ = pure
+
 connect :: Updater a b -> (i -> a -> Events a) -> (i -> b -> Events b)
 connect lens f e = lens %%~ (f e)
 
