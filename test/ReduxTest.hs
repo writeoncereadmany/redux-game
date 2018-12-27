@@ -31,16 +31,16 @@ listenEvent e w = do
   fireEvent (show e)
   return $ systemEvents %~ (e :) $ w
 
-reduceNumber :: Float -> TestThing -> Events TestThing
-reduceNumber t w = return $ timeEvents %~ (t :) $ w
+reduceNumber :: Float -> TestThing -> TestThing
+reduceNumber t w = timeEvents %~ (t :) $ w
 
-reduceString :: String -> TestThing -> Events TestThing
-reduceString s w = return $ loggedEvents %~ (s :) $ w
+reduceString :: String -> TestThing -> TestThing
+reduceString s w = loggedEvents %~ (s :) $ w
 
 testRedux :: Redux TestThing
 testRedux = redux
-        |-> updateTime
-        |-> listenEvent
+        |=> updateTime
+        |=> listenEvent
         |-> reduceNumber
         |-> reduceString
 

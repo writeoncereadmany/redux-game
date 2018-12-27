@@ -33,9 +33,13 @@ data Screen = Loading LoadingScreen
 
 makePrisms ''Screen
 
+toTitleScreen :: FinishedLoading -> Screen -> Screen
+toTitleScreen _ (Loading _) = Title TitleScreen
+
 screenRedux :: Redux Screen
 screenRedux = redux
           |:: connect _Loading loadingScreenRedux
+          |-> toTitleScreen
 
 
 instance Renderable Screen where

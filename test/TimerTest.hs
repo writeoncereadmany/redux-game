@@ -26,13 +26,13 @@ updateTime (TimeStep t) w = case w ^. toEnqueue of
   Just (d, e) -> do await d $ fireEvent e
                     return $ toEnqueue .~ Nothing $ w
 
-reduceString :: String -> TestThing -> Events TestThing
-reduceString s w = return $ fired %~ (s :) $ w
+reduceString :: String -> TestThing -> TestThing
+reduceString s w = fired %~ (s :) $ w
 
 testRedux :: Redux TestThing
 testRedux = redux
-        |+> connect timer timerRedux
-        |-> updateTime
+        |:: connect timer timerRedux
+        |=> updateTime
         |-> reduceString
 
 test_timer_works = do

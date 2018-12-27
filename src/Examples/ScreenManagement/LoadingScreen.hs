@@ -28,10 +28,6 @@ initialiseLoadingScreen = do
 assetLoaded :: AssetLoaded -> LoadingScreen -> LoadingScreen
 assetLoaded (AssetLoaded asset) (LoadingScreen text finished) = LoadingScreen (text ++ [asset]) finished
 
-finishedLoading :: FinishedLoading -> LoadingScreen -> LoadingScreen
-finishedLoading _ (LoadingScreen text _) = LoadingScreen text True
-
 loadingScreenRedux :: Redux LoadingScreen
 loadingScreenRedux = redux
                  |-> assetLoaded
-                 |-> finishedLoading
