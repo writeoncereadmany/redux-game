@@ -32,6 +32,7 @@ default-extensions:
 - RankNTypes
 - DeriveAnyClass
 - FlexibleInstances
+- GADTs
 
 library:
   source-dirs: src
