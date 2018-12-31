@@ -44,26 +44,6 @@ replaceStore newStore (ComponentStore oldStores) =
         then (toStore newStore) : oldStores
         else oldStore : replaceStore' newStore oldStores
 
-data Entities a = Entities { runEntities :: ComponentStore -> (a, ComponentStore)}
-
-instance Functor Entities where
-  fmap f entities = Entities $ \components ->
-    let (val, components') = runEntities entities components
-     in (f val, components')
-
-instance Applicative Entities where
-  pure a = Entities $ \components -> (a, components)
-  f <*> a = Entities $ \components ->
-    let (f', components') = runEntities f components
-        (a', components'') = runEntities a components
-     in (f' a', components'')
-
-instance Monad Entities where
-  return = pure
-  entities >>= f = Entities $ \components ->
-    let (val, components') = runEntities entities components
-     in runEntities (f val) components'
-
 withId :: EntityId -> [ Tagged a ] -> Maybe a
 withId entId [] = Nothing
 withId entId ((Tagged entId' a) : as) =
@@ -77,16 +57,3 @@ replaceComponent a entId (c@(Tagged entId' _) : cs) =
   if entId == entId'
     then (Tagged entId a) : cs
     else c : replaceComponent a entId cs
-
-getComponent :: Component a => EntityId -> Entities (Maybe a)
-getComponent entityId = Entities $ \components ->
-  let store = storeOf components
-      component = withId entityId store
-   in (component, components)
-
-setComponent :: Component a => a -> EntityId -> Entities ()
-setComponent component entityId = Entities $ \components ->
-  let store = storeOf components
-      store' = replaceComponent component entityId store
-      components' = replaceStore store' components
-   in ((), components')
