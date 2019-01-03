@@ -14,8 +14,8 @@ withId entId (Store xs) = withId' xs where
       then Just a
       else withId' as
 
-replaceComponent :: a -> EntityId -> Store a -> Store a
-replaceComponent a entId (Store xs) = Store $ replaceComponent' xs where
+replaceComponent :: EntityId -> a -> Store a -> Store a
+replaceComponent entId a (Store xs) = Store $ replaceComponent' xs where
   replaceComponent' [] = [ Tagged entId a ]
   replaceComponent' (c@(Tagged entId' _) : cs) =
     if entId == entId'

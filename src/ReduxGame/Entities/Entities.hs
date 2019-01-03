@@ -8,7 +8,7 @@ module ReduxGame.Entities.Entities
   , ReduxGame.Entities.ComponentStore.emptyStore
   ) where
 
-import ReduxGame.Entities.Store 
+import ReduxGame.Entities.Store
 import ReduxGame.Entities.ComponentStore
 
 data Entities a = Entities { runEntities :: ComponentStore -> (a, ComponentStore)}
@@ -40,6 +40,6 @@ getComponent entityId = Entities $ \components ->
 setComponent :: Component a => a -> EntityId -> Entities ()
 setComponent component entityId = Entities $ \components ->
   let store = storeOf components
-      store' = replaceComponent component entityId store
+      store' = replaceComponent entityId component store
       components' = replaceStore store' components
    in ((), components')
