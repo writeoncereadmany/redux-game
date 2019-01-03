@@ -3,11 +3,12 @@ module ReduxGame.Entities.Entities
   , runEntities
   , getComponent
   , setComponent
-  , ReduxGame.Entities.Components.Component
+  , ReduxGame.Entities.Store.EntityId
+  , ReduxGame.Entities.ComponentStore.Component
   , ReduxGame.Entities.ComponentStore.emptyStore
   ) where
 
-import ReduxGame.Entities.Components
+import ReduxGame.Entities.Store 
 import ReduxGame.Entities.ComponentStore
 
 data Entities a = Entities { runEntities :: ComponentStore -> (a, ComponentStore)}
