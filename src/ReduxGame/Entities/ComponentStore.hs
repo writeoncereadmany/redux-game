@@ -8,7 +8,7 @@ data ComponentStore = ComponentStore [ Components ]
 emptyStore :: ComponentStore
 emptyStore = ComponentStore []
 
-storeOf :: Component a => ComponentStore -> [ Tagged a ]
+storeOf :: Component a => ComponentStore -> Store a
 storeOf (ComponentStore stores) = storeOf' stores where
   storeOf' [] = []
   storeOf' (x:xs) = case fromStore x of
@@ -18,10 +18,10 @@ storeOf (ComponentStore stores) = storeOf' stores where
 typesMatch :: a -> Maybe a -> Bool
 typesMatch _ x = isJust x
 
-replaceStore :: Component a => [ Tagged a] -> ComponentStore -> ComponentStore
+replaceStore :: Component a => Store a -> ComponentStore -> ComponentStore
 replaceStore newStore (ComponentStore oldStores) =
   ComponentStore $ replaceStore' newStore oldStores where
-    replaceStore' :: Component a => [Tagged a] -> [ Components ] -> [ Components ]
+    replaceStore' :: Component a => Store a -> [ Components ] -> [ Components ]
     replaceStore' newStore [] = [ Components newStore ]
     replaceStore' newStore (oldStore : oldStores) =
       if (typesMatch newStore (fromStore oldStore))
