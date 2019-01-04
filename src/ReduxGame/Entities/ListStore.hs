@@ -13,6 +13,12 @@ data ListStore a = ListStore [ Tagged a ]
 
 emptyStore = ListStore []
 
+instance Store ListStore a where
+  swithId = withId
+  sreplaceComponent = replaceComponent
+  sapply2 = apply2
+  semptyStore = emptyStore
+
 withId :: EntityId -> ListStore a -> Maybe a
 withId entId (ListStore xs) = withId' xs where
   withId' [] = Nothing
