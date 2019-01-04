@@ -9,19 +9,19 @@ instance Component String
 instance Component Bool
 
 test_can_set_and_retrieve_for_matching_ids = do
-  let (value, _) = runEntities (do { setComponent "Hello!" 12; getComponent 12}) emptyStore
+  let (value, _) = runEntities (do { setComponent "Hello!" 12; getComponent 12}) emptyComponents
   assertEqual (Just "Hello!") value
 
 test_retrieve_fails_when_types_dont_match = do
-  let (value, _) = runEntities (do { setComponent False 12; getComponent 12}) emptyStore
+  let (value, _) = runEntities (do { setComponent False 12; getComponent 12}) emptyComponents
   assertEqual (Nothing :: Maybe String) value
 
 test_retrieve_fails_when_entity_ids_dont_match = do
-  let (value, _) = runEntities (do { setComponent "Hello!" 15; getComponent 12}) emptyStore
+  let (value, _) = runEntities (do { setComponent "Hello!" 15; getComponent 12}) emptyComponents
   assertEqual (Nothing :: Maybe String) value
 
 test_can_store_and_retrieve_multiple_entity_ids = do
-  let (value, _) = runEntities setAndGetMultipleComponents emptyStore
+  let (value, _) = runEntities setAndGetMultipleComponents emptyComponents
   assertEqual (Just ("Hello!", True)) value where
     setAndGetMultipleComponents = do
       setComponent "Hello!" 12
@@ -48,7 +48,7 @@ setupData = do
   setComponent (Y 13) 4
 
 test_can_parallel_apply' = do
-  let newState = updateState (do setupData) emptyStore
+  let newState = updateState (do setupData) emptyComponents
   assertEqual (Just (X 3)) (evaluate (getComponent 1) newState)
   assertEqual (Just (Y 5)) (evaluate (getComponent 1) newState)
   assertEqual (Just (X 2)) (evaluate (getComponent 2) newState)
@@ -60,7 +60,7 @@ test_can_parallel_apply' = do
 
 
 test_can_parallel_apply = do
-  let newState = updateState (do { setupData; doApply2 swap; }) emptyStore
+  let newState = updateState (do { setupData; doApply2 swap; }) emptyComponents
   assertEqual (Just (X 5)) (evaluate (getComponent 1) newState)
   assertEqual (Just (Y 3)) (evaluate (getComponent 1) newState)
   assertEqual (Just (X 2)) (evaluate (getComponent 2) newState)

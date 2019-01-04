@@ -8,7 +8,7 @@ module ReduxGame.Entities.Entities
   , doApply2
   , ReduxGame.Entities.Store.EntityId
   , ReduxGame.Entities.ComponentStore.Component
-  , ReduxGame.Entities.ComponentStore.emptyStore
+  , ReduxGame.Entities.ComponentStore.emptyComponents
   ) where
 
 import ReduxGame.Entities.Store
@@ -63,18 +63,5 @@ apply2 :: forall a b . (Component a, Component b)
 apply2 f components = let
      as = storeOf components
      bs = storeOf components
-     (as', bs') = apply2'' as bs
-  in replaceStore as' $ replaceStore bs' $ components where
-    apply2'' :: Store a -> Store b -> (Store a, Store b)
-    apply2'' (Store as) (Store bs) = let (as', bs') = apply2' as bs in (Store as', Store bs')
-    apply2' :: [ Tagged a ] -> [ Tagged b] -> ([ Tagged a ], [ Tagged b ])
-    apply2' [] bs = ([], bs)
-    apply2' as [] = (as, [])
-    apply2' as@(firsta@(Tagged id_a a):resta) bs@(firstb@(Tagged id_b b):restb) = case compare id_a id_b of
-      LT -> let (as', bs') = apply2' resta bs
-             in (firsta:as', bs')
-      GT -> let (as', bs') = apply2' as restb
-             in (as', firstb:bs')
-      EQ -> let (a', b') = f (a, b)
-                (as', bs') = apply2' resta restb
-             in ((Tagged id_a a'):as', (Tagged id_b b'):bs')
+     (as', bs') = apply2'' f as bs
+  in replaceStore as' $ replaceStore bs' $ components

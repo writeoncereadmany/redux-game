@@ -14,12 +14,12 @@ fromStore (DynStore b) = cast b
 
 data ComponentStore = ComponentStore [ DynStore ]
 
-emptyStore :: ComponentStore
-emptyStore = ComponentStore []
+emptyComponents :: ComponentStore
+emptyComponents = ComponentStore []
 
 storeOf :: Component a => ComponentStore -> Store a
 storeOf (ComponentStore stores) = storeOf' stores where
-  storeOf' [] = Store []
+  storeOf' [] = emptyStore
   storeOf' (x:xs) = case fromStore x of
     Just a  -> a
     Nothing -> storeOf' xs
