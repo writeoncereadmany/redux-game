@@ -11,9 +11,9 @@ withId entId (Store xs) = withId' xs where
   withId' [] = Nothing
   withId' ((Tagged entId' a) : as) =
     case compare entId entId' of
-      LT -> withId' as
+      LT -> Nothing
       EQ -> Just a
-      GT -> Nothing
+      GT -> withId' as
 
 replaceComponent :: EntityId -> a -> Store a -> Store a
 replaceComponent entId a (Store xs) = Store $ replaceComponent' xs where
