@@ -33,6 +33,7 @@ default-extensions:
 - DeriveAnyClass
 - FlexibleInstances
 - GADTs
+- ScopedTypeVariables
 
 library:
   source-dirs: src
