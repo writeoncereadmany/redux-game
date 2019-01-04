@@ -7,9 +7,9 @@ import ReduxGame.Entities.ListStore
 class Typeable a => Component a
 
 data DynStore where
-  DynStore :: forall a . Component a => Store a -> DynStore
+  DynStore :: forall a . Component a => ListStore a -> DynStore
 
-fromStore :: Component a => DynStore -> Maybe (Store a)
+fromStore :: Component a => DynStore -> Maybe (ListStore a)
 fromStore (DynStore b) = cast b
 
 data ComponentStore = ComponentStore [ DynStore ]
@@ -17,7 +17,7 @@ data ComponentStore = ComponentStore [ DynStore ]
 emptyComponents :: ComponentStore
 emptyComponents = ComponentStore []
 
-storeOf :: Component a => ComponentStore -> Store a
+storeOf :: Component a => ComponentStore -> ListStore a
 storeOf (ComponentStore stores) = storeOf' stores where
   storeOf' [] = emptyStore
   storeOf' (x:xs) = case fromStore x of
@@ -27,10 +27,10 @@ storeOf (ComponentStore stores) = storeOf' stores where
 typesMatch :: a -> Maybe a -> Bool
 typesMatch _ x = isJust x
 
-replaceStore :: Component a => Store a -> ComponentStore -> ComponentStore
+replaceStore :: Component a => ListStore a -> ComponentStore -> ComponentStore
 replaceStore newStore (ComponentStore oldStores) =
   ComponentStore $ replaceStore' newStore oldStores where
-    replaceStore' :: Component a => Store a -> [ DynStore ] -> [ DynStore ]
+    replaceStore' :: Component a => ListStore a -> [ DynStore ] -> [ DynStore ]
     replaceStore' newStore [] = [ DynStore newStore ]
     replaceStore' newStore (oldStore : oldStores) =
       if (typesMatch newStore (fromStore oldStore))

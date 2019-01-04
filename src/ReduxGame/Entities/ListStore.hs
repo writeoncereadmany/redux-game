@@ -1,6 +1,6 @@
 module ReduxGame.Entities.ListStore
  ( EntityId
- , Store
+ , ListStore
  , emptyStore
  , withId
  , replaceComponent
@@ -9,12 +9,12 @@ module ReduxGame.Entities.ListStore
 
 import ReduxGame.Entities.Store
 
-data Store a = Store [ Tagged a ]
+data ListStore a = ListStore [ Tagged a ]
 
-emptyStore = Store []
+emptyStore = ListStore []
 
-withId :: EntityId -> Store a -> Maybe a
-withId entId (Store xs) = withId' xs where
+withId :: EntityId -> ListStore a -> Maybe a
+withId entId (ListStore xs) = withId' xs where
   withId' [] = Nothing
   withId' ((Tagged entId' a) : as) =
     case compare entId entId' of
@@ -22,8 +22,8 @@ withId entId (Store xs) = withId' xs where
       EQ -> Just a
       GT -> withId' as
 
-replaceComponent :: EntityId -> a -> Store a -> Store a
-replaceComponent entId a (Store xs) = Store $ replaceComponent' xs where
+replaceComponent :: EntityId -> a -> ListStore a -> ListStore a
+replaceComponent entId a (ListStore xs) = ListStore $ replaceComponent' xs where
   replaceComponent' [] = [ Tagged entId a ]
   replaceComponent' cs@(c@(Tagged entId' _) : restc) =
     case compare entId entId' of
@@ -31,8 +31,8 @@ replaceComponent entId a (Store xs) = Store $ replaceComponent' xs where
       EQ -> (Tagged entId a) : restc
       GT -> c : replaceComponent' restc
 
-apply2 :: forall a b . ((a, b) -> (a, b)) -> Store a -> Store b -> (Store a, Store b)
-apply2 f (Store as) (Store bs) = let (as', bs') = apply2' as bs in (Store as', Store bs') where
+apply2 :: forall a b . ((a, b) -> (a, b)) -> ListStore a -> ListStore b -> (ListStore a, ListStore b)
+apply2 f (ListStore as) (ListStore bs) = let (as', bs') = apply2' as bs in (ListStore as', ListStore bs') where
   apply2' :: [ Tagged a ] -> [ Tagged b] -> ([ Tagged a ], [ Tagged b ])
   apply2' [] bs = ([], bs)
   apply2' as [] = (as, [])
