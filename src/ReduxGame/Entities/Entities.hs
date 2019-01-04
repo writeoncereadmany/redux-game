@@ -55,7 +55,5 @@ updateState e c = snd $ runEntities e c
 
 doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
 doApply2 f = Entities $ \components -> let
-     as = storeOf components
-     bs = storeOf components
-     (as', bs') = apply2 f as bs
+     (as', bs') = apply2 f (storeOf components) (storeOf components)
   in ((), replaceStore as' $ replaceStore bs' components)
