@@ -4,12 +4,10 @@ module ReduxGame.Entities.ListStore
  , emptyStore
  , withId
  , replaceComponent
- , apply2''
+ , apply2
  ) where
 
-type EntityId = Integer
-
-data Tagged a = Tagged EntityId a
+import ReduxGame.Entities.Store
 
 data Store a = Store [ Tagged a ]
 
@@ -33,8 +31,8 @@ replaceComponent entId a (Store xs) = Store $ replaceComponent' xs where
       EQ -> (Tagged entId a) : restc
       GT -> c : replaceComponent' restc
 
-apply2'' :: forall a b . ((a, b) -> (a, b)) -> Store a -> Store b -> (Store a, Store b)
-apply2'' f (Store as) (Store bs) = let (as', bs') = apply2' as bs in (Store as', Store bs') where
+apply2 :: forall a b . ((a, b) -> (a, b)) -> Store a -> Store b -> (Store a, Store b)
+apply2 f (Store as) (Store bs) = let (as', bs') = apply2' as bs in (Store as', Store bs') where
   apply2' :: [ Tagged a ] -> [ Tagged b] -> ([ Tagged a ], [ Tagged b ])
   apply2' [] bs = ([], bs)
   apply2' as [] = (as, [])
