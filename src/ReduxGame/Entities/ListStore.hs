@@ -1,4 +1,4 @@
-module ReduxGame.Entities.Store
+module ReduxGame.Entities.ListStore
  ( EntityId
  , Store
  , emptyStore

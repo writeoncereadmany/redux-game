@@ -6,12 +6,12 @@ module ReduxGame.Entities.Entities
   , evaluate
   , updateState
   , doApply2
-  , ReduxGame.Entities.Store.EntityId
+  , ReduxGame.Entities.ListStore.EntityId
   , ReduxGame.Entities.ComponentStore.Component
   , ReduxGame.Entities.ComponentStore.emptyComponents
   ) where
 
-import ReduxGame.Entities.Store
+import ReduxGame.Entities.ListStore
 import ReduxGame.Entities.ComponentStore
 
 data Entities a = Entities { runEntities :: ComponentStore -> (a, ComponentStore)}
