@@ -31,3 +31,41 @@ test_can_store_and_retrieve_multiple_entity_ids = do
       return $ case (first, second) of
         (Just a, Just b) -> Just (a, b)
         _ -> Nothing
+
+data X = X Int deriving (Eq, Show, Component)
+data Y = Y Int deriving (Eq, Show, Component)
+
+swap :: (X, Y) -> (X, Y)
+swap (X x, Y y) = (X y, Y x)
+
+setupData :: Entities ()
+setupData = do
+  setComponent (X 3) 1
+  setComponent (Y 5) 1
+  setComponent (X 2) 2
+  setComponent (Y 4) 3
+  setComponent (X 6) 4
+  setComponent (Y 13) 4
+
+test_can_parallel_apply' = do
+  let newState = updateState (do setupData) emptyStore
+  assertEqual (Just (X 3)) (evaluate (getComponent 1) newState)
+  assertEqual (Just (Y 5)) (evaluate (getComponent 1) newState)
+  assertEqual (Just (X 2)) (evaluate (getComponent 2) newState)
+  assertEqual (Nothing :: Maybe Y) (evaluate (getComponent 2) newState)
+  assertEqual (Nothing :: Maybe X) (evaluate (getComponent 3) newState)
+  assertEqual (Just (Y 4)) (evaluate (getComponent 3) newState)
+  assertEqual (Just (X 6)) (evaluate (getComponent 4) newState)
+  assertEqual (Just (Y 13)) (evaluate (getComponent 4) newState)
+
+
+test_can_parallel_apply = do
+  let newState = updateState (do { setupData; doApply2 swap; }) emptyStore
+  assertEqual (Just (X 5)) (evaluate (getComponent 1) newState)
+  assertEqual (Just (Y 3)) (evaluate (getComponent 1) newState)
+  assertEqual (Just (X 2)) (evaluate (getComponent 2) newState)
+  assertEqual (Nothing :: Maybe Y) (evaluate (getComponent 2) newState)
+  assertEqual (Nothing :: Maybe X) (evaluate (getComponent 3) newState)
+  assertEqual (Just (Y 4)) (evaluate (getComponent 3) newState)
+  assertEqual (Just (X 13)) (evaluate (getComponent 4) newState)
+  assertEqual (Just (Y 6)) (evaluate (getComponent 4) newState)

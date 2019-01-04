@@ -3,6 +3,9 @@ module ReduxGame.Entities.Entities
   , runEntities
   , getComponent
   , setComponent
+  , evaluate
+  , updateState
+  , doApply2
   , ReduxGame.Entities.Store.EntityId
   , ReduxGame.Entities.ComponentStore.Component
   , ReduxGame.Entities.ComponentStore.emptyStore
@@ -43,6 +46,15 @@ setComponent component entityId = Entities $ \components ->
       store' = replaceComponent entityId component store
       components' = replaceStore store' components
    in ((), components')
+
+evaluate :: Entities a -> ComponentStore -> a
+evaluate e c = fst $ runEntities e c
+
+updateState :: Entities a -> ComponentStore -> ComponentStore
+updateState e c = snd $ runEntities e c
+
+doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
+doApply2 f = Entities $ \components -> ((), apply2 f components)
 
 apply2 :: forall a b . (Component a, Component b)
        => ((a, b) -> (a, b))
