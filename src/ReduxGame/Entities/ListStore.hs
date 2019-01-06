@@ -11,16 +11,16 @@ import ReduxGame.Entities.Store
 
 data ListStore a = ListStore [ Tagged a ]
 
-emptyStore = ListStore []
+liststore_emptyStore = ListStore []
 
 instance Store ListStore a where
-  swithId = withId
-  sreplaceComponent = replaceComponent
-  sapply2 = apply2
-  semptyStore = emptyStore
+  withId = liststore_withId
+  replaceComponent = liststore_replaceComponent
+  apply2 = liststore_apply2
+  emptyStore = liststore_emptyStore
 
-withId :: EntityId -> ListStore a -> Maybe a
-withId entId (ListStore xs) = withId' xs where
+liststore_withId :: EntityId -> ListStore a -> Maybe a
+liststore_withId entId (ListStore xs) = withId' xs where
   withId' [] = Nothing
   withId' ((Tagged entId' a) : as) =
     case compare entId entId' of
@@ -28,8 +28,8 @@ withId entId (ListStore xs) = withId' xs where
       EQ -> Just a
       GT -> withId' as
 
-replaceComponent :: EntityId -> a -> ListStore a -> ListStore a
-replaceComponent entId a (ListStore xs) = ListStore $ replaceComponent' xs where
+liststore_replaceComponent :: EntityId -> a -> ListStore a -> ListStore a
+liststore_replaceComponent entId a (ListStore xs) = ListStore $ replaceComponent' xs where
   replaceComponent' [] = [ Tagged entId a ]
   replaceComponent' cs@(c@(Tagged entId' _) : restc) =
     case compare entId entId' of
@@ -37,8 +37,8 @@ replaceComponent entId a (ListStore xs) = ListStore $ replaceComponent' xs where
       EQ -> (Tagged entId a) : restc
       GT -> c : replaceComponent' restc
 
-apply2 :: forall a b . ((a, b) -> (a, b)) -> ListStore a -> ListStore b -> (ListStore a, ListStore b)
-apply2 f (ListStore as) (ListStore bs) = let (as', bs') = apply2' as bs in (ListStore as', ListStore bs') where
+liststore_apply2 :: forall a b . ((a, b) -> (a, b)) -> ListStore a -> ListStore b -> (ListStore a, ListStore b)
+liststore_apply2 f (ListStore as) (ListStore bs) = let (as', bs') = apply2' as bs in (ListStore as', ListStore bs') where
   apply2' :: [ Tagged a ] -> [ Tagged b] -> ([ Tagged a ], [ Tagged b ])
   apply2' [] bs = ([], bs)
   apply2' as [] = (as, [])

@@ -5,7 +5,7 @@ type EntityId = Integer
 data Tagged a = Tagged EntityId a
 
 class Store t a where
-  swithId :: EntityId -> t a -> Maybe a
-  sreplaceComponent :: EntityId -> a -> t a -> t a
-  sapply2 :: ((a, b) -> (a, b)) -> t a -> t b -> (t a, t b)
-  semptyStore :: t a
+  withId :: EntityId -> t a -> Maybe a
+  replaceComponent :: EntityId -> a -> t a -> t a
+  apply2 :: ((a, b) -> (a, b)) -> t a -> t b -> (t a, t b)
+  emptyStore :: t a
