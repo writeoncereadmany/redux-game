@@ -34,26 +34,17 @@ instance Monad Entities where
     let (val, components') = runEntities entities components
      in runEntities (f val) components'
 
-getComponent :: Component a => EntityId -> Entities (Maybe a)
-getComponent entityId = Entities $ \components ->
-  let store = storeOf components
-      component = withId entityId store
-   in (component, components)
-
-setComponent :: Component a => a -> EntityId -> Entities ()
-setComponent component entityId = Entities $ \components ->
-  let store = storeOf components
-      store' = replaceComponent entityId component store
-      components' = replaceStore store' components
-   in ((), components')
-
 evaluate :: Entities a -> ComponentStore -> a
 evaluate e c = fst $ runEntities e c
 
 updateState :: Entities a -> ComponentStore -> ComponentStore
 updateState e c = snd $ runEntities e c
 
+getComponent :: Component a => EntityId -> Entities (Maybe a)
+getComponent entId = Entities $ \components -> getComponent' entId components
+
+setComponent :: Component a => a -> EntityId -> Entities ()
+setComponent a entId = Entities $ \components -> ((), setComponent' a entId components)
+
 doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
-doApply2 f = Entities $ \components -> let
-     (as', bs') = apply2 f (storeOf components) (storeOf components)
-  in ((), replaceStore as' $ replaceStore bs' components)
+doApply2 f = Entities $ \components -> ((), doApply2' f components)
