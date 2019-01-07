@@ -6,15 +6,17 @@ module ReduxGame.Entities.Entities
   , evaluate
   , updateState
   , doApply2
+  , listStore
   , ReduxGame.Entities.ListStore.EntityId
   , ReduxGame.Entities.ComponentStore.Component
   , ReduxGame.Entities.ComponentStore.emptyComponents
   ) where
 
+import ReduxGame.Entities.Store
 import ReduxGame.Entities.ListStore
 import ReduxGame.Entities.ComponentStore
 
-data Entities a = Entities { runEntities :: ComponentStore -> (a, ComponentStore)}
+data Entities a = Entities { runEntities :: forall s . Store s => ComponentStore s -> (a, ComponentStore s)}
 
 instance Functor Entities where
   fmap f entities = Entities $ \components ->
@@ -34,17 +36,20 @@ instance Monad Entities where
     let (val, components') = runEntities entities components
      in runEntities (f val) components'
 
-evaluate :: Entities a -> ComponentStore -> a
+evaluate :: Store s => Entities a -> ComponentStore s -> a
 evaluate e c = fst $ runEntities e c
 
-updateState :: Entities a -> ComponentStore -> ComponentStore
+updateState :: Store s => Entities a -> ComponentStore s -> ComponentStore s
 updateState e c = snd $ runEntities e c
 
 getComponent :: Component a => EntityId -> Entities (Maybe a)
-getComponent entId = Entities $ \components -> getComponent' entId components
+getComponent entId = Entities $ \components -> (getComponent' entId components, components)
 
 setComponent :: Component a => a -> EntityId -> Entities ()
 setComponent a entId = Entities $ \components -> ((), setComponent' a entId components)
 
 doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
 doApply2 f = Entities $ \components -> ((), doApply2' f components)
+
+listStore :: ComponentStore ListStore
+listStore = emptyComponents

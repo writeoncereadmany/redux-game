@@ -13,7 +13,7 @@ data ListStore a = ListStore [ Tagged a ]
 
 liststore_emptyStore = ListStore []
 
-instance Store ListStore a where
+instance Store ListStore where
   withId = liststore_withId
   replaceComponent = liststore_replaceComponent
   apply2 = liststore_apply2
