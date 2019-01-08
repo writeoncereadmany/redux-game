@@ -2,6 +2,7 @@
 
 module EntitiesTest (htf_thisModulesTests) where
 
+import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Entities
 import Test.Framework
 
@@ -40,34 +41,33 @@ data Y = Y Int deriving (Eq, Show, Component)
 swap :: (X, Y) -> (X, Y)
 swap (X x, Y y) = (X y, Y x)
 
-setupData :: Entities ()
+setupData :: Entities (EntityId, EntityId, EntityId, EntityId)
 setupData = do
-  setComponent (X 3) 1
-  setComponent (Y 5) 1
-  setComponent (X 2) 2
-  setComponent (Y 4) 3
-  setComponent (X 6) 4
-  setComponent (Y 13) 4
+  a <- create (entity <-+ X 3 <-+ Y 5)
+  b <- create (entity <-+ X 2)
+  c <- create (entity <-+ Y 4)
+  d <- create (entity <-+ X 6 <-+ Y 13)
+  return (a, b, c, d)
 
 test_can_parallel_apply' = do
-  let newState = updateState (do setupData) initialStore
-  assertEqual (Just (X 3)) (evaluate (getComponent 1) newState)
-  assertEqual (Just (Y 5)) (evaluate (getComponent 1) newState)
-  assertEqual (Just (X 2)) (evaluate (getComponent 2) newState)
-  assertEqual (Nothing :: Maybe Y) (evaluate (getComponent 2) newState)
-  assertEqual (Nothing :: Maybe X) (evaluate (getComponent 3) newState)
-  assertEqual (Just (Y 4)) (evaluate (getComponent 3) newState)
-  assertEqual (Just (X 6)) (evaluate (getComponent 4) newState)
-  assertEqual (Just (Y 13)) (evaluate (getComponent 4) newState)
+  let ((a, b, c, d), newState) = runEntities (do setupData) initialStore
+  assertEqual (Just (X 3)) (evaluate (getComponent a) newState)
+  assertEqual (Just (Y 5)) (evaluate (getComponent a) newState)
+  assertEqual (Just (X 2)) (evaluate (getComponent b) newState)
+  assertEqual (Nothing :: Maybe Y) (evaluate (getComponent b) newState)
+  assertEqual (Nothing :: Maybe X) (evaluate (getComponent c) newState)
+  assertEqual (Just (Y 4)) (evaluate (getComponent c) newState)
+  assertEqual (Just (X 6)) (evaluate (getComponent d) newState)
+  assertEqual (Just (Y 13)) (evaluate (getComponent d) newState)
 
 
 test_can_parallel_apply = do
-  let newState = updateState (do { setupData; doApply2 swap; }) initialStore
-  assertEqual (Just (X 5)) (evaluate (getComponent 1) newState)
-  assertEqual (Just (Y 3)) (evaluate (getComponent 1) newState)
-  assertEqual (Just (X 2)) (evaluate (getComponent 2) newState)
-  assertEqual (Nothing :: Maybe Y) (evaluate (getComponent 2) newState)
-  assertEqual (Nothing :: Maybe X) (evaluate (getComponent 3) newState)
-  assertEqual (Just (Y 4)) (evaluate (getComponent 3) newState)
-  assertEqual (Just (X 13)) (evaluate (getComponent 4) newState)
-  assertEqual (Just (Y 6)) (evaluate (getComponent 4) newState)
+  let ((a,b,c,d), newState) = runEntities (do { ids <- setupData; doApply2 swap; return ids }) initialStore
+  assertEqual (Just (X 5)) (evaluate (getComponent a) newState)
+  assertEqual (Just (Y 3)) (evaluate (getComponent a) newState)
+  assertEqual (Just (X 2)) (evaluate (getComponent b) newState)
+  assertEqual (Nothing :: Maybe Y) (evaluate (getComponent b) newState)
+  assertEqual (Nothing :: Maybe X) (evaluate (getComponent c) newState)
+  assertEqual (Just (Y 4)) (evaluate (getComponent c) newState)
+  assertEqual (Just (X 13)) (evaluate (getComponent d) newState)
+  assertEqual (Just (Y 6)) (evaluate (getComponent d) newState)
