@@ -11,3 +11,4 @@ class Typeable t => Store t where
   replaceComponent :: EntityId -> a -> t a -> t a
   apply2 :: ((a, b) -> (a, b)) -> t a -> t b -> (t a, t b)
   emptyStore :: t a
+  delete :: EntityId -> t a -> t a

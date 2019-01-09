@@ -7,6 +7,7 @@ module ReduxGame.Entities.Entities
   , updateState
   , doApply2
   , create
+  , destroy
   , listStore
   , ReduxGame.Entities.ListStore.EntityId
   , ReduxGame.Entities.Component.Component
@@ -53,6 +54,9 @@ setComponent a entId = Entities $ \components -> ((), setComponent' a entId comp
 
 create :: Entity -> Entities EntityId
 create entity = Entities $ \components -> createEntity' entity components
+
+destroy :: EntityId -> Entities ()
+destroy entity = Entities $ \components -> ((), destroyEntity' entity components)
 
 doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
 doApply2 f = Entities $ \components -> ((), doApply2' f components)

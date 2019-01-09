@@ -60,7 +60,6 @@ test_can_parallel_apply' = do
   assertEqual (Just (X 6)) (evaluate (getComponent d) newState)
   assertEqual (Just (Y 13)) (evaluate (getComponent d) newState)
 
-
 test_can_parallel_apply = do
   let ((a,b,c,d), newState) = runEntities (do { ids <- setupData; doApply2 swap; return ids }) initialStore
   assertEqual (Just (X 5)) (evaluate (getComponent a) newState)
@@ -71,3 +70,14 @@ test_can_parallel_apply = do
   assertEqual (Just (Y 4)) (evaluate (getComponent c) newState)
   assertEqual (Just (X 13)) (evaluate (getComponent d) newState)
   assertEqual (Just (Y 6)) (evaluate (getComponent d) newState)
+
+createAndDestroy = do
+  a <- create (entity <-+ X 5)
+  b <- create (entity <-+ Y 3)
+  destroy a
+  return (a, b)
+
+test_can_delete_entities = do
+  let ((a, b), newState) = runEntities createAndDestroy initialStore
+  assertEqual (Just (Y 3)) (evaluate (getComponent b) newState)
+  assertEqual (Nothing :: Maybe X) (evaluate (getComponent a) newState)

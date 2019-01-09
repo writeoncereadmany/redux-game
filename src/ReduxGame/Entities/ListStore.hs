@@ -18,6 +18,7 @@ instance Store ListStore where
   replaceComponent = liststore_replaceComponent
   apply2 = liststore_apply2
   emptyStore = liststore_emptyStore
+  delete = liststore_delete
 
 liststore_withId :: EntityId -> ListStore a -> Maybe a
 liststore_withId entId (ListStore xs) = withId' xs where
@@ -50,3 +51,6 @@ liststore_apply2 f (ListStore as) (ListStore bs) = let (as', bs') = apply2' as b
     EQ -> let (a', b') = f (a, b)
               (as', bs') = apply2' resta restb
            in ((Tagged id_a a'):as', (Tagged id_b b'):bs')
+
+liststore_delete :: EntityId -> ListStore a -> ListStore a
+liststore_delete entId (ListStore as) = ListStore (filter (\(Tagged entId' a) -> entId /= entId') as)

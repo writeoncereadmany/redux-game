@@ -56,3 +56,7 @@ createEntity' (Entity properties) store@(ComponentStore nextId _) =
   let newStore = (foldr (\(Property p) s -> setComponent' p nextId s) store properties)
    in incrementId newStore where
      incrementId (ComponentStore nextId components) = (nextId, ComponentStore (succ nextId) components)
+
+destroyEntity' :: (Store s) => EntityId -> ComponentStore s -> ComponentStore s
+destroyEntity' entId (ComponentStore nextId stores) = ComponentStore nextId (delete' <$> stores) where
+  delete' (DynStore as) = DynStore $ delete entId as
