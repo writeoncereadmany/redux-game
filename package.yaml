@@ -36,6 +36,7 @@ default-extensions:
 - GADTs
 - ScopedTypeVariables
 - MultiParamTypeClasses
+- DataKinds
 
 library:
   source-dirs: src
