@@ -68,7 +68,7 @@ onButton :: Char -> Events () -> Event -> a -> Events a
 onButton expected action (EventKey (Char actual) _ _ _) a = do
   when (expected == actual) action
   return a
-onBuddon _ _ _ a = return a
+onButton _ _ _ a = return a
 
 connect :: Updater a b -> (i -> a -> Events a) -> (i -> b -> Events b)
 connect lens f e = lens %%~ (f e)
