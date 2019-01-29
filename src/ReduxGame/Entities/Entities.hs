@@ -11,7 +11,6 @@ module ReduxGame.Entities.Entities
   , smap
   , Only (Only)
   , sapply
-  , msapply
   , Extractable
   , Updatable
   , ReduxGame.Entities.ListStore.EntityId
