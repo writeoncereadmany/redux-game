@@ -8,7 +8,7 @@ module ReduxGame.Entities.Entities
   , listStore
   , foldStore
   , Only (Only)
-  , sapply
+  , apply
   , Extractable
   , Updatable
   , ReduxGame.Entities.Entity.EntityId
@@ -97,10 +97,10 @@ foldStore :: (Extractable a, Store s)
           -> [ b ]
 foldStore f cs = content <$> foldWithTags f cs
 
-sapply :: (Extractable a, Updatable b)
+apply :: (Extractable a, Updatable b)
        => (a -> b)
        -> Entities ()
-sapply f = Entities $ \cs -> ((), update (fmap f <$> (extract cs)) cs)
+apply f = Entities $ \cs -> ((), update (fmap f <$> (extract cs)) cs)
 
 listStore :: ComponentStore ListStore
 listStore = emptyComponents
