@@ -35,7 +35,7 @@ infixl 1 |$>
       => Redux World
       -> (a -> b -> c)
       -> Redux World
-redux |$> f = redux |-> updateState . apply . f
+redux |$> f = redux |-> apply . f
 
 instance Renderable World where
   render world = Pictures $ foldStore render' world where

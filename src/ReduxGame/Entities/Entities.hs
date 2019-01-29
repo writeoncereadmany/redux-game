@@ -97,10 +97,16 @@ foldStore :: (Extractable a, Store s)
           -> [ b ]
 foldStore f cs = content <$> foldWithTags f cs
 
-apply :: (Extractable a, Updatable b)
+sapply :: (Extractable a, Updatable b)
        => (a -> b)
        -> Entities ()
-apply f = Entities $ \cs -> ((), update (fmap f <$> (extract cs)) cs)
+sapply f = Entities $ \cs -> ((), apply f cs)
+
+apply :: (Extractable a, Updatable b, Store s )
+      => (a -> b)
+      -> ComponentStore s
+      -> ComponentStore s
+apply f cs = update (fmap f <$> (extract cs)) cs
 
 listStore :: ComponentStore ListStore
 listStore = emptyComponents
