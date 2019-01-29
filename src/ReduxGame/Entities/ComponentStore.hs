@@ -8,13 +8,13 @@ import ReduxGame.Entities.Entity
 data DynStore s where
   DynStore :: forall s a . (Store s, Component a) => s a -> DynStore s
 
-fromStore :: (Store s, Component a) => DynStore s -> Maybe (s a)
-fromStore (DynStore b) = cast b
-
 data ComponentStore s = ComponentStore EntityId [ DynStore s ]
 
 emptyComponents :: ComponentStore s
 emptyComponents = ComponentStore 0 []
+
+fromStore :: (Store s, Component a) => DynStore s -> Maybe (s a)
+fromStore (DynStore b) = cast b
 
 storeOf :: (Store s, Component a) => ComponentStore s -> s a
 storeOf (ComponentStore _ stores) = storeOf' stores where
