@@ -41,20 +41,9 @@ replaceStore newStore (ComponentStore nextId oldStores) =
 merge :: (Store s, Component a) => [ Tagged a ] -> ComponentStore s -> ComponentStore s
 merge xs cs = replaceStore (mergeComponents xs $ storeOf cs) cs
 
-getComponent' :: (Store s, Component a) => EntityId -> ComponentStore s -> Maybe a
-getComponent' entityId components =
-  let store = storeOf components
-   in withId entityId store
-
-setComponent' :: (Store s, Component a) => a -> EntityId -> ComponentStore s -> ComponentStore s
-setComponent' component entityId components =
-  let store = storeOf components
-      store' = mergeComponents [ Tagged entityId component ] store
-   in replaceStore store' components
-
 createAll :: (Store s) => Entity -> ComponentStore s -> (EntityId, ComponentStore s)
 createAll (Entity properties) store@(ComponentStore nextId _) =
-  let newStore = (foldr (\(Property p) s -> setComponent' p nextId s) store properties)
+  let newStore = (foldr (\(Property p) s -> merge [ Tagged nextId p] s) store properties)
    in incrementId newStore where
      incrementId (ComponentStore nextId components) = (nextId, ComponentStore (succ nextId) components)
 
