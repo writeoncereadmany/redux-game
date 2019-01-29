@@ -9,7 +9,10 @@ module ReduxGame.Entities.Entities
   , create
   , destroy
   , listStore
-  , map3
+  , walk1
+  , walk2
+  , walk3
+  , smap
   , ReduxGame.Entities.ListStore.EntityId
   , ReduxGame.Entities.Component.Component
   , ReduxGame.Entities.ComponentStore.ComponentStore
@@ -62,11 +65,31 @@ create entity = Entities $ \components -> createEntity' entity components
 destroy :: EntityId -> Entities ()
 destroy entity = Entities $ \components -> ((), destroyEntity' entity components)
 
-map3 :: (Component a, Component b, Component c, Store s)
-      => ((a, b, c) -> d)
-      -> ComponentStore s
-      -> [ d ]
-map3 f cs = f <$> content <$> combine3 (storeOf' cs) (storeOf' cs) (storeOf' cs)
+walk1 :: Component a => Entities [ Tagged a ]
+walk1 = Entities $ \cstore -> (storeOf' cstore, cstore)
+
+walk2 :: (Component a, Component b)
+      => Entities [ Tagged (a, b) ]
+walk2 = Entities $ \cs -> (combine2 (storeOf' cs) (storeOf' cs), cs)
+
+walk3 :: (Component a, Component b, Component c)
+      => Entities [ Tagged (a, b, c) ]
+walk3 = Entities $ \cs -> (combine3 (storeOf' cs) (storeOf' cs) (storeOf' cs), cs)
+
+class Extractable a where
+  extract :: forall s . Store s => ComponentStore s -> [ Tagged a ]
+
+instance (Component a, Component b) => Extractable (a, b) where
+  extract store = combine2 (storeOf' store) (storeOf' store)
+
+instance (Component a, Component b, Component c) => Extractable (a, b, c) where
+  extract store = combine3 (storeOf' store) (storeOf' store) (storeOf' store)
+
+smap :: (Extractable a, Store s)
+     => (a -> b)
+     -> ComponentStore s
+     -> [ b ]
+smap f cs = f <$> content <$> extract cs
 
 doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
 doApply2 f = Entities $ \components -> ((), doApply2' f components)

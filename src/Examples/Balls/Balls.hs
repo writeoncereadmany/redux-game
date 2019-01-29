@@ -14,20 +14,24 @@ world :: World
 world = emptyComponents
 
 data Position = Position Float Float deriving Component
+data Velocity = Velocity Float Float deriving Component
 
 instance Component Shape
 instance Component Color
 
 createBall :: Entities ()
 createBall = do
-  create $ entity <-+ Position 0 0 <-+ circle 0 50 <-+ yellow
+  create $ entity <-+ Position 0 0 <-+ Velocity 200 0 <-+ circle 0 50 <-+ yellow
   return ()
 
 initialBalls :: World
 initialBalls = updateState createBall world
 
+integrate :: Float -> (Position, Velocity) -> Position
+integrate t ((Position x y), (Velocity dx dy)) = Position (x + dx * t) (y + dy * t)
+
 instance Renderable World where
-  render world = Pictures $ map3 render' world where
+  render world = Pictures $ smap render' world where
     render' :: (Position, Shape, Color) -> Picture
     render' ((Position x y), s, c) = translate x y $ color c $ render s
 
