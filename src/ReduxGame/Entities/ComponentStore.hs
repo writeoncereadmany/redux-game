@@ -1,4 +1,12 @@
-module ReduxGame.Entities.ComponentStore where
+module ReduxGame.Entities.ComponentStore
+ ( ComponentStore
+ , emptyComponents
+ , storeOf
+ , replaceStore
+ , merge
+ , createAll
+ , destroyAll
+ ) where
 
 import Data.Maybe
 import Data.Typeable
@@ -13,21 +21,8 @@ data ComponentStore s = ComponentStore EntityId [ DynStore s ]
 emptyComponents :: ComponentStore s
 emptyComponents = ComponentStore 0 []
 
-fromStore :: (Store s, Component a) => DynStore s -> Maybe (s a)
-fromStore (DynStore b) = cast b
-
-storeOf :: (Store s, Component a) => ComponentStore s -> s a
-storeOf (ComponentStore _ stores) = storeOf' stores where
-  storeOf' [] = emptyStore
-  storeOf' (x:xs) = case fromStore x of
-    Just a  -> a
-    Nothing -> storeOf' xs
-
-storeOf' :: (Store s, Component a) => ComponentStore s -> [ Tagged a ]
-storeOf' = components . storeOf where
-
-typesMatch :: a -> Maybe a -> Bool
-typesMatch _ x = isJust x
+storeOf :: (Store s, Component a) => ComponentStore s -> [ Tagged a ]
+storeOf = components . storeOf' where
 
 replaceStore :: (Store s, Component a) => s a -> ComponentStore s -> ComponentStore s
 replaceStore newStore (ComponentStore nextId oldStores) =
@@ -39,7 +34,7 @@ replaceStore newStore (ComponentStore nextId oldStores) =
         else oldStore : replaceStore' newStore oldStores
 
 merge :: (Store s, Component a) => [ Tagged a ] -> ComponentStore s -> ComponentStore s
-merge xs cs = replaceStore (mergeComponents xs $ storeOf cs) cs
+merge xs cs = replaceStore (mergeComponents xs $ storeOf' cs) cs
 
 createAll :: (Store s) => Entity -> ComponentStore s -> (EntityId, ComponentStore s)
 createAll (Entity properties) store@(ComponentStore nextId _) =
@@ -50,3 +45,16 @@ createAll (Entity properties) store@(ComponentStore nextId _) =
 destroyAll :: (Store s) => EntityId -> ComponentStore s -> ComponentStore s
 destroyAll entId (ComponentStore nextId stores) = ComponentStore nextId (deleteFrom <$> stores) where
   deleteFrom (DynStore as) = DynStore $ delete entId as
+
+typesMatch :: a -> Maybe a -> Bool
+typesMatch _ x = isJust x
+
+fromStore :: (Store s, Component a) => DynStore s -> Maybe (s a)
+fromStore (DynStore b) = cast b
+
+storeOf' :: (Store s, Component a) => ComponentStore s -> s a
+storeOf' (ComponentStore _ stores) = storeOf'' stores where
+  storeOf'' [] = emptyStore
+  storeOf'' (x:xs) = case fromStore x of
+    Just a  -> a
+    Nothing -> storeOf'' xs
