@@ -30,8 +30,24 @@ initialBalls = updateState createBall world
 integrate :: TimeStep -> (Position, Velocity) -> Only Position
 integrate (TimeStep t) ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)
 
-apply :: (Extractable b, Updatable c) => (a -> b -> c) -> a -> World -> World
-apply f a w = updateState (sapply $ f a) w
+infixl 1 |$>
+(|$>) :: (ReduxEvent a, Extractable b, Updatable c)
+      => Redux World
+      -> (a -> b -> c)
+      -> Redux World
+redux |$> f = redux |-> updateState . sapply . f
+
+-- infixl 1 |*>
+-- (|*>) :: forall a b c . (ReduxEvent a, Extractable b, Updatable c)
+--       => Redux World
+--       -> (a -> b -> Events c)
+--       -> Redux World
+-- redux |*> f = redux |=> foo where
+--   foo :: a -> World -> Events World
+--   foo a w = do
+--     let (action, state) = runEntities (msapply (f a)) w
+--     action
+--     return state
 
 instance Renderable World where
   render world = Pictures $ evaluate (smap render') world where
@@ -40,4 +56,4 @@ instance Renderable World where
 
 ballsRedux :: Redux World
 ballsRedux = redux
-         |-> apply integrate
+         |$> integrate
