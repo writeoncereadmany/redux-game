@@ -9,6 +9,9 @@ data Tagged a = Tagged EntityId a
 instance Functor Tagged where
   fmap f (Tagged entId a) = Tagged entId (f a)
 
+content :: Tagged a -> a
+content (Tagged _ a) = a
+
 class Typeable t => Store t where
   withId :: EntityId -> t a -> Maybe a
   replaceComponent :: EntityId -> a -> t a -> t a

@@ -24,6 +24,9 @@ storeOf (ComponentStore _ stores) = storeOf' stores where
     Just a  -> a
     Nothing -> storeOf' xs
 
+storeOf' :: (Store s, Component a) => ComponentStore s -> [ Tagged a ]
+storeOf' = components . storeOf
+
 typesMatch :: a -> Maybe a -> Bool
 typesMatch _ x = isJust x
 

@@ -9,9 +9,13 @@ module ReduxGame.Entities.Entities
   , create
   , destroy
   , listStore
+  , map3
   , ReduxGame.Entities.ListStore.EntityId
   , ReduxGame.Entities.Component.Component
+  , ReduxGame.Entities.ComponentStore.ComponentStore
+  , ReduxGame.Entities.ListStore.ListStore
   , ReduxGame.Entities.ComponentStore.emptyComponents
+  , ReduxGame.Entities.Store.content
   ) where
 
 import ReduxGame.Entities.Store
@@ -57,6 +61,12 @@ create entity = Entities $ \components -> createEntity' entity components
 
 destroy :: EntityId -> Entities ()
 destroy entity = Entities $ \components -> ((), destroyEntity' entity components)
+
+map3 :: (Component a, Component b, Component c, Store s)
+      => ((a, b, c) -> d)
+      -> ComponentStore s
+      -> [ d ]
+map3 f cs = f <$> content <$> combine3 (storeOf' cs) (storeOf' cs) (storeOf' cs)
 
 doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
 doApply2 f = Entities $ \components -> ((), doApply2' f components)
