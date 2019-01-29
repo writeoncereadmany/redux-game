@@ -28,8 +28,7 @@ type DynEvent = ConstrainedDynamic ReduxEvent
 instance ReduxEvent Event
 data TimeStep = TimeStep Float deriving ReduxEvent
 
-type EventsT m w = WriterT (DList DynEvent) m w
-type Events w = EventsT IO w
+type Events w = WriterT (DList DynEvent) IO w
 type Updater a b = forall l . (Functor l, Applicative l) => LensLike' l b a
 
 type Redux w = DynEvent -> w -> Events w
