@@ -61,10 +61,10 @@ setComponent :: Component a => a -> EntityId -> Entities ()
 setComponent a entId = Entities $ \components -> ((), setComponent' a entId components)
 
 create :: Entity -> Entities EntityId
-create entity = Entities $ \components -> createEntity' entity components
+create entity = Entities $ \components -> createAll entity components
 
 destroy :: EntityId -> Entities ()
-destroy entity = Entities $ \components -> ((), destroyEntity' entity components)
+destroy entity = Entities $ \components -> ((), destroyAll entity components)
 
 class Extractable a where
   extract :: forall s . Store s => ComponentStore s -> [ Tagged a ]
@@ -87,11 +87,11 @@ class Updatable a where
   update :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
 
 instance Component a => Updatable (Only a) where
-  update xs = bulkUpdate (fmap unOnly <$> xs)
+  update xs = merge (fmap unOnly <$> xs)
 
 instance (Component a, Component b) => Updatable (a, b) where
-  update xs = bulkUpdate (fmap fst <$> xs)
-            . bulkUpdate (fmap snd <$> xs)
+  update xs = merge (fmap fst <$> xs)
+            . merge (fmap snd <$> xs)
 
 smap :: Extractable a
      => (a -> b)

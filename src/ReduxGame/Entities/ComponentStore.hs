@@ -24,7 +24,7 @@ storeOf (ComponentStore _ stores) = storeOf' stores where
     Nothing -> storeOf' xs
 
 storeOf' :: (Store s, Component a) => ComponentStore s -> [ Tagged a ]
-storeOf' = components . storeOf
+storeOf' = components . storeOf where
 
 typesMatch :: a -> Maybe a -> Bool
 typesMatch _ x = isJust x
@@ -38,8 +38,8 @@ replaceStore newStore (ComponentStore nextId oldStores) =
         then (DynStore newStore) : oldStores
         else oldStore : replaceStore' newStore oldStores
 
-bulkUpdate :: (Store s, Component a) => [ Tagged a ] -> ComponentStore s -> ComponentStore s
-bulkUpdate xs cs = replaceStore (mergeComponents xs $ storeOf cs) cs
+merge :: (Store s, Component a) => [ Tagged a ] -> ComponentStore s -> ComponentStore s
+merge xs cs = replaceStore (mergeComponents xs $ storeOf cs) cs
 
 getComponent' :: (Store s, Component a) => EntityId -> ComponentStore s -> Maybe a
 getComponent' entityId components =
@@ -52,12 +52,12 @@ setComponent' component entityId components =
       store' = mergeComponents [ Tagged entityId component ] store
    in replaceStore store' components
 
-createEntity' :: (Store s) => Entity -> ComponentStore s -> (EntityId, ComponentStore s)
-createEntity' (Entity properties) store@(ComponentStore nextId _) =
+createAll :: (Store s) => Entity -> ComponentStore s -> (EntityId, ComponentStore s)
+createAll (Entity properties) store@(ComponentStore nextId _) =
   let newStore = (foldr (\(Property p) s -> setComponent' p nextId s) store properties)
    in incrementId newStore where
      incrementId (ComponentStore nextId components) = (nextId, ComponentStore (succ nextId) components)
 
-destroyEntity' :: (Store s) => EntityId -> ComponentStore s -> ComponentStore s
-destroyEntity' entId (ComponentStore nextId stores) = ComponentStore nextId (delete' <$> stores) where
-  delete' (DynStore as) = DynStore $ delete entId as
+destroyAll :: (Store s) => EntityId -> ComponentStore s -> ComponentStore s
+destroyAll entId (ComponentStore nextId stores) = ComponentStore nextId (deleteFrom <$> stores) where
+  deleteFrom (DynStore as) = DynStore $ delete entId as
