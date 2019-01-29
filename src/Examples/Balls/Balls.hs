@@ -37,18 +37,6 @@ infixl 1 |$>
       -> Redux World
 redux |$> f = redux |-> updateState . sapply . f
 
--- infixl 1 |*>
--- (|*>) :: forall a b c . (ReduxEvent a, Extractable b, Updatable c)
---       => Redux World
---       -> (a -> b -> Events c)
---       -> Redux World
--- redux |*> f = redux |=> foo where
---   foo :: a -> World -> Events World
---   foo a w = do
---     let (action, state) = runEntities (msapply (f a)) w
---     action
---     return state
-
 instance Renderable World where
   render world = Pictures $ evaluate (smap render') world where
     render' :: (Position, Shape, Color) -> Picture
