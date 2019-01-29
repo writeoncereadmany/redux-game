@@ -27,11 +27,11 @@ createBall = do
 initialBalls :: World
 initialBalls = updateState createBall world
 
-integrate :: Float -> (Position, Velocity) -> Position
-integrate t ((Position x y), (Velocity dx dy)) = Position (x + dx * t) (y + dy * t)
+integrate :: Float -> (Position, Velocity) -> Only Position
+integrate t ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)
 
 instance Renderable World where
-  render world = Pictures $ smap render' world where
+  render world = Pictures $ evaluate (smap render') world where
     render' :: (Position, Shape, Color) -> Picture
     render' ((Position x y), s, c) = translate x y $ color c $ render s
 

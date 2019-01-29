@@ -21,6 +21,8 @@ module ReduxGame.Entities.Entities
   , ReduxGame.Entities.Store.content
   ) where
 
+import Data.Typeable
+
 import ReduxGame.Entities.Store
 import ReduxGame.Entities.ListStore
 import ReduxGame.Entities.Component
@@ -79,17 +81,39 @@ walk3 = Entities $ \cs -> (combine3 (storeOf' cs) (storeOf' cs) (storeOf' cs), c
 class Extractable a where
   extract :: forall s . Store s => ComponentStore s -> [ Tagged a ]
 
+data Only a = Only a
+
+unOnly :: Only a -> a
+unOnly (Only a) = a
+
+instance Component a => Extractable (Only a) where
+  extract store = fmap Only <$> storeOf' store
+
 instance (Component a, Component b) => Extractable (a, b) where
   extract store = combine2 (storeOf' store) (storeOf' store)
 
 instance (Component a, Component b, Component c) => Extractable (a, b, c) where
   extract store = combine3 (storeOf' store) (storeOf' store) (storeOf' store)
 
-smap :: (Extractable a, Store s)
+class Updatable a where
+  update :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
+
+instance Component a => Updatable (Only a) where
+  update xs cs =
+    let xs' = fmap unOnly <$> xs
+        store = storeOf cs
+        store' = mergeComponents xs' store
+     in replaceStore store' cs
+
+smap :: Extractable a
      => (a -> b)
-     -> ComponentStore s
-     -> [ b ]
-smap f cs = f <$> content <$> extract cs
+     -> Entities [ b ]
+smap f = Entities $ \cs -> (f <$> content <$> extract cs, cs)
+
+sapply :: (Extractable a, Updatable b)
+       => (a -> b)
+       -> Entities ()
+sapply f = Entities $ \cs -> ((), update (fmap f <$> (extract cs)) cs)
 
 doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
 doApply2 f = Entities $ \components -> ((), doApply2' f components)
