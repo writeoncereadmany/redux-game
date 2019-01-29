@@ -13,6 +13,10 @@ module ReduxGame.Entities.Entities
   , walk2
   , walk3
   , smap
+  , Only (Only)
+  , sapply
+  , Extractable
+  , Updatable
   , ReduxGame.Entities.ListStore.EntityId
   , ReduxGame.Entities.Component.Component
   , ReduxGame.Entities.ComponentStore.ComponentStore
@@ -52,7 +56,7 @@ instance Monad Entities where
 evaluate :: Store s => Entities a -> ComponentStore s -> a
 evaluate e c = fst $ runEntities e c
 
-updateState :: Store s => Entities a -> ComponentStore s -> ComponentStore s
+updateState :: Store s => Entities () -> ComponentStore s -> ComponentStore s
 updateState e c = snd $ runEntities e c
 
 getComponent :: Component a => EntityId -> Entities (Maybe a)

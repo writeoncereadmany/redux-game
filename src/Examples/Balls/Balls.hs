@@ -27,8 +27,11 @@ createBall = do
 initialBalls :: World
 initialBalls = updateState createBall world
 
-integrate :: Float -> (Position, Velocity) -> Only Position
-integrate t ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)
+integrate :: TimeStep -> (Position, Velocity) -> Only Position
+integrate (TimeStep t) ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)
+
+apply :: (Extractable b, Updatable c) => (a -> b -> c) -> a -> World -> World
+apply f a w = updateState (sapply $ f a) w
 
 instance Renderable World where
   render world = Pictures $ evaluate (smap render') world where
@@ -37,3 +40,4 @@ instance Renderable World where
 
 ballsRedux :: Redux World
 ballsRedux = redux
+         |-> apply integrate
