@@ -8,6 +8,12 @@ type EntityId = Integer
 
 data Tagged a = Tagged EntityId a
 
+instance Eq a => Eq (Tagged a) where
+  (Tagged id_a a) == (Tagged id_b b) = id_a == id_b && a == b
+
+instance Show a => Show (Tagged a) where
+  show (Tagged id_a a) = show (id_a, a)
+
 data Property = forall c . Component c => Property c
 
 data Entity = Entity [ Property ]

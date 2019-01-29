@@ -1,14 +1,12 @@
 module ReduxGame.Entities.Entities
   ( Entities
   , runEntities
-  , getComponent
-  , setComponent
   , evaluate
   , updateState
   , create
   , destroy
   , listStore
-  , smap
+  , foldStore
   , Only (Only)
   , sapply
   , Extractable
@@ -54,12 +52,6 @@ evaluate e c = fst $ runEntities e c
 updateState :: Store s => Entities () -> ComponentStore s -> ComponentStore s
 updateState e c = snd $ runEntities e c
 
-getComponent :: Component a => EntityId -> Entities (Maybe a)
-getComponent entId = Entities $ \components -> (getComponent' entId components, components)
-
-setComponent :: Component a => a -> EntityId -> Entities ()
-setComponent a entId = Entities $ \components -> ((), setComponent' a entId components)
-
 create :: Entity -> Entities EntityId
 create entity = Entities $ \components -> createAll entity components
 
@@ -93,10 +85,17 @@ instance (Component a, Component b) => Updatable (a, b) where
   update xs = merge (fmap fst <$> xs)
             . merge (fmap snd <$> xs)
 
-smap :: Extractable a
-     => (a -> b)
-     -> Entities [ b ]
-smap f = Entities $ \cs -> (f <$> content <$> extract cs, cs)
+foldWithTags :: (Extractable a, Store s)
+             => (a -> b)
+             -> ComponentStore s
+             -> [ Tagged b ]
+foldWithTags f cs = fmap f <$> extract cs
+
+foldStore :: (Extractable a, Store s)
+          => (a -> b)
+          -> ComponentStore s
+          -> [ b ]
+foldStore f cs = content <$> foldWithTags f cs
 
 sapply :: (Extractable a, Updatable b)
        => (a -> b)

@@ -38,7 +38,7 @@ infixl 1 |$>
 redux |$> f = redux |-> updateState . sapply . f
 
 instance Renderable World where
-  render world = Pictures $ evaluate (smap render') world where
+  render world = Pictures $ foldStore render' world where
     render' :: (Position, Shape, Color) -> Picture
     render' ((Position x y), s, c) = translate x y $ color c $ render s
 
