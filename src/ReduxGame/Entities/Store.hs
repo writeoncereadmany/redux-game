@@ -14,7 +14,6 @@ content (Tagged _ a) = a
 
 class Typeable t => Store t where
   withId :: EntityId -> t a -> Maybe a
-  replaceComponent :: EntityId -> a -> t a -> t a
   mergeComponents :: [ Tagged a ] -> t a -> t a
   components :: t a -> [ Tagged a ]
   emptyStore :: t a

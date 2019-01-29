@@ -50,7 +50,7 @@ getComponent' entityId components =
 setComponent' :: (Store s, Component a) => a -> EntityId -> ComponentStore s -> ComponentStore s
 setComponent' component entityId components =
   let store = storeOf components
-      store' = replaceComponent entityId component store
+      store' = mergeComponents [ Tagged entityId component ] store
    in replaceStore store' components
 
 createEntity' :: (Store s) => Entity -> ComponentStore s -> (EntityId, ComponentStore s)

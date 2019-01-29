@@ -13,7 +13,7 @@ module ReduxGame.Entities.Entities
   , sapply
   , Extractable
   , Updatable
-  , ReduxGame.Entities.ListStore.EntityId
+  , ReduxGame.Entities.Store.EntityId
   , ReduxGame.Entities.Component.Component
   , ReduxGame.Entities.ComponentStore.ComponentStore
   , ReduxGame.Entities.ListStore.ListStore

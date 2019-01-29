@@ -1,10 +1,4 @@
-module ReduxGame.Entities.ListStore
- ( EntityId
- , ListStore
- , emptyStore
- , withId
- , replaceComponent
- ) where
+module ReduxGame.Entities.ListStore (ListStore) where
 
 import ReduxGame.Entities.Store
 
@@ -14,7 +8,6 @@ liststore_emptyStore = ListStore []
 
 instance Store ListStore where
   withId = liststore_withId
-  replaceComponent = liststore_replaceComponent
   components (ListStore a) = a
   mergeComponents = liststore_mergeComponents
   emptyStore = liststore_emptyStore
@@ -28,9 +21,6 @@ liststore_withId entId (ListStore xs) = withId' xs where
       LT -> Nothing
       EQ -> Just a
       GT -> withId' as
-
-liststore_replaceComponent :: EntityId -> a -> ListStore a -> ListStore a
-liststore_replaceComponent entId a = mergeComponents [Tagged entId a]
 
 liststore_mergeComponents :: [ Tagged a ] -> ListStore a -> ListStore a
 liststore_mergeComponents new (ListStore old) = ListStore $ mergeComponents' new old where
