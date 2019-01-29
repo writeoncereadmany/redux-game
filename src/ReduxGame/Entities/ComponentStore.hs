@@ -39,6 +39,9 @@ replaceStore newStore (ComponentStore nextId oldStores) =
         then (DynStore newStore) : oldStores
         else oldStore : replaceStore' newStore oldStores
 
+bulkUpdate :: (Store s, Component a) => [ Tagged a ] -> ComponentStore s -> ComponentStore s
+bulkUpdate xs cs = replaceStore (mergeComponents xs $ storeOf cs) cs
+
 getComponent' :: (Store s, Component a) => EntityId -> ComponentStore s -> Maybe a
 getComponent' entityId components =
   let store = storeOf components

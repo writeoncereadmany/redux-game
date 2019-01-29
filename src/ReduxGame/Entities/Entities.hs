@@ -5,7 +5,6 @@ module ReduxGame.Entities.Entities
   , setComponent
   , evaluate
   , updateState
-  , doApply2
   , create
   , destroy
   , listStore
@@ -103,11 +102,11 @@ class Updatable a where
   update :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
 
 instance Component a => Updatable (Only a) where
-  update xs cs =
-    let xs' = fmap unOnly <$> xs
-        store = storeOf cs
-        store' = mergeComponents xs' store
-     in replaceStore store' cs
+  update xs = bulkUpdate (fmap unOnly <$> xs)
+
+instance (Component a, Component b) => Updatable (a, b) where
+  update xs = bulkUpdate (fmap fst <$> xs)
+            . bulkUpdate (fmap snd <$> xs)
 
 smap :: Extractable a
      => (a -> b)
@@ -118,9 +117,6 @@ sapply :: (Extractable a, Updatable b)
        => (a -> b)
        -> Entities ()
 sapply f = Entities $ \cs -> ((), update (fmap f <$> (extract cs)) cs)
-
-doApply2 :: (Component a, Component b) => ((a, b) -> (a, b)) -> Entities ()
-doApply2 f = Entities $ \components -> ((), doApply2' f components)
 
 listStore :: ComponentStore ListStore
 listStore = emptyComponents
