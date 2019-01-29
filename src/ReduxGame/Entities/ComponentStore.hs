@@ -53,10 +53,6 @@ setComponent' component entityId components =
       store' = replaceComponent entityId component store
    in replaceStore store' components
 
-doApply2' :: (Store s, Component a, Component b) => ((a, b) -> (a, b)) -> ComponentStore s -> ComponentStore s
-doApply2' f components = let (as', bs') = apply2 f (storeOf components) (storeOf components)
-                         in replaceStore as' $ replaceStore bs' components
-
 createEntity' :: (Store s) => Entity -> ComponentStore s -> (EntityId, ComponentStore s)
 createEntity' (Entity properties) store@(ComponentStore nextId _) =
   let newStore = (foldr (\(Property p) s -> setComponent' p nextId s) store properties)
