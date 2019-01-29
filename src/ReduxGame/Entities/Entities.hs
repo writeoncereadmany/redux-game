@@ -13,8 +13,8 @@ module ReduxGame.Entities.Entities
   , sapply
   , Extractable
   , Updatable
-  , ReduxGame.Entities.Store.EntityId
-  , ReduxGame.Entities.Component.Component
+  , ReduxGame.Entities.Entity.EntityId
+  , ReduxGame.Entities.Entity.Component
   , ReduxGame.Entities.ComponentStore.ComponentStore
   , ReduxGame.Entities.ListStore.ListStore
   , ReduxGame.Entities.ComponentStore.emptyComponents
@@ -25,7 +25,6 @@ import Data.Typeable
 
 import ReduxGame.Entities.Store
 import ReduxGame.Entities.ListStore
-import ReduxGame.Entities.Component
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.ComponentStore
 

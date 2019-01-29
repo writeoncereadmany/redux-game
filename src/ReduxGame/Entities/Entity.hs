@@ -1,6 +1,12 @@
 module ReduxGame.Entities.Entity where
 
-import ReduxGame.Entities.Component
+import Data.Typeable
+
+class Typeable a => Component a
+
+type EntityId = Integer
+
+data Tagged a = Tagged EntityId a
 
 data Property = forall c . Component c => Property c
 

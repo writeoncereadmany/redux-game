@@ -3,7 +3,6 @@ module ReduxGame.Entities.ComponentStore where
 import Data.Maybe
 import Data.Typeable
 import ReduxGame.Entities.Store
-import ReduxGame.Entities.Component
 import ReduxGame.Entities.Entity
 
 data DynStore s where

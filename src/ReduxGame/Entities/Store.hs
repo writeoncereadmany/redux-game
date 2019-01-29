@@ -1,10 +1,7 @@
 module ReduxGame.Entities.Store where
 
 import Data.Typeable
-
-type EntityId = Integer
-
-data Tagged a = Tagged EntityId a
+import ReduxGame.Entities.Entity
 
 instance Functor Tagged where
   fmap f (Tagged entId a) = Tagged entId (f a)

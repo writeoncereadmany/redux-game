@@ -1,6 +1,7 @@
 module ReduxGame.Entities.ListStore (ListStore) where
 
 import ReduxGame.Entities.Store
+import ReduxGame.Entities.Entity
 
 data ListStore a = ListStore [ Tagged a ]
 
