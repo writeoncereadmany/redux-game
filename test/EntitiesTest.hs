@@ -27,9 +27,10 @@ setupData = do
   return (a, b, c, d)
 
 test_can_parallel_apply = do
-  let ((a,b,c,d), newState) = runEntities (do { ids <- setupData; sapply swap; return ids }) initialStore
-  assertEqual [Tagged a (X 5), Tagged b (X 2), Tagged d (X 13)] (storeOf' newState)
-  assertEqual [Tagged a (Y 3), Tagged c (Y 4), Tagged d (Y 6)] (storeOf' newState)
+  let ((a,b,c,d), newState) = runEntities setupData initialStore
+  let newState' = apply swap newState
+  assertEqual [Tagged a (X 5), Tagged b (X 2), Tagged d (X 13)] (storeOf newState')
+  assertEqual [Tagged a (Y 3), Tagged c (Y 4), Tagged d (Y 6)] (storeOf newState')
 
 createAndDestroy = do
   a <- create (entity <-+ X 5)
@@ -39,4 +40,4 @@ createAndDestroy = do
 
 test_can_delete_entities = do
   let ((a, b), newState) = runEntities createAndDestroy initialStore
-  assertEqual [Tagged b (Y 3)] (storeOf' newState)
+  assertEqual [Tagged b (Y 3)] (storeOf newState)

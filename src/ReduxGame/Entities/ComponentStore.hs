@@ -2,6 +2,7 @@ module ReduxGame.Entities.ComponentStore
  ( ComponentStore
  , emptyComponents
  , storeOf
+ , storeOf'
  , replaceStore
  , merge
  , createAll

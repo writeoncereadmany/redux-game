@@ -30,6 +30,11 @@ initialBalls = updateState createBall world
 integrate :: TimeStep -> (Position, Velocity) -> Only Position
 integrate (TimeStep t) ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)
 
+bounce :: TimeStep -> (Position, Velocity) -> Only Velocity
+bounce _ ((Position x _), v@(Velocity dx dy)) = if abs x > 300
+  then Only $ Velocity (-dx) dy
+  else Only $ Velocity dx dy
+
 infixl 1 |$>
 (|$>) :: (ReduxEvent a, Extractable b, Updatable c)
       => Redux World
@@ -45,3 +50,4 @@ instance Renderable World where
 ballsRedux :: Redux World
 ballsRedux = redux
          |$> integrate
+         |$> bounce
