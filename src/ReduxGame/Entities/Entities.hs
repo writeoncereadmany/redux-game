@@ -59,28 +59,10 @@ create entity = Entities $ \components -> createAll entity components
 destroy :: EntityId -> Entities ()
 destroy entity = Entities $ \components -> ((), destroyAll entity components)
 
-foldWithTags :: (Extractable a, Store s)
-             => (a -> b)
-             -> ComponentStore s
-             -> [ Tagged b ]
-foldWithTags f cs = fmap f <$> extract cs
-
-foldStore :: (Extractable a, Store s)
-          => (a -> b)
-          -> ComponentStore s
-          -> [ b ]
-foldStore f cs = content <$> foldWithTags f cs
-
 sapply :: (Extractable a, Updatable b)
        => (a -> b)
        -> Entities ()
 sapply f = Entities $ \cs -> ((), apply f cs)
-
-apply :: (Extractable a, Updatable b, Store s )
-      => (a -> b)
-      -> ComponentStore s
-      -> ComponentStore s
-apply f cs = update (fmap f <$> (extract cs)) cs
 
 listStore :: ComponentStore ListStore
 listStore = emptyComponents

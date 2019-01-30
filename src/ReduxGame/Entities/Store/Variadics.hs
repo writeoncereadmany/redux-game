@@ -30,3 +30,21 @@ instance Component a => Updatable (Only a) where
 instance (Component a, Component b) => Updatable (a, b) where
   update xs = merge (fmap fst <$> xs)
             . merge (fmap snd <$> xs)
+            
+foldWithTags :: (Extractable a, Store s)
+             => (a -> b)
+             -> ComponentStore s
+             -> [ Tagged b ]
+foldWithTags f cs = fmap f <$> extract cs
+
+foldStore :: (Extractable a, Store s)
+          => (a -> b)
+          -> ComponentStore s
+          -> [ b ]
+foldStore f cs = content <$> foldWithTags f cs
+
+apply :: (Extractable a, Updatable b, Store s )
+      => (a -> b)
+      -> ComponentStore s
+      -> ComponentStore s
+apply f cs = update (fmap f <$> (extract cs)) cs
