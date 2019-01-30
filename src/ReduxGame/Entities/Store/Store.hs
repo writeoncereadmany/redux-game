@@ -1,4 +1,4 @@
-module ReduxGame.Entities.Store where
+module ReduxGame.Entities.Store.Store where
 
 import Data.Typeable
 import ReduxGame.Entities.Entity

@@ -1,0 +1,32 @@
+module ReduxGame.Entities.Store.Variadics where
+
+import ReduxGame.Entities.Entity
+import ReduxGame.Entities.Store.Store
+import ReduxGame.Entities.Store.ComponentStore
+
+data Only a = Only a
+
+unOnly :: Only a -> a
+unOnly (Only a) = a
+
+class Extractable a where
+  extract :: forall s . Store s => ComponentStore s -> [ Tagged a ]
+
+instance Component a => Extractable (Only a) where
+  extract store = fmap Only <$> storeOf store
+
+instance (Component a, Component b) => Extractable (a, b) where
+  extract store = combine2 (storeOf store) (storeOf store)
+
+instance (Component a, Component b, Component c) => Extractable (a, b, c) where
+  extract store = combine3 (storeOf store) (storeOf store) (storeOf store)
+
+class Updatable a where
+  update :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
+
+instance Component a => Updatable (Only a) where
+  update xs = merge (fmap unOnly <$> xs)
+
+instance (Component a, Component b) => Updatable (a, b) where
+  update xs = merge (fmap fst <$> xs)
+            . merge (fmap snd <$> xs)

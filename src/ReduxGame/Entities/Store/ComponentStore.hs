@@ -1,8 +1,7 @@
-module ReduxGame.Entities.ComponentStore
+module ReduxGame.Entities.Store.ComponentStore
  ( ComponentStore
  , emptyComponents
  , storeOf
- , storeOf'
  , replaceStore
  , merge
  , createAll
@@ -11,7 +10,7 @@ module ReduxGame.Entities.ComponentStore
 
 import Data.Maybe
 import Data.Typeable
-import ReduxGame.Entities.Store
+import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Entity
 
 data DynStore s where

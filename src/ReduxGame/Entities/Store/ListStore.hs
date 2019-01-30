@@ -1,17 +1,15 @@
-module ReduxGame.Entities.ListStore (ListStore) where
+module ReduxGame.Entities.Store.ListStore (ListStore) where
 
-import ReduxGame.Entities.Store
+import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Entity
 
 data ListStore a = ListStore [ Tagged a ]
-
-liststore_emptyStore = ListStore []
 
 instance Store ListStore where
   withId = liststore_withId
   components (ListStore a) = a
   mergeComponents = liststore_mergeComponents
-  emptyStore = liststore_emptyStore
+  emptyStore = ListStore []
   delete = liststore_delete
 
 liststore_withId :: EntityId -> ListStore a -> Maybe a

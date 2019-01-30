@@ -4,7 +4,7 @@ module EntitiesTest (htf_thisModulesTests) where
 
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Entities
-import ReduxGame.Entities.ComponentStore
+import ReduxGame.Entities.Store.ComponentStore
 import Test.Framework
 
 instance Component String

@@ -13,18 +13,19 @@ module ReduxGame.Entities.Entities
   , Updatable
   , ReduxGame.Entities.Entity.EntityId
   , ReduxGame.Entities.Entity.Component
-  , ReduxGame.Entities.ComponentStore.ComponentStore
-  , ReduxGame.Entities.ListStore.ListStore
-  , ReduxGame.Entities.ComponentStore.emptyComponents
-  , ReduxGame.Entities.Store.content
+  , ReduxGame.Entities.Store.ComponentStore.ComponentStore
+  , ReduxGame.Entities.Store.ListStore.ListStore
+  , ReduxGame.Entities.Store.ComponentStore.emptyComponents
+  , ReduxGame.Entities.Store.Store.content
   ) where
 
 import Data.Typeable
 
-import ReduxGame.Entities.Store
-import ReduxGame.Entities.ListStore
+import ReduxGame.Entities.Store.Store
+import ReduxGame.Entities.Store.ListStore
 import ReduxGame.Entities.Entity
-import ReduxGame.Entities.ComponentStore
+import ReduxGame.Entities.Store.ComponentStore
+import ReduxGame.Entities.Store.Variadics
 
 data Entities a = Entities { runEntities :: forall s . Store s => ComponentStore s -> (a, ComponentStore s)}
 
@@ -57,33 +58,6 @@ create entity = Entities $ \components -> createAll entity components
 
 destroy :: EntityId -> Entities ()
 destroy entity = Entities $ \components -> ((), destroyAll entity components)
-
-class Extractable a where
-  extract :: forall s . Store s => ComponentStore s -> [ Tagged a ]
-
-data Only a = Only a
-
-unOnly :: Only a -> a
-unOnly (Only a) = a
-
-instance Component a => Extractable (Only a) where
-  extract store = fmap Only <$> storeOf store
-
-instance (Component a, Component b) => Extractable (a, b) where
-  extract store = combine2 (storeOf store) (storeOf store)
-
-instance (Component a, Component b, Component c) => Extractable (a, b, c) where
-  extract store = combine3 (storeOf store) (storeOf store) (storeOf store)
-
-class Updatable a where
-  update :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
-
-instance Component a => Updatable (Only a) where
-  update xs = merge (fmap unOnly <$> xs)
-
-instance (Component a, Component b) => Updatable (a, b) where
-  update xs = merge (fmap fst <$> xs)
-            . merge (fmap snd <$> xs)
 
 foldWithTags :: (Extractable a, Store s)
              => (a -> b)
