@@ -11,8 +11,8 @@ import Graphics.Gloss hiding (circle)
 
 type World = ComponentStore ListStore
 
-world :: World
-world = emptyComponents
+balls :: World
+balls = emptyComponents
 
 data Position = Position Float Float deriving Component
 data Velocity = Velocity Float Float deriving Component

@@ -1,6 +1,7 @@
 module ReduxGame.Timer
   ( elapsed
   , await
+  , schedule
   , timerRedux
   , Timer
   , newTimer
@@ -29,11 +30,16 @@ makeLenses ''Timer
 await :: Float -> Events () -> Events ()
 await delay action = fireEvent (Await delay action)
 
+schedule :: Float -> Events () -> Events ()
+schedule delay action = await delay $ do
+  action
+  schedule delay action
+
 reduceTimer :: Await -> Timer -> Timer
 reduceTimer (Await delay action) timer =
   let newPending = Pending (delay + (timer ^. elapsed)) action
    in pending %~ (newPending :) $ timer
-   
+
 -- if this were a queue, we wouldn't need to iterate over all the events every cycle
 -- however, that iteration is cheap and we don't currently expect many timed events
 -- to be pending at any given time. If that changes, we should consider changing
