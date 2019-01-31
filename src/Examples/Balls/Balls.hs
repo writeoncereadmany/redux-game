@@ -20,13 +20,8 @@ data Velocity = Velocity Float Float deriving Component
 instance Component Shape
 instance Component Color
 
-createBall :: Entities ()
-createBall = do
-  createEntity $ entity <-+ Position 0 0 <-+ Velocity 200 0 <-+ circle 0 50 <-+ yellow
-  return ()
-
-initialBalls :: World
-initialBalls = updateState createBall world
+initialiseBalls :: Events ()
+initialiseBalls = spawn $ entity <-+ Position 0 0 <-+ Velocity 200 0 <-+ circle 0 50 <-+ yellow
 
 integrate :: TimeStep -> (Position, Velocity) -> Only Position
 integrate (TimeStep t) ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)

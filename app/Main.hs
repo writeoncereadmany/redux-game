@@ -11,4 +11,4 @@ main :: IO ()
 main = getArgs >>= run where
   run ["orrery"] = startGame orrery orreryRedux
   run ["screens"] = initialiseGame session sessionRedux initialiseLoadingScreen
-  run ["balls"] = startGame initialBalls ballsRedux
+  run ["balls"] = initialiseGame world ballsRedux initialiseBalls
