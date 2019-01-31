@@ -22,7 +22,7 @@ instance Component Color
 
 createBall :: Entities ()
 createBall = do
-  create $ entity <-+ Position 0 0 <-+ Velocity 200 0 <-+ circle 0 50 <-+ yellow
+  createEntity $ entity <-+ Position 0 0 <-+ Velocity 200 0 <-+ circle 0 50 <-+ yellow
   return ()
 
 initialBalls :: World
@@ -33,7 +33,7 @@ integrate (TimeStep t) ((Position x y), (Velocity dx dy)) = Only $ Position (x +
 
 killOutOfRange :: TimeStep -> Tagged (Only Position) -> Events ()
 killOutOfRange _ (Tagged entId (Only (Position x y))) = if x > 300
-  then fireEntityChange $ destroy entId
+  then destroy entId
   else return ()
 
 instance Renderable World where

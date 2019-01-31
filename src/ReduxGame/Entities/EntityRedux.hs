@@ -4,12 +4,19 @@ import ReduxGame.Redux
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.ComponentStore
 import ReduxGame.Entities.Store.Variadics
+import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Entities
 
 data EntityEvent = EntityEvent (Entities ()) deriving ReduxEvent
 
 fireEntityChange :: Entities () -> Events ()
 fireEntityChange = fireEvent . EntityEvent
+
+spawn :: Entity -> Events ()
+spawn entity = fireEntityChange (do createEntity entity; return ())
+
+destroy :: EntityId -> Events ()
+destroy entId = fireEntityChange (destroyEntity entId)
 
 handleEntityEvent :: Store s => EntityEvent -> ComponentStore s -> ComponentStore s
 handleEntityEvent (EntityEvent action) store = updateState action store

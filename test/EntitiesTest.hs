@@ -20,10 +20,10 @@ swap (X x, Y y) = (X y, Y x)
 
 setupData :: Entities (EntityId, EntityId, EntityId, EntityId)
 setupData = do
-  a <- create (entity <-+ X 3 <-+ Y 5)
-  b <- create (entity <-+ X 2)
-  c <- create (entity <-+ Y 4)
-  d <- create (entity <-+ X 6 <-+ Y 13)
+  a <- createEntity (entity <-+ X 3 <-+ Y 5)
+  b <- createEntity (entity <-+ X 2)
+  c <- createEntity (entity <-+ Y 4)
+  d <- createEntity (entity <-+ X 6 <-+ Y 13)
   return (a, b, c, d)
 
 test_can_parallel_apply = do
@@ -33,9 +33,9 @@ test_can_parallel_apply = do
   assertEqual [Tagged a (Y 3), Tagged c (Y 4), Tagged d (Y 6)] (storeOf newState')
 
 createAndDestroy = do
-  a <- create (entity <-+ X 5)
-  b <- create (entity <-+ Y 3)
-  destroy a
+  a <- createEntity (entity <-+ X 5)
+  b <- createEntity (entity <-+ Y 3)
+  destroyEntity a
   return (a, b)
 
 test_can_delete_entities = do

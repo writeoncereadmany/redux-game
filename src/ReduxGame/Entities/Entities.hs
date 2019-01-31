@@ -3,8 +3,8 @@ module ReduxGame.Entities.Entities
   , runEntities
   , evaluate
   , updateState
-  , create
-  , destroy
+  , createEntity
+  , destroyEntity
   , listStore
   , foldStore
   , Only (Only)
@@ -55,11 +55,11 @@ evaluate e c = fst $ runEntities e c
 updateState :: Store s => Entities () -> ComponentStore s -> ComponentStore s
 updateState e c = snd $ runEntities e c
 
-create :: Entity -> Entities EntityId
-create entity = Entities $ \components -> createAll entity components
+createEntity :: Entity -> Entities EntityId
+createEntity entity = Entities $ \components -> createAll entity components
 
-destroy :: EntityId -> Entities ()
-destroy entity = Entities $ \components -> ((), destroyAll entity components)
+destroyEntity :: EntityId -> Entities ()
+destroyEntity entity = Entities $ \components -> ((), destroyAll entity components)
 
 sapply :: (Extractable a, Updatable b)
        => (a -> b)
