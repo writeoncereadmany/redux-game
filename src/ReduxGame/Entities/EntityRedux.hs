@@ -9,21 +9,30 @@ import ReduxGame.Entities.Entities
 
 data EntityEvent = EntityEvent (Entities ()) deriving ReduxEvent
 
-fireEntityChange :: Entities () -> Events ()
-fireEntityChange = fireEvent . EntityEvent
+data EntityThenEvent = forall a . EntityThenEvent (Entities a) (a -> Events ()) deriving ReduxEvent
 
 spawn :: Entity -> Events ()
-spawn entity = fireEntityChange (do createEntity entity; return ())
+spawn entity = fireEvent $ EntityEvent (do createEntity entity; return ())
+
+spawnThen :: Entity -> (EntityId -> Events()) -> Events ()
+spawnThen entity followup = fireEvent $ EntityThenEvent (createEntity entity) followup
 
 destroy :: EntityId -> Events ()
-destroy entId = fireEntityChange (destroyEntity entId)
+destroy entId = fireEvent $ EntityEvent (destroyEntity entId)
 
 handleEntityEvent :: Store s => EntityEvent -> ComponentStore s -> ComponentStore s
 handleEntityEvent (EntityEvent action) store = updateState action store
 
+handleEntityThenEvent :: Store s => EntityThenEvent -> ComponentStore s -> Events (ComponentStore s)
+handleEntityThenEvent (EntityThenEvent action followup) store = do
+  let (a, store') = runEntities action store
+  followup a
+  return store'
+
 entityRedux :: Store s => Redux (ComponentStore s)
 entityRedux = redux
           |-> handleEntityEvent
+          |=> handleEntityThenEvent
 
 infixl 1 |$>
 (|$>) :: (ReduxEvent a, Extractable b, Updatable c, Store s)

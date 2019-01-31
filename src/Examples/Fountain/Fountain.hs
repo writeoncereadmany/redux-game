@@ -36,10 +36,17 @@ instance Renderable Fountain where
     render' ((Position x y), s, c) = translate x y $ color c $ render s
 
 initialiseFountain :: Events ()
-initialiseFountain = schedule 2 createShiny
+initialiseFountain = schedule 0.5 createShiny
+
+particle :: Entity
+particle = entity
+       <-+ Position 0 0
+       <-+ Velocity 400 0
+       <-+ yellow
+       <-+ circle 0 20
 
 createShiny :: Events ()
-createShiny = spawn $ entity <-+ Position 0 0 <-+ Velocity 400 0 <-+ yellow <-+ circle 0 20
+createShiny = spawnThen particle (await 2 . destroy)
 
 integrate :: TimeStep -> (Position, Velocity) -> Only Position
 integrate (TimeStep t) ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)
