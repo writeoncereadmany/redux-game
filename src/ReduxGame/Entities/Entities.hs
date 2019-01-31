@@ -9,14 +9,15 @@ module ReduxGame.Entities.Entities
   , foldStore
   , Only (Only)
   , apply
+  , applyM
   , Extractable
   , Updatable
-  , ReduxGame.Entities.Entity.EntityId
-  , ReduxGame.Entities.Entity.Component
-  , ReduxGame.Entities.Store.ComponentStore.ComponentStore
-  , ReduxGame.Entities.Store.ListStore.ListStore
-  , ReduxGame.Entities.Store.ComponentStore.emptyComponents
-  , ReduxGame.Entities.Store.Store.content
+  , EntityId
+  , Component
+  , ComponentStore
+  , ListStore
+  , emptyComponents
+  , content
   ) where
 
 import Data.Typeable

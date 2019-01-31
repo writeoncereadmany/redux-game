@@ -49,7 +49,7 @@ apply :: (Extractable a, Updatable b, Store s )
       -> ComponentStore s
 apply f cs = update (fmap f <$> (extract cs)) cs
 
-applyM :: forall a b m s . (Extractable a, Updatable b, Monad m, Store s)
+applyM :: (Extractable a, Updatable b, Monad m, Store s)
        => (a -> m b)
        -> ComponentStore s
        -> m (ComponentStore s)

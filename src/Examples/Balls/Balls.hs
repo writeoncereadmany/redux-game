@@ -2,6 +2,7 @@ module Examples.Balls.Balls where
 
 import ReduxGame.Entities.Entities
 import ReduxGame.Entities.Entity
+import ReduxGame.Entities.EntityRedux
 import ReduxGame.Shape.Shape
 import ReduxGame.Redux
 import ReduxGame.Renderer.Renderable
@@ -34,13 +35,6 @@ bounce :: TimeStep -> (Position, Velocity) -> Only Velocity
 bounce _ ((Position x _), v@(Velocity dx dy)) = if abs x > 300
   then Only $ Velocity (-dx) dy
   else Only $ Velocity dx dy
-
-infixl 1 |$>
-(|$>) :: (ReduxEvent a, Extractable b, Updatable c)
-      => Redux World
-      -> (a -> b -> c)
-      -> Redux World
-redux |$> f = redux |-> apply . f
 
 instance Renderable World where
   render world = Pictures $ foldStore render' world where
