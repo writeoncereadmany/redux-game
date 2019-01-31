@@ -6,6 +6,12 @@ import ReduxGame.Entities.Entity
 instance Functor Tagged where
   fmap f (Tagged entId a) = Tagged entId (f a)
 
+instance Foldable Tagged where
+  foldMap f (Tagged entId a) = f a
+
+instance Traversable Tagged where
+  traverse f (Tagged entId a) = pure (Tagged entId) <*> f a
+
 content :: Tagged a -> a
 content (Tagged _ a) = a
 
