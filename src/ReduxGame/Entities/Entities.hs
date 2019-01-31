@@ -16,6 +16,7 @@ module ReduxGame.Entities.Entities
   , Component
   , ComponentStore
   , ListStore
+  , Tagged (Tagged)
   , emptyComponents
   , content
   ) where

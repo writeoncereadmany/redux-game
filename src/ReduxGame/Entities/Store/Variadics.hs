@@ -12,6 +12,10 @@ unOnly (Only a) = a
 class Extractable a where
   extract :: forall s . Store s => ComponentStore s -> [ Tagged a ]
 
+instance Extractable a => Extractable (Tagged a) where
+  extract store = nestTags <$> extract store where
+    nestTags (Tagged entId a) = Tagged entId (Tagged entId a)
+  
 instance Component a => Extractable (Only a) where
   extract store = fmap Only <$> storeOf store
 
@@ -23,6 +27,9 @@ instance (Component a, Component b, Component c) => Extractable (a, b, c) where
 
 class Updatable a where
   update :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
+
+instance Updatable () where
+  update _ cs = cs
 
 instance Component a => Updatable (Only a) where
   update xs = merge (fmap unOnly <$> xs)

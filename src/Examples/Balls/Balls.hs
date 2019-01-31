@@ -31,10 +31,10 @@ initialBalls = updateState createBall world
 integrate :: TimeStep -> (Position, Velocity) -> Only Position
 integrate (TimeStep t) ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)
 
-bounce :: TimeStep -> (Position, Velocity) -> Only Velocity
-bounce _ ((Position x _), v@(Velocity dx dy)) = if abs x > 300
-  then Only $ Velocity (-dx) dy
-  else Only $ Velocity dx dy
+killOutOfRange :: TimeStep -> Tagged (Only Position) -> Events ()
+killOutOfRange _ (Tagged entId (Only (Position x y))) = if x > 300
+  then fireEntityChange $ destroy entId
+  else return ()
 
 instance Renderable World where
   render world = Pictures $ foldStore render' world where
@@ -42,6 +42,6 @@ instance Renderable World where
     render' ((Position x y), s, c) = translate x y $ color c $ render s
 
 ballsRedux :: Redux World
-ballsRedux = redux
+ballsRedux = entityRedux
          |$> integrate
-         |$> bounce
+         |*> killOutOfRange

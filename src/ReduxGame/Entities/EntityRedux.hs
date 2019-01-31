@@ -8,6 +8,9 @@ import ReduxGame.Entities.Entities
 
 data EntityEvent = EntityEvent (Entities ()) deriving ReduxEvent
 
+fireEntityChange :: Entities () -> Events ()
+fireEntityChange = fireEvent . EntityEvent
+
 handleEntityEvent :: Store s => EntityEvent -> ComponentStore s -> ComponentStore s
 handleEntityEvent (EntityEvent action) store = updateState action store
 
