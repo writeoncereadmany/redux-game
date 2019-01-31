@@ -3,6 +3,14 @@ module ReduxGame.Entities.Store.Store where
 import Data.Typeable
 import ReduxGame.Entities.Entity
 
+data Tagged a = Tagged EntityId a
+
+instance Eq a => Eq (Tagged a) where
+  (Tagged id_a a) == (Tagged id_b b) = id_a == id_b && a == b
+
+instance Show a => Show (Tagged a) where
+  show (Tagged id_a a) = show (id_a, a)
+
 instance Functor Tagged where
   fmap f (Tagged entId a) = Tagged entId (f a)
 
