@@ -16,6 +16,7 @@ type World = ComponentStore ListStore
 
 data Position = Position Float Float deriving Component
 data Velocity = Velocity Float Float deriving Component
+data Acceleration = Acceleration Float Float deriving Component
 
 instance Component Shape
 instance Component Color
@@ -38,18 +39,26 @@ instance Renderable Fountain where
 initialiseFountain :: Events ()
 initialiseFountain = schedule 0.5 createShiny
 
-particle :: Entity
-particle = entity
-       <-+ Position 0 0
-       <-+ Velocity 400 0
-       <-+ yellow
-       <-+ circle 0 20
+particle :: Float -> Entity
+particle x = entity
+         <-+ Position 0 0
+         <-+ Velocity x 1200
+         <-+ Acceleration 0 (-2000)
+         <-+ yellow
+         <-+ circle 0 20
 
 createShiny :: Events ()
-createShiny = spawnThen particle (await 2 . destroy)
+createShiny = do
+  -- x <- liftIO $ getStdRandom $ randomR (-400, 400)
+  spawnThen (particle 400) (await 2 . destroy)
 
-integrate :: TimeStep -> (Position, Velocity) -> Only Position
-integrate (TimeStep t) ((Position x y), (Velocity dx dy)) = Only $ Position (x + dx * t) (y + dy * t)
+integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
+integrate (TimeStep t) ((Position x y), (Velocity dx dy), (Acceleration ddx ddy)) =
+  let dx' = dx + ddx * t
+      dy' = dy + ddy * t
+      x' = x + dx' * t
+      y' = y + dy' * t
+   in (Position x' y', Velocity dx' dy')
 
 worldRedux :: Redux World
 worldRedux = entityRedux
