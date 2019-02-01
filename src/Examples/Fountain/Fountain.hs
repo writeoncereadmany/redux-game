@@ -50,18 +50,19 @@ times n action = do
   replicateM n action
   return ()
 
-particle :: Float -> Entity
-particle x = entity
-         <-+ Position 0 (-600)
-         <-+ Velocity x 2400
-         <-+ Acceleration 0 (-2800)
-         <-+ transBlue
-         <-+ rectangle (-2, -2) (4, 4)
+particle :: Float -> Float -> Entity
+particle x y = entity
+           <-+ Position 0 (-600)
+           <-+ Velocity x (y + 2400)
+           <-+ Acceleration 0 (-2800)
+           <-+ transBlue
+           <-+ rectangle (-5, -5) (10, 10)
 
 createShiny :: Events ()
 createShiny = do
   x <- liftIO $ getStdRandom $ randomR (-400, 400)
-  spawnThen (particle x) (await 2 . destroy)
+  y <- liftIO $ getStdRandom $ randomR (-200, 200)
+  spawnThen (particle x y) (await 2 . destroy)
 
 integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
 integrate (TimeStep t) ((Position x y), (Velocity dx dy), (Acceleration ddx ddy)) =
