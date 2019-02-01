@@ -1,6 +1,9 @@
 module Examples.Fountain.Fountain where
 
 import Control.Lens
+import Control.Monad
+import Control.Monad.Trans
+import System.Random
 
 import ReduxGame.Entities.Entities
 import ReduxGame.Entities.Entity
@@ -28,6 +31,9 @@ data Fountain = Fountain
 
 makeLenses ''Fountain
 
+transBlue :: Color
+transBlue = makeColor 0.3 0.6 1 0.4
+
 fountain :: Fountain
 fountain = Fountain emptyComponents newTimer
 
@@ -37,20 +43,25 @@ instance Renderable Fountain where
     render' ((Position x y), s, c) = translate x y $ color c $ render s
 
 initialiseFountain :: Events ()
-initialiseFountain = schedule 0.5 createShiny
+initialiseFountain = schedule 0.05 (times 30 createShiny)
+
+times :: Monad m => Int -> m () -> m ()
+times n action = do
+  replicateM n action
+  return ()
 
 particle :: Float -> Entity
 particle x = entity
-         <-+ Position 0 0
-         <-+ Velocity x 1200
-         <-+ Acceleration 0 (-2000)
-         <-+ yellow
-         <-+ circle 0 20
+         <-+ Position 0 (-600)
+         <-+ Velocity x 2400
+         <-+ Acceleration 0 (-2800)
+         <-+ transBlue
+         <-+ rectangle (-2, -2) (4, 4)
 
 createShiny :: Events ()
 createShiny = do
-  -- x <- liftIO $ getStdRandom $ randomR (-400, 400)
-  spawnThen (particle 400) (await 2 . destroy)
+  x <- liftIO $ getStdRandom $ randomR (-400, 400)
+  spawnThen (particle x) (await 2 . destroy)
 
 integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
 integrate (TimeStep t) ((Position x y), (Velocity dx dy), (Acceleration ddx ddy)) =
