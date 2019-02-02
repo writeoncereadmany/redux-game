@@ -23,6 +23,12 @@ instance Traversable Tagged where
 content :: Tagged a -> a
 content (Tagged _ a) = a
 
+toPair :: Tagged a -> (EntityId, a)
+toPair (Tagged i a) = (i, a)
+
+fromPair :: (EntityId, a) -> Tagged a
+fromPair (i, a) = Tagged i a
+
 class Typeable t => Store t where
   withId :: EntityId -> t a -> Maybe a
   mergeComponents :: [ Tagged a ] -> t a -> t a

@@ -43,7 +43,7 @@ instance Renderable Fountain where
     render' ((Position x y), s, c) = translate x y $ color c $ render s
 
 initialiseFountain :: Events ()
-initialiseFountain = schedule 0.05 (times 20 createShiny)
+initialiseFountain = schedule 0.05 (times 50 createShiny)
 
 times :: Monad m => Int -> m () -> m ()
 times n action = do
