@@ -15,7 +15,7 @@ import ReduxGame.Renderer.Renderable
 import ReduxGame.Renderer.ShapeRenderer
 import Graphics.Gloss hiding (circle)
 
-type World = ComponentStore ListStore
+type World = ComponentStore MapStore
 
 data Position = Position Float Float deriving Component
 data Velocity = Velocity Float Float deriving Component

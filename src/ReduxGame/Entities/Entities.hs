@@ -16,6 +16,7 @@ module ReduxGame.Entities.Entities
   , Component
   , ComponentStore
   , ListStore
+  , MapStore
   , Tagged (Tagged)
   , emptyComponents
   , content
@@ -25,6 +26,7 @@ import Data.Typeable
 
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.ListStore
+import ReduxGame.Entities.Store.MapStore
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.ComponentStore
 import ReduxGame.Entities.Store.Variadics
