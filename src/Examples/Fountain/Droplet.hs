@@ -19,7 +19,7 @@ instance Component Shape
 instance Component Color
 
 transBlue :: Color
-transBlue = makeColor 0.3 0.6 1 1
+transBlue = makeColor 0.3 0.6 1 0.6
 
 droplet :: Float -> Float -> Entity
 droplet x y = entity
