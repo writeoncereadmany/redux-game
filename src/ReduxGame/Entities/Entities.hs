@@ -63,10 +63,5 @@ createEntity entity = Entities $ \components -> createAll entity components
 destroyEntity :: EntityId -> Entities ()
 destroyEntity entity = Entities $ \components -> ((), destroyAll entity components)
 
-sapply :: (Extractable a, Updatable b)
-       => (a -> b)
-       -> Entities ()
-sapply f = Entities $ \cs -> ((), apply f cs)
-
 listStore :: ComponentStore ListStore
 listStore = emptyComponents
