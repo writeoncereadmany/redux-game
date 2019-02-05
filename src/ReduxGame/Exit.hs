@@ -7,7 +7,6 @@ import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.InputEvents
 import ReduxGame.Redux
-import ReduxGame.Monad
 
 data Exit = Exit deriving ReduxEvent
 
@@ -19,5 +18,5 @@ listenForQuit button event = when (isKeyPress button event) $ fireEvent Exit
 
 exitRedux :: Char -> Redux a
 exitRedux quitButton = redux
-                   |=> doing (listenForQuit quitButton)
-                   |=> doing exit
+                   |!> listenForQuit quitButton
+                   |!> exit

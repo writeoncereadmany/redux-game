@@ -10,6 +10,7 @@ module ReduxGame.Redux
   , redux
   , connect
   , onButton
+  , (|!>)
   , (|=>)
   , (|->)
   , (|::)
@@ -75,6 +76,12 @@ connect lens f e = lens %%~ (f e)
 
 redux :: Redux a
 redux = const return
+
+infixl 1 |!>
+
+(|!>) :: ReduxEvent a => Redux w -> (a -> Events ()) -> Redux w
+(|!>) redux f = redux |=> doing f where
+  doing action a b = do action a; return b
 
 infixl 1 |=>
 
