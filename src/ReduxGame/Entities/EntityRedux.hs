@@ -20,7 +20,8 @@ spawnThen entity followup = fireEvent $ EntityThenEvent (createEntity entity) fo
 destroy :: EntityId -> Events ()
 destroy entId = fireEvent $ EntityEvent (destroyEntity entId)
 
-
+update :: (Extractable a, Persistable b) => EntityId -> (a -> b) -> Events ()
+update entId f = fireEvent $ EntityEvent (updateEntity entId f)
 
 handleEntityEvent :: Store s => EntityEvent -> ComponentStore s -> ComponentStore s
 handleEntityEvent (EntityEvent action) store = updateState action store

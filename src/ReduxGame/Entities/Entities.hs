@@ -5,6 +5,7 @@ module ReduxGame.Entities.Entities
   , updateState
   , createEntity
   , destroyEntity
+  , updateEntity
   , listStore
   , foldStore
   , Only (Only)
