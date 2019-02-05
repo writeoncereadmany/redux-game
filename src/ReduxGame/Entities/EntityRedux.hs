@@ -20,6 +20,8 @@ spawnThen entity followup = fireEvent $ EntityThenEvent (createEntity entity) fo
 destroy :: EntityId -> Events ()
 destroy entId = fireEvent $ EntityEvent (destroyEntity entId)
 
+
+
 handleEntityEvent :: Store s => EntityEvent -> ComponentStore s -> ComponentStore s
 handleEntityEvent (EntityEvent action) store = updateState action store
 
@@ -35,14 +37,14 @@ entityRedux = redux
           |=> handleEntityThenEvent
 
 infixl 1 |$>
-(|$>) :: (ReduxEvent a, Extractable b, Updatable c, Store s)
+(|$>) :: (ReduxEvent a, Extractable b, Persistable c, Store s)
       => Redux (ComponentStore s)
       -> (a -> b -> c)
       -> Redux (ComponentStore s)
 redux |$> f = redux |-> apply . f
 
 infixl 1 |*>
-(|*>) :: (ReduxEvent a, Extractable b, Updatable c, Store s)
+(|*>) :: (ReduxEvent a, Extractable b, Persistable c, Store s)
       => Redux (ComponentStore s)
       -> (a -> b -> Events c)
       -> Redux (ComponentStore s)

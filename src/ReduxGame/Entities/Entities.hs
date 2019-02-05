@@ -11,7 +11,7 @@ module ReduxGame.Entities.Entities
   , apply
   , applyM
   , Extractable
-  , Updatable
+  , Persistable
   , EntityId
   , Component
   , ComponentStore
@@ -63,9 +63,9 @@ createEntity entity = Entities $ \components -> createAll entity components
 destroyEntity :: EntityId -> Entities ()
 destroyEntity entity = Entities $ \components -> ((), destroyAll entity components)
 
-updateEntity :: (Extractable a, Updatable b) => EntityId -> (a -> b) -> Entities ()
+updateEntity :: (Extractable a, Persistable b) => EntityId -> (a -> b) -> Entities ()
 updateEntity entId f = Entities $ \components ->
-  ((), maybe components (flip update components . (: []) . Tagged entId . f) (extractWithId entId components))
+  ((), maybe components (flip persist components . (: []) . Tagged entId . f) (extractWithId entId components))
 
 listStore :: ComponentStore ListStore
 listStore = emptyComponents

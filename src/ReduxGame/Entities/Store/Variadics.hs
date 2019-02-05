@@ -37,17 +37,17 @@ instance (Component a, Component b, Component c) => Extractable (a, b, c) where
     c <- withId entId (storeOf' store)
     return (a, b, c)
 
-class Updatable a where
-  update :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
+class Persistable a where
+  persist :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
 
-instance Updatable () where
-  update _ cs = cs
+instance Persistable () where
+  persist _ cs = cs
 
-instance Component a => Updatable (Only a) where
-  update xs = merge (fmap unOnly <$> xs)
+instance Component a => Persistable (Only a) where
+  persist xs = merge (fmap unOnly <$> xs)
 
-instance (Component a, Component b) => Updatable (a, b) where
-  update xs = merge (fmap fst <$> xs)
+instance (Component a, Component b) => Persistable (a, b) where
+  persist xs = merge (fmap fst <$> xs)
             . merge (fmap snd <$> xs)
 
 foldWithTags :: (Extractable a, Store s)
@@ -62,16 +62,16 @@ foldStore :: (Extractable a, Store s)
           -> [ b ]
 foldStore f cs = content <$> foldWithTags f cs
 
-apply :: (Extractable a, Updatable b, Store s )
+apply :: (Extractable a, Persistable b, Store s )
       => (a -> b)
       -> ComponentStore s
       -> ComponentStore s
-apply f cs = update (fmap f <$> (extract cs)) cs
+apply f cs = persist (fmap f <$> (extract cs)) cs
 
-applyM :: (Extractable a, Updatable b, Monad m, Store s)
+applyM :: (Extractable a, Persistable b, Monad m, Store s)
        => (a -> m b)
        -> ComponentStore s
        -> m (ComponentStore s)
 applyM f cs = do
   bs <- sequence $ (mapM f) <$> (extract cs)
-  return $ update bs cs
+  return $ persist bs cs
