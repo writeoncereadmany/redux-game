@@ -10,7 +10,8 @@ import Test.Framework
 instance Component String
 instance Component Bool
 
-initialStore = listStore
+initialStore :: ComponentStore MapStore
+initialStore = emptyComponents
 
 data X = X Int deriving (Eq, Show, Component)
 data Y = Y Int deriving (Eq, Show, Component)

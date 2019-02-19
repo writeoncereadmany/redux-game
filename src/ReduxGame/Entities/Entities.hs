@@ -6,7 +6,6 @@ module ReduxGame.Entities.Entities
   , createEntity
   , destroyEntity
   , updateEntity
-  , listStore
   , foldStore
   , Only (Only)
   , apply
@@ -16,7 +15,6 @@ module ReduxGame.Entities.Entities
   , EntityId
   , Component
   , ComponentStore
-  , ListStore
   , MapStore
   , Tagged (Tagged)
   , emptyComponents
@@ -26,7 +24,6 @@ module ReduxGame.Entities.Entities
 import Data.Typeable
 
 import ReduxGame.Entities.Store.Store
-import ReduxGame.Entities.Store.ListStore
 import ReduxGame.Entities.Store.MapStore
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.ComponentStore
@@ -67,6 +64,3 @@ destroyEntity entity = Entities $ \components -> ((), destroyAll entity componen
 updateEntity :: (Extractable a, Persistable b) => EntityId -> (a -> b) -> Entities ()
 updateEntity entId f = Entities $ \components ->
   ((), maybe components (flip persist components . (: []) . Tagged entId . f) (extractWithId entId components))
-
-listStore :: ComponentStore ListStore
-listStore = emptyComponents

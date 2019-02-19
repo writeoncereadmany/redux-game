@@ -9,7 +9,7 @@ import ReduxGame.Renderer.Renderable
 import ReduxGame.Renderer.ShapeRenderer
 import Graphics.Gloss hiding (circle)
 
-type World = ComponentStore ListStore
+type World = ComponentStore MapStore
 
 balls :: World
 balls = emptyComponents
