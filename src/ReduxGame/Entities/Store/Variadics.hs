@@ -37,6 +37,15 @@ instance (Component a, Component b, Component c) => Extractable (a, b, c) where
     c <- withId entId (storeOf' store)
     return (a, b, c)
 
+instance (Component a, Component b, Component c, Component d) => Extractable (a, b, c, d) where
+  extract store = combine4 (storeOf store) (storeOf store) (storeOf store) (storeOf store)
+  extractWithId entId store = do
+    a <- withId entId (storeOf' store)
+    b <- withId entId (storeOf' store)
+    c <- withId entId (storeOf' store)
+    d <- withId entId (storeOf' store)
+    return (a, b, c, d)
+
 class Persistable a where
   persist :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
 
