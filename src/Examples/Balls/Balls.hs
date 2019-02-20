@@ -8,7 +8,11 @@ import ReduxGame.Redux
 import ReduxGame.Renderer.Renderable
 import ReduxGame.Renderer.ShapeRenderer
 import ReduxGame.Components.Components
+import ReduxGame.Collisions.CollisionRedux
 import Graphics.Gloss hiding (circle)
+
+import Examples.Balls.Ball
+import Examples.Balls.Wall
 
 type World = ComponentStore MapStore
 
@@ -16,15 +20,16 @@ balls :: World
 balls = emptyComponents
 
 initialiseBalls :: Events ()
-initialiseBalls = spawn $ entity <-+ Position (0, 0) <-+ Velocity (200, 0) <-+ circle 0 50 <-+ yellow
+initialiseBalls = do
+  spawn $ ball (0, 0) (400, 250)
+  spawn $ wall (-1000, -600) (2000, 50)
+  spawn $ wall (-1000, 550) (2000, 50)
+  spawn $ wall (-1000, -600) (50, 1200)
+  spawn $ wall (950, -600) (50, 1200)
+
 
 integrate :: TimeStep -> (Position, Velocity) -> Only Position
 integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy))) = Only $ Position (x + dx * t, y + dy * t)
-
-killOutOfRange :: TimeStep -> Tagged (Only Position) -> Events ()
-killOutOfRange _ (Tagged entId (Only (Position (x, y)))) = if x > 300
-  then destroy entId
-  else return ()
 
 instance Renderable World where
   render world = Pictures $ foldStore render' world where
@@ -34,4 +39,4 @@ instance Renderable World where
 ballsRedux :: Redux World
 ballsRedux = entityRedux
          |$> integrate
-         |*> killOutOfRange
+         |:: collisionRedux
