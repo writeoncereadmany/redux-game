@@ -21,7 +21,8 @@ balls = emptyComponents
 
 initialiseBalls :: Events ()
 initialiseBalls = do
-  spawn $ ball (0, 0) (400, 800) (0, -1200)
+  spawn $ ball (0, 0) (400, 1200) (0, -2000)
+  spawn $ ball (0, 0) (-800, 600) (0, -2000) <-+ red
   spawn $ wall (-1000, -600) (2000, 50)
   spawn $ wall (-1000, 550) (2000, 50)
   spawn $ wall (-1000, -600) (50, 1200)
