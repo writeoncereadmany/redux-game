@@ -21,15 +21,18 @@ balls = emptyComponents
 
 initialiseBalls :: Events ()
 initialiseBalls = do
-  spawn $ ball (0, 0) (400, 250)
+  spawn $ ball (0, 0) (400, 800) (0, -1200)
   spawn $ wall (-1000, -600) (2000, 50)
   spawn $ wall (-1000, 550) (2000, 50)
   spawn $ wall (-1000, -600) (50, 1200)
   spawn $ wall (950, -600) (50, 1200)
 
 
-integrate :: TimeStep -> (Position, Velocity) -> Only Position
-integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy))) = Only $ Position (x + dx * t, y + dy * t)
+integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
+integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy)), (Acceleration (ddx, ddy))) =
+  let (dx', dy') = (dx + ddx * t, dy + ddy * t)
+      (x', y') = (x + dx' * t, y + dy' * t)
+   in (Position (x', y'), Velocity (dx', dy'))
 
 instance Renderable World where
   render world = Pictures $ foldStore render' world where

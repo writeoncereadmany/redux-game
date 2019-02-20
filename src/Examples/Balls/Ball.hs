@@ -5,10 +5,11 @@ import ReduxGame.Entities.Entity
 import ReduxGame.Components.Components
 import ReduxGame.Shape.Shape
 
-ball :: Vector -> Vector -> Entity
-ball pos vel = entity
-           <-+ Position pos
-           <-+ Velocity vel
-           <-+ circle 0 50
-           <-+ yellow
-           <-+ Moving
+ball :: Vector -> Vector -> Vector -> Entity
+ball pos vel acc = entity
+               <-+ Position pos
+               <-+ Velocity vel
+               <-+ Acceleration acc
+               <-+ circle 0 50
+               <-+ yellow
+               <-+ Moving

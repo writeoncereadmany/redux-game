@@ -57,7 +57,7 @@ instance Component a => Persistable (Only a) where
 
 instance (Component a, Component b) => Persistable (a, b) where
   persist xs = merge (fmap fst <$> xs)
-            . merge (fmap snd <$> xs)
+             . merge (fmap snd <$> xs)
 
 foldWithTags :: (Extractable a, Store s)
              => (a -> b)
