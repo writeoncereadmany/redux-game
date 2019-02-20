@@ -15,3 +15,16 @@ interact f cs = do
   let bs = content <$> extract cs
   sequence [f a b | a <- as, b <- bs]
   return cs
+
+interactOnSelf :: forall a m s . (Extractable a, Monad m, Store s)
+               => (a -> a -> m ())
+               -> ComponentStore s
+               -> m (ComponentStore s)
+interactOnSelf f cs = do
+  let as = content <$> extract cs
+  disjointPairs as
+  return cs where
+    disjointPairs [] = return []
+    disjointPairs (x:xs) = do
+      mapM (f x) xs
+      disjointPairs xs
