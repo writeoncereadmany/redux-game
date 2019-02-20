@@ -8,6 +8,7 @@ import ReduxGame.Entities.Store.ComponentStore
 import ReduxGame.Entities.Store.Variadics
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Entity
+import ReduxGame.Components.Components
 import ReduxGame.Shape.Shape
 import ReduxGame.Redux
 import ReduxGame.Collisions.Collisions
@@ -15,11 +16,6 @@ import ReduxGame.Collisions.Collisions
 
 data Static = Static deriving Component
 data Moving = Moving deriving Component
-
-data Position = Position Vector deriving Component
-data Velocity = Velocity Vector deriving Component
-
-instance Component Shape
 
 data StaticCollision = StaticCollision EntityId EntityId deriving ReduxEvent
 data MovingCollision = MovingCollision EntityId EntityId deriving ReduxEvent
