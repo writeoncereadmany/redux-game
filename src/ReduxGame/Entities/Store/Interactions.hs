@@ -6,21 +6,21 @@ import ReduxGame.Entities.Store.Variadics
 
 class (Extractable a, Persistable a) => Replaceable a
 
-interact :: (Extractable a, Extractable b, Monad m, Store s)
-         => (a -> b -> m ())
-         -> ComponentStore s
-         -> m (ComponentStore s)
-interact f cs = do
+relate :: (Extractable a, Extractable b, Monad m, Store s)
+       => (a -> b -> m ())
+       -> ComponentStore s
+       -> m (ComponentStore s)
+relate f cs = do
   let as = content <$> extract cs
   let bs = content <$> extract cs
   sequence [f a b | a <- as, b <- bs]
   return cs
 
-interactOnSelf :: forall a m s . (Extractable a, Monad m, Store s)
-               => (a -> a -> m ())
-               -> ComponentStore s
-               -> m (ComponentStore s)
-interactOnSelf f cs = do
+selfRelate :: (Extractable a, Monad m, Store s)
+           => (a -> a -> m ())
+           -> ComponentStore s
+           -> m (ComponentStore s)
+selfRelate f cs = do
   let as = content <$> extract cs
   disjointPairs as
   return cs where
