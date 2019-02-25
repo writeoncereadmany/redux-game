@@ -55,7 +55,7 @@ typesMatch _ x = isJust x
 getComponent :: (Component a, Default a, Store s) => EntityId -> ComponentStore s -> a
 getComponent entId cs = withId' entId $ storeOf' cs
 
-maybeGetComponent :: (Component a, Default a, Store s) => EntityId -> ComponentStore s -> Maybe a
+maybeGetComponent :: (Component a, Store s) => EntityId -> ComponentStore s -> Maybe a
 maybeGetComponent entId cs = withId entId $ storeOf' cs
 
 fromStore :: (Store s, Component a) => DynStore s -> Maybe (s a)
