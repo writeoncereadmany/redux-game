@@ -1,8 +1,14 @@
 module ReduxGame.Entities.Entity where
 
 import Data.Typeable
+import Data.Maybe
 
 class Typeable a => Component a
+
+class Default a where
+  defaultValue :: a
+  orDefault :: Maybe a -> a
+  orDefault = fromMaybe defaultValue
 
 type EntityId = Integer
 

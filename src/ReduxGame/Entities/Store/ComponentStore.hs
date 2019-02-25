@@ -7,6 +7,8 @@ module ReduxGame.Entities.Store.ComponentStore
  , merge
  , createAll
  , destroyAll
+ , getComponent
+ , maybeGetComponent
  ) where
 
 import Data.Maybe
@@ -49,6 +51,12 @@ destroyAll entId (ComponentStore nextId stores) = ComponentStore nextId (deleteF
 
 typesMatch :: a -> Maybe a -> Bool
 typesMatch _ x = isJust x
+
+getComponent :: (Component a, Default a, Store s) => EntityId -> ComponentStore s -> a
+getComponent entId cs = withId' entId $ storeOf' cs
+
+maybeGetComponent :: (Component a, Default a, Store s) => EntityId -> ComponentStore s -> Maybe a
+maybeGetComponent entId cs = withId entId $ storeOf' cs
 
 fromStore :: (Store s, Component a) => DynStore s -> Maybe (s a)
 fromStore (DynStore b) = cast b
