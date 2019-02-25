@@ -48,6 +48,8 @@ instance (Component a, Component b, Component c, Component d) => Extractable (a,
 
 class Persistable a where
   persist :: forall s . Store s => [ Tagged a ] -> ComponentStore s -> ComponentStore s
+  persistWithId :: forall s . Store s => EntityId -> a -> ComponentStore s -> ComponentStore s
+  persistWithId entId a = persist [Tagged entId a]
 
 instance Persistable () where
   persist _ cs = cs

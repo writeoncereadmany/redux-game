@@ -1,4 +1,4 @@
-module ReduxGame.Collisions.Collisions where
+module ReduxGame.Collisions.CollisionDetection where
 
 import Graphics.Gloss.Data.Vector
 import Data.Maybe
