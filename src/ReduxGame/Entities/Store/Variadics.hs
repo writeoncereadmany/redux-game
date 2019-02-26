@@ -1,5 +1,7 @@
 module ReduxGame.Entities.Store.Variadics where
 
+import Data.Maybe
+
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.ComponentStore
@@ -87,14 +89,37 @@ applyM f cs = do
   bs <- sequence $ (mapM f) <$> (extract cs)
   return $ persist bs cs
 
-extract_1required_2default :: (Component a, Component b, Default b, Component c, Default c, Store s)
-                           => (a -> b -> c -> d)
-                           -> ComponentStore s
-                           -> [ Tagged d ]
-extract_1required_2default f cs = build <$> storeOf cs where
+extract_2r1d f cs = catMaybes $ build <$> storeOf cs where
+  build (Tagged entId a) = do
+    b <- maybeGetComponent entId cs
+    let c = getComponent entId cs
+    return $ Tagged entId $ f a b c
+
+extractWithId_2r1d f entId cs = do
+  a <- maybeGetComponent entId cs
+  b <- maybeGetComponent entId cs
+  let c = getComponent entId cs
+  return $ f a b c
+
+extract_2r2d f cs = catMaybes $ build <$> storeOf cs where
+  build (Tagged entId a) = do
+    b <- maybeGetComponent entId cs
+    let c = getComponent entId cs
+    let d = getComponent entId cs
+    return $ Tagged entId $ f a b c d
+
+extractWithId_2r2d f entId cs = do
+  a <- maybeGetComponent entId cs
+  b <- maybeGetComponent entId cs
+  let c = getComponent entId cs
+  let d = getComponent entId cs
+  return $ f a b c d
+
+
+extract_1r2d f cs = build <$> storeOf cs where
   build (Tagged entId a) = Tagged entId $ f a (getComponent entId cs) (getComponent entId cs)
 
-extractWithId_1required_2default f entId cs = do
+extractWithId_1r2d f entId cs = do
   a <- maybeGetComponent entId cs
   let b = getComponent entId cs
   let c = getComponent entId cs
