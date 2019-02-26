@@ -34,13 +34,15 @@ instance Persistable AfterCollision where
   persist as = persist $ fmap collisionToTuple <$> as
 
 staticBounce' :: StaticObject -> MovingObject -> AfterCollision
-staticBounce' (StaticObject _ s_shp (Position s_pos)) (MovingObject _ m_shp (Position m_pos) (Velocity m_vel))
+staticBounce' (StaticObject (Static s_el) s_shp (Position s_pos))
+              (MovingObject _ m_shp (Position m_pos) (Velocity m_vel))
   = case (move s_pos s_shp !!> move m_pos m_shp) of
     Nothing -> AfterCollision (Position m_pos) (Velocity m_vel)
     (Just pushout) -> let
-      m_pos'      = mulSV 2 pushout + m_pos
+      elasticity  = 1 + s_el
+      m_pos'      = mulSV elasticity pushout + m_pos
       unit_push   = normalizeV pushout
-      normal_proj = 2 * (m_vel `dotV` unit_push)
+      normal_proj = elasticity * (m_vel `dotV` unit_push)
       m_vel'      = m_vel + (negate $ mulSV normal_proj unit_push)
       in AfterCollision (Position m_pos') (Velocity m_vel')
 

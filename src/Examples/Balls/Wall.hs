@@ -11,4 +11,4 @@ wall bottomLeft topRight = entity
                        <-+ rectangle bottomLeft topRight
                        <-+ Position (0, 0)
                        <-+ white
-                       <-+ Static
+                       <-+ Static 0.8

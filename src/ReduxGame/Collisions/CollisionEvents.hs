@@ -8,7 +8,7 @@ instance Default Elasticity where defaultValue = Elasticity 0
 
 data Mass = Mass Float deriving Component
 
-data Static = Static deriving Component
+data Static = Static Float deriving Component
 data Moving = Moving deriving Component
 
 data StaticCollision = StaticCollision EntityId EntityId deriving ReduxEvent
