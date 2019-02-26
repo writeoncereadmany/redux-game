@@ -86,3 +86,16 @@ applyM :: (Extractable a, Persistable b, Monad m, Store s)
 applyM f cs = do
   bs <- sequence $ (mapM f) <$> (extract cs)
   return $ persist bs cs
+
+extract_1required_2default :: (Component a, Component b, Default b, Component c, Default c, Store s)
+                           => (a -> b -> c -> d)
+                           -> ComponentStore s
+                           -> [ Tagged d ]
+extract_1required_2default f cs = build <$> storeOf cs where
+  build (Tagged entId a) = Tagged entId $ f a (getComponent entId cs) (getComponent entId cs)
+
+extractWithId_1required_2default f entId cs = do
+  a <- maybeGetComponent entId cs
+  let b = getComponent entId cs
+  let c = getComponent entId cs
+  return $ f a b c
