@@ -15,11 +15,6 @@ import ReduxGame.Redux
 import ReduxGame.Collisions.CollisionDetection
 import ReduxGame.Collisions.CollisionEvents
 
-data Elasticity = Elasticity Float deriving Component
-instance Default Elasticity where defaultValue = Elasticity 0
-
-data Mass = Mass Float deriving Component
-
 data StaticObject = StaticObject Shape Elasticity Position
 data MovingObject = MovingObject Shape Elasticity Mass Position Velocity
 
@@ -41,22 +36,22 @@ instance Extractable StaticObject where
     let elasticity = getComponent entId cs
     return $ StaticObject shape position elasticity
 
+-- instance Extractable MovingObject
+
 instance Persistable AfterCollision where
   persist as = persist $ fmap collisionToTuple <$> as
 
-staticBounce' :: (Position, Shape) -> (Position, Velocity, Shape) -> (Position, Velocity)
-staticBounce' ((Position s_pos), s_shp) ((Position m_pos), (Velocity m_vel), m_shp) = case (move s_pos s_shp !!> move m_pos m_shp) of
-  Nothing -> (Position m_pos, Velocity m_vel)
+staticBounce' :: StaticObject -> (Position, Velocity, Shape) -> AfterCollision
+staticBounce' (StaticObject s_shp _ (Position s_pos)) ((Position m_pos), (Velocity m_vel), m_shp) = case (move s_pos s_shp !!> move m_pos m_shp) of
+  Nothing -> AfterCollision (Position m_pos) (Velocity m_vel)
   (Just pushout) -> let
     m_pos'      = mulSV 2 pushout + m_pos
     unit_push   = normalizeV pushout
     normal_proj = 2 * (m_vel `dotV` unit_push)
     m_vel'      = m_vel + (negate $ mulSV normal_proj unit_push)
-    in (Position m_pos', Velocity m_vel')
-
+    in AfterCollision (Position m_pos') (Velocity m_vel')
 
 staticBounce :: Store s => StaticCollision -> ComponentStore s -> Events (ComponentStore s)
 staticBounce (StaticCollision s_id m_id) cs = do
   let new_pos_and_vel = pure staticBounce' <*> extractWithId s_id cs <*> extractWithId m_id cs
-  let update = (\a -> [Tagged m_id a]) <$> new_pos_and_vel
-  return $ maybe cs (flip persist cs) update
+  return $ maybe cs (flip (persistWithId m_id) cs) new_pos_and_vel

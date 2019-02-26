@@ -15,8 +15,5 @@ instance Default Velocity where defaultValue = Velocity (0,0)
 data Acceleration = Acceleration Vector deriving Component
 instance Default Acceleration where defaultValue = Acceleration (0,0)
 
-data Static = Static deriving Component
-data Moving = Moving deriving Component
-
 instance Component Shape
 instance Component Color
