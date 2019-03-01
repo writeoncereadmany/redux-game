@@ -34,3 +34,4 @@ collisionRedux :: Store s => Redux (ComponentStore s)
 collisionRedux = redux
              |=> detectCollisions
              |=> staticBounce
+             |=> movingBounce

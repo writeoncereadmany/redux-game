@@ -50,3 +50,30 @@ staticBounce :: Store s => StaticCollision -> ComponentStore s -> Events (Compon
 staticBounce (StaticCollision s_id m_id) cs = do
   let new_pos_and_vel = pure staticBounce' <*> extractWithId s_id cs <*> extractWithId m_id cs
   return $ maybe cs (flip (persistWithId m_id) cs) new_pos_and_vel
+
+movingBounce' :: MovingObject -> MovingObject -> (AfterCollision, AfterCollision)
+movingBounce' (MovingObject (Moving ae am) as (Position ap) (Velocity av))
+              (MovingObject (Moving be bm) bs (Position bp) (Velocity bv)) =
+  case (move ap as !!> move bp bs) of
+    Nothing -> (AfterCollision (Position ap) (Velocity av), AfterCollision (Position bp) (Velocity bv))
+    (Just pushout) -> let
+      elasticity          = ae * be
+      totalMass           = am + bm
+      a_mass_share        = am / totalMass
+      b_mass_share        = bm / totalMass
+      zero_momentum_frame = mulSV a_mass_share av + mulSV b_mass_share bv
+      rel_av              = av - zero_momentum_frame
+      rel_bv              = bv - zero_momentum_frame
+      pushout_a           = mulSV a_mass_share (negate pushout)
+      pushout_b           = mulSV b_mass_share pushout
+      ap'                 = ap + pushout_a
+      bp'                 = bp + pushout_b
+      unit_push           = normalizeV pushout
+      dav                 = negate $ mulSV (rel_av `dotV` unit_push) unit_push
+      dbv                 = negate $ mulSV (rel_bv `dotV` unit_push) unit_push
+      in (AfterCollision (Position ap') (Velocity (av + dav)), AfterCollision (Position bp') (Velocity (bv + dbv)))
+
+movingBounce :: Store s => MovingCollision -> ComponentStore s -> Events (ComponentStore s)
+movingBounce (MovingCollision a_id b_id) cs = do
+  let new_pos_and_vels = pure movingBounce' <*> extractWithId a_id cs <*> extractWithId b_id cs
+  return $ maybe cs (\(a, b) -> persistWithId a_id a $ persistWithId b_id b $ cs) new_pos_and_vels
