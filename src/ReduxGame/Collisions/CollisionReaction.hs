@@ -35,14 +35,14 @@ instance Persistable AfterCollision where
 
 staticBounce' :: StaticObject -> MovingObject -> AfterCollision
 staticBounce' (StaticObject (Static s_el) s_shp (Position s_pos))
-              (MovingObject _ m_shp (Position m_pos) (Velocity m_vel))
+              (MovingObject (Moving m_el _) m_shp (Position m_pos) (Velocity m_vel))
   = case (move s_pos s_shp !!> move m_pos m_shp) of
     Nothing -> AfterCollision (Position m_pos) (Velocity m_vel)
     (Just pushout) -> let
-      elasticity  = 1 + s_el
-      m_pos'      = mulSV elasticity pushout + m_pos
+      elasticity  = s_el * m_el
+      m_pos'      = mulSV (1 + elasticity) pushout + m_pos
       unit_push   = normalizeV pushout
-      normal_proj = elasticity * (m_vel `dotV` unit_push)
+      normal_proj = (1 + elasticity) * (m_vel `dotV` unit_push)
       m_vel'      = m_vel + (negate $ mulSV normal_proj unit_push)
       in AfterCollision (Position m_pos') (Velocity m_vel')
 
@@ -69,8 +69,8 @@ movingBounce' (MovingObject (Moving ae am) as (Position ap) (Velocity av))
       ap'                 = ap + pushout_a
       bp'                 = bp + pushout_b
       unit_push           = normalizeV pushout
-      dav                 = negate $ mulSV (rel_av `dotV` unit_push) unit_push
-      dbv                 = negate $ mulSV (rel_bv `dotV` unit_push) unit_push
+      dav                 = negate $ mulSV ((1 + elasticity) * (rel_av `dotV` unit_push)) unit_push
+      dbv                 = negate $ mulSV ((1 + elasticity) * (rel_bv `dotV` unit_push)) unit_push
       in (AfterCollision (Position ap') (Velocity (av + dav)), AfterCollision (Position bp') (Velocity (bv + dbv)))
 
 movingBounce :: Store s => MovingCollision -> ComponentStore s -> Events (ComponentStore s)
