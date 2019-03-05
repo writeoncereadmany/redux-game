@@ -28,3 +28,16 @@ selfRelate f cs = do
     disjointPairs (x:xs) = do
       mapM (f x) xs
       disjointPairs xs
+
+selfRelate2 :: (Extractable a, Monad m, Store s)
+            => (a -> a -> m ())
+            -> ([ a ] -> [ (a, a) ])
+            -> ComponentStore s
+            -> m (ComponentStore s)
+selfRelate2 f broadphase cs = do
+  mapM (uncurry f) (broadphase $ content <$> extract cs)
+  return cs
+
+naiveBroadphase :: [Tagged a] -> [(Tagged a, Tagged a)]
+naiveBroadphase as = [(a, b) | a <- as, b <- as, a `lowerEntityId` b ] where
+  lowerEntityId (Tagged id_a _) (Tagged id_b _) = id_a < id_b
