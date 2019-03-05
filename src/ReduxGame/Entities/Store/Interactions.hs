@@ -31,11 +31,11 @@ selfRelate f cs = do
 
 selfRelate2 :: (Extractable a, Monad m, Store s)
             => (a -> a -> m ())
-            -> ([ a ] -> [ (a, a) ])
+            -> ([a] -> [(a, a)])
             -> ComponentStore s
             -> m (ComponentStore s)
 selfRelate2 f broadphase cs = do
-  mapM (uncurry f) (broadphase $ content <$> extract cs)
+  traverse (uncurry f) (broadphase $ content <$> extract cs)
   return cs
 
 naiveBroadphase :: [Tagged a] -> [(Tagged a, Tagged a)]

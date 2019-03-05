@@ -26,9 +26,8 @@ detectMovingCollisions (Tagged a_id (_, (Position a_pos), a_shp)) (Tagged b_id (
   when (move a_pos a_shp !!! move b_pos b_shp) (fireEvent $ MovingCollision a_id b_id)
 
 detectCollisions :: Store s => TimeStep -> ComponentStore s -> Events (ComponentStore s)
-detectCollisions _ cs = return cs
-                    >>= relate detectStaticCollisions
-                    >>= selfRelate2 detectMovingCollisions naiveBroadphase
+detectCollisions _ = relate detectStaticCollisions
+                 >=> selfRelate2 detectMovingCollisions naiveBroadphase
 
 collisionRedux :: Store s => Redux (ComponentStore s)
 collisionRedux = redux

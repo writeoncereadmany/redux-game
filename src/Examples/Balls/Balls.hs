@@ -22,7 +22,7 @@ balls = emptyComponents
 
 initialiseBalls :: Events ()
 initialiseBalls = do
-  sequence $ spawn <$> [ ball (x, y) (400, 1200) (0, -2000) | x <- [-600, -550 .. 600], y <- [-200, -150 .. 200]]
+  sequence $ spawn <$> [ ball (x, y) (400, 1200) (0, -2000) | x <- [-600, -500 .. 600], y <- [-200, -100 .. 200]]
   spawn $ wall (-1100, -700) (2200, 150)
   spawn $ wall (-1100, 550) (2200, 150)
   spawn $ wall (-1100, -600) (150, 1200)
