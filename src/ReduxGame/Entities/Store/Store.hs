@@ -23,6 +23,9 @@ instance Traversable Tagged where
 content :: Tagged a -> a
 content (Tagged _ a) = a
 
+idOf :: Tagged a -> EntityId
+idOf (Tagged entId _) = entId
+
 toPair :: Tagged a -> (EntityId, a)
 toPair (Tagged i a) = (i, a)
 

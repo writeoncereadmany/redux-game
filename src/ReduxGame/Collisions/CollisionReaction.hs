@@ -15,20 +15,9 @@ import ReduxGame.Redux
 import ReduxGame.Collisions.CollisionDetection
 import ReduxGame.Collisions.CollisionEvents
 
-data StaticObject = StaticObject Static Shape Position
-data MovingObject = MovingObject Moving Shape Position Velocity
-
 data AfterCollision = AfterCollision Position Velocity
 
 collisionToTuple (AfterCollision pos vel) = (pos, vel)
-
-instance Extractable StaticObject where
-  extract = extract_2r1d StaticObject
-  extractWithId = extractWithId_2r1d StaticObject
-
-instance Extractable MovingObject where
-  extract = extract_2r2d MovingObject
-  extractWithId = extractWithId_2r2d MovingObject
 
 instance Persistable AfterCollision where
   persist as = persist $ fmap collisionToTuple <$> as

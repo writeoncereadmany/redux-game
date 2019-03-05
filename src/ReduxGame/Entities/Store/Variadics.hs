@@ -1,6 +1,7 @@
 module ReduxGame.Entities.Store.Variadics where
 
 import Data.Maybe
+import Data.List
 
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.Store
@@ -14,6 +15,7 @@ unOnly (Only a) = a
 class Extractable a where
   extract :: forall s . Store s => ComponentStore s -> [ Tagged a ]
   extractWithId :: forall s . Store s => EntityId -> ComponentStore s -> Maybe a
+  extractWithId entId cs = content <$> find ((entId ==) . idOf) (extract cs)
 
 instance Extractable a => Extractable (Tagged a) where
   extract store = nestTags <$> extract store where

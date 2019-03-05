@@ -9,6 +9,5 @@ import ReduxGame.Collisions.CollisionEvents
 wall :: Vector -> Vector -> Entity
 wall bottomLeft topRight = entity
                        <-+ rectangle bottomLeft topRight
-                       <-+ Position (0, 0)
                        <-+ white
                        <-+ Static 0.95

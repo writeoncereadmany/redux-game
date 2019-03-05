@@ -3,6 +3,7 @@ module Examples.Balls.Balls where
 import ReduxGame.Entities.Entities
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.EntityRedux
+import ReduxGame.Entities.Store.Variadics
 import ReduxGame.Shape.Shape
 import ReduxGame.Redux
 import ReduxGame.Renderer.Renderable
@@ -34,10 +35,14 @@ integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy)), (Acceleration (d
       (x', y') = (x + dx' * t, y + dy' * t)
    in (Position (x', y'), Velocity (dx', dy'))
 
+data ShapeRender = ShapeRender Shape Color Position
+instance Extractable ShapeRender where
+  extract = extract_2r1d ShapeRender
+
 instance Renderable World where
   render world = Pictures $ foldStore render' world where
-    render' :: (Position, Shape, Color) -> Picture
-    render' ((Position (x, y)), s, c) = translate x y $ color c $ render s
+    render' :: ShapeRender -> Picture
+    render' (ShapeRender s c (Position (x, y))) = translate x y $ color c $ render s
 
 ballsRedux :: Redux World
 ballsRedux = entityRedux
