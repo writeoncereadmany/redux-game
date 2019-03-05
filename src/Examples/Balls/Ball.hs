@@ -11,6 +11,6 @@ ball pos vel acc = entity
                <-+ Position pos
                <-+ Velocity vel
                <-+ Acceleration acc
-               <-+ circle 0 50
+               <-+ circle 0 20
                <-+ yellow
                <-+ Moving 1 1

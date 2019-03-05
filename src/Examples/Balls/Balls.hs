@@ -22,13 +22,11 @@ balls = emptyComponents
 
 initialiseBalls :: Events ()
 initialiseBalls = do
-  spawn $ ball (0, 0) (400, 1200) (0, -2000)
-  spawn $ ball (-200, 100) (-800, 600) (0, -2000) <-+ red
-  spawn $ wall (-1000, -600) (2000, 50)
-  spawn $ wall (-1000, 550) (2000, 50)
-  spawn $ wall (-1000, -600) (50, 1200)
-  spawn $ wall (950, -600) (50, 1200)
-
+  sequence $ spawn <$> [ ball (x, y) (400, 1200) (0, -2000) | x <- [-600, -500 .. 600], y <- [-200, -100 .. 200]]
+  spawn $ wall (-1100, -700) (2200, 150)
+  spawn $ wall (-1100, 550) (2200, 150)
+  spawn $ wall (-1100, -600) (150, 1200)
+  spawn $ wall (950, -600) (150, 1200)
 
 integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
 integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy)), (Acceleration (ddx, ddy))) =
