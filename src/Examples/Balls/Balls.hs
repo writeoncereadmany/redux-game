@@ -13,6 +13,7 @@ import ReduxGame.Collisions.CollisionEvents
 import ReduxGame.Collisions.CollisionRedux
 import Graphics.Gloss hiding (circle)
 
+import Examples.Balls.Paddle
 import Examples.Balls.Ball
 import Examples.Balls.Wall
 
@@ -28,6 +29,7 @@ initialiseBalls = do
   spawn $ wall (-1100, 550) (2200, 150)
   spawn $ wall (-1100, -600) (150, 1200)
   spawn $ wall (950, -600) (150, 1200)
+  spawn $ paddle (-100, -300) (200, 50)
 
 integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
 integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy)), (Acceleration (ddx, ddy))) =
@@ -48,3 +50,4 @@ ballsRedux :: Redux World
 ballsRedux = entityRedux
          |$> integrate
          |:: collisionRedux
+         |:: paddleRedux

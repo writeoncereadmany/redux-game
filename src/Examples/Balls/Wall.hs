@@ -7,7 +7,7 @@ import ReduxGame.Components.Components
 import ReduxGame.Collisions.CollisionEvents
 
 wall :: Vector -> Vector -> Entity
-wall bottomLeft topRight = entity
-                       <-+ rectangle bottomLeft topRight
-                       <-+ white
-                       <-+ Static 0.95
+wall bottomLeft dimensions = entity
+                         <-+ rectangle bottomLeft dimensions
+                         <-+ white
+                         <-+ Static 0.95
