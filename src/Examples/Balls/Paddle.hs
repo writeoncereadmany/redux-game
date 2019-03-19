@@ -4,10 +4,7 @@ import Graphics.Gloss (Vector, white)
 import Graphics.Gloss.Interface.IO.Game (Event)
 import ReduxGame.Redux
 import ReduxGame.Shape.Shape
-import ReduxGame.Entities.Entities
-import ReduxGame.Entities.Entity
-import ReduxGame.Entities.EntityRedux
-import ReduxGame.Entities.Store.Variadics
+import ReduxGame.Entities
 import ReduxGame.InputEvents
 import ReduxGame.Components.Components
 import ReduxGame.Collisions.CollisionEvents

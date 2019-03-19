@@ -1,9 +1,6 @@
 module Examples.Balls.Balls where
 
-import ReduxGame.Entities.Entities
-import ReduxGame.Entities.Entity
-import ReduxGame.Entities.EntityRedux
-import ReduxGame.Entities.Store.Variadics
+import ReduxGame.Entities
 import ReduxGame.Shape.Shape
 import ReduxGame.Redux
 import ReduxGame.Renderer.Renderable
@@ -17,10 +14,8 @@ import Examples.Balls.Paddle
 import Examples.Balls.Ball
 import Examples.Balls.Wall
 
-type World = ComponentStore MapStore
-
 balls :: World
-balls = emptyComponents
+balls = newWorld
 
 initialiseBalls :: Events ()
 initialiseBalls = do
@@ -38,16 +33,14 @@ integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy)), (Acceleration (d
    in (Position (x', y'), Velocity (dx', dy'))
 
 data ShapeRender = ShapeRender Shape Color Position
-instance Extractable ShapeRender where
-  extract = extract_2r1d ShapeRender
+instance Extractable ShapeRender where extract = extract_2r1d ShapeRender
 
 instance Renderable World where
   render world = Pictures $ foldStore render' world where
-    render' :: ShapeRender -> Picture
     render' (ShapeRender s c (Position (x, y))) = translate x y $ color c $ render s
 
 ballsRedux :: Redux World
-ballsRedux = entityRedux
+ballsRedux = worldRedux
          |$> integrate
          |:: collisionRedux
          |:: paddleRedux

@@ -2,7 +2,7 @@ module Examples.Balls.Wall where
 
 import Graphics.Gloss (Vector, white)
 import ReduxGame.Shape.Shape
-import ReduxGame.Entities.Entity
+import ReduxGame.Entities
 import ReduxGame.Components.Components
 import ReduxGame.Collisions.CollisionEvents
 

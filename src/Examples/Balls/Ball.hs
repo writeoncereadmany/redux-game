@@ -1,7 +1,7 @@
 module Examples.Balls.Ball where
 
 import Graphics.Gloss (Vector, yellow)
-import ReduxGame.Entities.Entity
+import ReduxGame.Entities
 import ReduxGame.Components.Components
 import ReduxGame.Collisions.CollisionEvents
 import ReduxGame.Shape.Shape

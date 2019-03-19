@@ -3,8 +3,7 @@ module Examples.Fountain.Droplet where
 import Control.Monad.Trans
 import System.Random
 
-import ReduxGame.Entities.Entity
-import ReduxGame.Entities.EntityRedux
+import ReduxGame.Entities
 import ReduxGame.Timer
 import ReduxGame.Redux
 import ReduxGame.Shape.Shape

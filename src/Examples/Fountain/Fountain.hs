@@ -3,9 +3,7 @@ module Examples.Fountain.Fountain where
 import Control.Lens
 import Control.Monad
 
-import ReduxGame.Entities.Entities
-import ReduxGame.Entities.Entity
-import ReduxGame.Entities.EntityRedux
+import ReduxGame.Entities
 import ReduxGame.Redux
 import ReduxGame.Timer
 import ReduxGame.Renderer.Renderable
@@ -14,8 +12,6 @@ import Graphics.Gloss
 import ReduxGame.Shape.Shape
 
 import Examples.Fountain.Droplet
-
-type World = ComponentStore MapStore
 
 data Fountain = Fountain
   { _world :: World
@@ -40,11 +36,11 @@ times n action = do
   replicateM n action
   return ()
 
-worldRedux :: Redux World
-worldRedux = entityRedux
-         |$> integrate
+worldRedux' :: Redux World
+worldRedux' = worldRedux
+          |$> integrate
 
 fountainRedux :: Redux Fountain
 fountainRedux = redux
-            |:: connect world worldRedux
+            |:: connect world worldRedux'
             |:: connect timer timerRedux
