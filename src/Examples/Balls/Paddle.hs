@@ -38,7 +38,7 @@ movePaddle (TimeStep t) (Controlled _ _ left right, Speed v)
   | right = Only $ Velocity (v, 0)
   | otherwise = Only $ Velocity (0, 0)
 
-paddleRedux :: Redux (ComponentStore MapStore)
+paddleRedux :: Redux World
 paddleRedux = redux
           |$> listenToMove
           |$> movePaddle

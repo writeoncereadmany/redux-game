@@ -21,7 +21,7 @@ data Fountain = Fountain
 makeLenses ''Fountain
 
 fountain :: Fountain
-fountain = Fountain emptyComponents newTimer
+fountain = Fountain newWorld newTimer
 
 instance Renderable Fountain where
   render fountain = Pictures $ foldStore render' (fountain ^. world) where
