@@ -4,11 +4,8 @@ import Data.Maybe
 
 import Graphics.Gloss.Data.Vector
 
-import ReduxGame.Entities.Entity
-import ReduxGame.Entities.Store.Store
-import ReduxGame.Entities.Store.ComponentStore
+import ReduxGame.Entities
 import ReduxGame.Components.Components
-import ReduxGame.Entities.Store.Variadics
 import ReduxGame.Shape.Shape
 import ReduxGame.Redux
 
@@ -35,7 +32,7 @@ staticBounce' (StaticObject (Static s_el) s_shp (Position s_pos))
       m_vel'      = m_vel + (negate $ mulSV normal_proj unit_push)
       in AfterCollision (Position m_pos') (Velocity m_vel')
 
-staticBounce :: Store s => StaticCollision -> ComponentStore s -> Events (ComponentStore s)
+staticBounce :: StaticCollision -> World -> Events World
 staticBounce (StaticCollision s_id m_id) cs = do
   let new_pos_and_vel = pure staticBounce' <*> extractWithId s_id cs <*> extractWithId m_id cs
   return $ maybe cs (flip (persistWithId m_id) cs) new_pos_and_vel
@@ -62,7 +59,7 @@ movingBounce' (MovingObject (Moving ae am) as (Position ap) (Velocity av))
       dbv                 = negate $ mulSV ((1 + elasticity) * (rel_bv `dotV` unit_push)) unit_push
       in (AfterCollision (Position ap') (Velocity (av + dav)), AfterCollision (Position bp') (Velocity (bv + dbv)))
 
-movingBounce :: Store s => MovingCollision -> ComponentStore s -> Events (ComponentStore s)
+movingBounce :: MovingCollision -> World -> Events World
 movingBounce (MovingCollision a_id b_id) cs = do
   let new_pos_and_vels = pure movingBounce' <*> extractWithId a_id cs <*> extractWithId b_id cs
   return $ maybe cs (\(a, b) -> persistWithId a_id a $ persistWithId b_id b $ cs) new_pos_and_vels

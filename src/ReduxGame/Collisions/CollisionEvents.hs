@@ -1,8 +1,7 @@
 module ReduxGame.Collisions.CollisionEvents where
 
 import ReduxGame.Redux
-import ReduxGame.Entities.Entity
-import ReduxGame.Entities.Store.Variadics
+import ReduxGame.Entities
 import ReduxGame.Components.Components
 import ReduxGame.Shape.Shape
 

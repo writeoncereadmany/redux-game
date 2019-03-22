@@ -1,6 +1,6 @@
 module ReduxGame.Entities
   ( module ReduxGame.Entities.Entity
-  -- , module ReduxGame.Entities.Entities
+  , Tagged (Tagged)
   -- entity redux
   , (|$>)
   , (|*>)
@@ -9,9 +9,13 @@ module ReduxGame.Entities
   , destroy
   -- variadics support
   , Only (Only)
-  , Extractable (extract)
-  , foldStore 
+  , Extractable (extract, extractWithId)
+  , Persistable (persist, persistWithId)
+  , foldStore
   , extract_2r1d
+  , extract_2r2d
+  , extractWithId_2r1d
+  , extractWithId_2r2d
   -- definition of world type
   , World
   , newWorld
