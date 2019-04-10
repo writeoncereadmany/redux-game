@@ -3,19 +3,14 @@ module Examples.Pandamonium.Pandamonium where
 import ReduxGame.Redux
 import ReduxGame.Entities
 
-import Examples.Pandamonium.Entities.Wall
+import Examples.Pandamonium.Stages.Stage1
 
 pandas = newWorld
 
 initialisePandas :: Events ()
 initialisePandas = do
-  spawn $ wall (-1300, -800) (2600, 50)
-  spawn $ wall (-1300, 750) (2600, 50)
-  spawn $ wall (-1300, -800) (50, 1600)
-  spawn $ wall (1250, -800) (50, 1600)
-  spawn $ wall (-900, -300) (500, 50)
-  spawn $ wall (400, -300) (500, 50)
-  spawn $ wall (-250, 100) (500, 50)
+  traverse spawn stage1
+  return ()
 
 
 pandaRedux :: Redux World
