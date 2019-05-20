@@ -22,6 +22,7 @@ gravity = -2400
 data Horizontal = Horizontal
 data Jump = Jump
 data JumpEvent = JumpEvent deriving ReduxEvent
+data GroundedState = Grounded | Airborne deriving Component
 
 panda :: Vector -> Entity
 panda position = entity
@@ -33,6 +34,7 @@ panda position = entity
              <-+ Moving 0 1
              <-+ AxisType Horizontal (axis (button 'z') (button 'x'))
              <-+ ButtonType Jump ((button '.') { onPress = fireEvent JumpEvent })
+             <-+ Airborne
 
 updateAxis :: forall a . a -> Event -> Only (AxisType a) -> Events (Only (AxisType a))
 updateAxis _ event (Only (AxisType a axis)) = Only . AxisType a <$> axisPress event axis
@@ -46,11 +48,23 @@ move (TimeStep dt) (AxisType _ axis, Acceleration (_, ddy))
   | axis ^. onAxis == Neutral = Only $ Acceleration (0, ddy)
   | axis ^. onAxis == Max = Only $ Acceleration (ddx, ddy)
 
-jump :: JumpEvent -> Only Velocity -> Only Velocity
-jump _ (Only (Velocity (x, _))) = Only $ Velocity (x, 2000)
+jump :: JumpEvent -> (GroundedState, Velocity) -> Only Velocity
+jump _ (Grounded, Velocity (x, _)) = Only $ Velocity (x, 2000)
+jump _ (_, v) = Only v
+
+resetGroundedState :: BeforeTimeStep -> (GroundedState, Color) -> (GroundedState, Color)
+resetGroundedState _ _ = (Airborne, cyan)
+
+updateGroundedState :: Pushed -> Tagged (GroundedState, Color) -> (GroundedState, Color)
+updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId (oldState, oldColor)) =
+  if pushedEntId == entId && y > 0
+    then (Grounded, green)
+    else (oldState, oldColor)
 
 pandaRedux :: Redux World
 pandaRedux = redux
+         |$> resetGroundedState
+         |$> updateGroundedState
          |*> updateAxis Horizontal
          |*> updateButton Jump
          |$> jump

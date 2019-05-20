@@ -1,6 +1,7 @@
 module ReduxGame.Redux
   ( Redux
   , ReduxEvent
+  , BeforeTimeStep (BeforeTimeStep)
   , TimeStep (TimeStep)
   , Events
   , fireEvent
