@@ -2,7 +2,8 @@ module Examples.Pandamonium.Pandamonium where
 
 import ReduxGame.Redux
 import ReduxGame.Entities
-
+import ReduxGame.Components.Components
+import ReduxGame.Collisions.CollisionRedux
 import Examples.Pandamonium.Entities.Panda (pandaRedux)
 
 import Examples.Pandamonium.Stages.Stage1
@@ -17,4 +18,6 @@ initialisePandas = do
 
 pandaGameRedux :: Redux World
 pandaGameRedux = worldRedux
+             |$> integrate
+             |:: collisionRedux
              |:: pandaRedux

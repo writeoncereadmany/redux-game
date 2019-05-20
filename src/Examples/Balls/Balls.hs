@@ -26,12 +26,6 @@ initialiseBalls = do
   spawn $ wall (950, -600) (150, 1200)
   spawn $ paddle (-100, -300) (200, 50)
 
-integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
-integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy)), (Acceleration (ddx, ddy))) =
-  let (dx', dy') = (dx + ddx * t, dy + ddy * t)
-      (x', y') = (x + dx' * t, y + dy' * t)
-   in (Position (x', y'), Velocity (dx', dy'))
-
 data ShapeRender = ShapeRender Shape Color Position
 instance Extractable ShapeRender where extract = extract_2r1d ShapeRender
 

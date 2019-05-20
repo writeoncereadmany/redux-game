@@ -24,18 +24,20 @@ panda :: Vector -> Entity
 panda position = entity
              <-+ rectangle (position - (w/2, h/2)) (w, h)
              <-+ Position position
+             <-+ Velocity (0, 0)
+             <-+ Acceleration (0, 0)
              <-+ green
-             <-+ Static 1
+             <-+ Moving 0 1
              <-+ AxisType Horizontal (axis (button 'z') (button 'x'))
 
 updateAxis :: forall a . a -> Event -> Only (AxisType a) -> Events (Only (AxisType a))
 updateAxis _ event (Only (AxisType a axis)) = Only <$> AxisType a <$> axisPress event axis
 
-move :: TimeStep -> (AxisType Horizontal, Position) -> Only Position
-move (TimeStep dt) (AxisType _ axis, Position (x, y))
-  | axis ^. onAxis == Min = Only $ Position (x -dx*dt, y)
-  | axis ^. onAxis == Neutral = Only $ Position (x, y)
-  | axis ^. onAxis == Max = Only $ Position (x + dx*dt, y)
+move :: TimeStep -> Only (AxisType Horizontal) -> Only Velocity
+move (TimeStep dt) (Only (AxisType _ axis))
+  | axis ^. onAxis == Min = Only $ Velocity (-dx, 0)
+  | axis ^. onAxis == Neutral = Only $ Velocity (0, 0)
+  | axis ^. onAxis == Max = Only $ Velocity (dx, 0)
 
 pandaRedux :: Redux World
 pandaRedux = redux
