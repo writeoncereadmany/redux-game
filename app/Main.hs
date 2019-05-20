@@ -1,6 +1,7 @@
 module Main where
 
 import System.Environment
+import System.Exit
 
 import ReduxGame.Game
 import Examples.Orrery.Orrery
@@ -16,3 +17,4 @@ main = getArgs >>= run where
   run ["balls"] = initialiseGame balls ballsRedux initialiseBalls
   run ["fountain"] = initialiseGame fountain fountainRedux initialiseFountain
   run ["panda"] = initialiseGame pandas pandaGameRedux initialisePandas
+  run _ = exitFailure

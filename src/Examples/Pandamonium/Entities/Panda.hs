@@ -16,30 +16,42 @@ import ReduxGame.Controls.Button
 w = 64
 h = 64
 
-dx = 400
+ddx = 1200
+gravity = -2400
 
 data Horizontal = Horizontal
+data Jump = Jump
+data JumpEvent = JumpEvent deriving ReduxEvent
 
 panda :: Vector -> Entity
 panda position = entity
-             <-+ rectangle (position - (w/2, h/2)) (w, h)
+             <-+ rectangle (-w/2, -h/2) (w, h)
              <-+ Position position
              <-+ Velocity (0, 0)
-             <-+ Acceleration (0, 0)
+             <-+ Acceleration (0, gravity)
              <-+ green
              <-+ Moving 0 1
              <-+ AxisType Horizontal (axis (button 'z') (button 'x'))
+             <-+ ButtonType Jump ((button '.') { onPress = fireEvent JumpEvent })
 
 updateAxis :: forall a . a -> Event -> Only (AxisType a) -> Events (Only (AxisType a))
-updateAxis _ event (Only (AxisType a axis)) = Only <$> AxisType a <$> axisPress event axis
+updateAxis _ event (Only (AxisType a axis)) = Only . AxisType a <$> axisPress event axis
 
-move :: TimeStep -> Only (AxisType Horizontal) -> Only Velocity
-move (TimeStep dt) (Only (AxisType _ axis))
-  | axis ^. onAxis == Min = Only $ Velocity (-dx, 0)
-  | axis ^. onAxis == Neutral = Only $ Velocity (0, 0)
-  | axis ^. onAxis == Max = Only $ Velocity (dx, 0)
+updateButton :: forall a . a -> Event -> Only (ButtonType a) -> Events (Only (ButtonType a))
+updateButton _ event (Only (ButtonType a button)) = Only . ButtonType a <$> keyPress event button
+
+move :: TimeStep -> (AxisType Horizontal, Acceleration) -> Only Acceleration
+move (TimeStep dt) (AxisType _ axis, Acceleration (_, ddy))
+  | axis ^. onAxis == Min = Only $ Acceleration (-ddx, ddy)
+  | axis ^. onAxis == Neutral = Only $ Acceleration (0, ddy)
+  | axis ^. onAxis == Max = Only $ Acceleration (ddx, ddy)
+
+jump :: JumpEvent -> Only Velocity -> Only Velocity
+jump _ (Only (Velocity (x, _))) = Only $ Velocity (x, 2000)
 
 pandaRedux :: Redux World
 pandaRedux = redux
          |*> updateAxis Horizontal
+         |*> updateButton Jump
+         |$> jump
          |$> move
