@@ -27,6 +27,7 @@ class (Typeable a) => ReduxEvent a
 type DynEvent = ConstrainedDynamic ReduxEvent
 
 instance ReduxEvent Event
+data BeforeTimeStep = BeforeTimeStep deriving ReduxEvent
 data TimeStep = TimeStep Float deriving ReduxEvent
 
 type Events w = WriterT (DList DynEvent) IO w
@@ -60,7 +61,9 @@ reduxDo r w a = do
   handleRemainingEvents r w events
 
 reduxUpdate :: Redux w -> Float -> w -> IO w
-reduxUpdate f timestep world = reduxDo f world (fireEvent $ TimeStep timestep)
+reduxUpdate f timestep world = reduxDo f world $ do
+  fireEvent BeforeTimeStep
+  fireEvent $ TimeStep timestep
 
 reduxListen :: Redux w -> Event -> w -> IO w
 reduxListen f event world = reduxDo f world (fireEvent event)
