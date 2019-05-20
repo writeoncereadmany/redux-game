@@ -5,8 +5,9 @@ import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
 import ReduxGame.Controls.Button
+import ReduxGame.Entities.Entity
 
-data OnAxis = Min | Neutral | Max
+data OnAxis = Min | Neutral | Max deriving (Eq)
 
 data Axis = Axis
   { _minButton :: Button
@@ -15,6 +16,8 @@ data Axis = Axis
   }
 
 makeLenses ''Axis
+
+data AxisType a = AxisType a Axis deriving Component
 
 axis :: Button -> Button -> Axis
 axis min max = Axis min max Neutral
