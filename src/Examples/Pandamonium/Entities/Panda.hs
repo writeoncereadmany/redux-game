@@ -16,7 +16,7 @@ import ReduxGame.Controls.Button
 w = 64
 h = 64
 
-ddx = 1200
+h_vel = 800
 gravity = -2400
 
 data Horizontal = Horizontal
@@ -42,11 +42,11 @@ updateAxis _ event (Only (AxisType a axis)) = Only . AxisType a <$> axisPress ev
 updateButton :: forall a . a -> Event -> Only (ButtonType a) -> Events (Only (ButtonType a))
 updateButton _ event (Only (ButtonType a button)) = Only . ButtonType a <$> keyPress event button
 
-move :: TimeStep -> (AxisType Horizontal, Acceleration) -> Only Acceleration
-move (TimeStep dt) (AxisType _ axis, Acceleration (_, ddy))
-  | axis ^. onAxis == Min = Only $ Acceleration (-ddx, ddy)
-  | axis ^. onAxis == Neutral = Only $ Acceleration (0, ddy)
-  | axis ^. onAxis == Max = Only $ Acceleration (ddx, ddy)
+move :: TimeStep -> (AxisType Horizontal, Velocity) -> Only Velocity
+move (TimeStep dt) (AxisType _ axis, Velocity (_, dy))
+  | axis ^. onAxis == Min = Only $ Velocity (-h_vel, dy)
+  | axis ^. onAxis == Neutral = Only $ Velocity (0, dy)
+  | axis ^. onAxis == Max = Only $ Velocity (h_vel, dy)
 
 jump :: JumpEvent -> (GroundedState, Velocity) -> Only Velocity
 jump _ (Grounded, Velocity (x, _)) = Only $ Velocity (x, 2000)

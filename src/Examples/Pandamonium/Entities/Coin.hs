@@ -12,4 +12,3 @@ coin position = entity
             <-+ circle 0 30
             <-+ Position position
             <-+ yellow
-            <-+ Static 1
