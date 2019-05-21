@@ -4,3 +4,4 @@ import ReduxGame.Redux
 
 data JumpEvent = JumpEvent deriving ReduxEvent
 data LevelComplete = LevelComplete deriving ReduxEvent
+data GameOver = GameOver deriving ReduxEvent

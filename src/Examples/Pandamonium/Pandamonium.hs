@@ -39,7 +39,7 @@ instance Renderable PandaGame where
     , render (pg ^. world)
     ]
 
-initialPandas = PandaGame newWorld (cycle [stage1, stage2]) 5
+initialPandas = PandaGame newWorld (take 5 $ cycle [stage1, stage2]) 5
 
 countCoins :: World -> Int
 countCoins world = actuallyFold count 0 world where
@@ -56,16 +56,21 @@ countdown (TimeStep t) pg = timeLeft -~ t $ pg
 
 timeout :: BeforeTimeStep -> PandaGame -> Events PandaGame
 timeout _ pg = do
-  when (pg ^. timeLeft < 0) quit
+  when (pg ^. timeLeft < 0) (fireEvent GameOver)
   return pg
 
 nextLevel :: LevelComplete -> PandaGame -> Events PandaGame
 nextLevel _ pg@(PandaGame _ [] _) = do
-  quit
+  fireEvent GameOver
   return pg
 nextLevel _ (PandaGame _ (next:rest) _) = do
   traverse spawn next
   return $ PandaGame newWorld rest 10
+
+exitOnGameOver :: GameOver -> PandaGame -> Events PandaGame
+exitOnGameOver _ pg = do
+  quit
+  return pg
 
 pandaWorldRedux :: Redux World
 pandaWorldRedux = worldRedux
@@ -81,3 +86,4 @@ pandaGameRedux = redux
              |=> nextLevel
              |-> countdown
              |=> timeout
+             |=> exitOnGameOver
