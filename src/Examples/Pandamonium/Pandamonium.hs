@@ -11,12 +11,13 @@ import Examples.Pandamonium.Controllers.Controls
 import Examples.Pandamonium.Controllers.Physics
 
 import Examples.Pandamonium.Stages.Stage1
+import Examples.Pandamonium.Stages.Stage2
 
 pandas = newWorld
 
 initialisePandas :: Events ()
 initialisePandas = do
-  traverse spawn stage1
+  traverse spawn stage2
   return ()
 
 
