@@ -25,13 +25,17 @@ data GroundedState = Grounded | Airborne deriving Component
 hero :: Vector -> Entity
 hero position = entity
             <-+ Hero
-            <-+ FeelsGravity
+
             <-+ rectangle (-w/2, -h/2) (w, h)
+            <-+ green
+
             <-+ Position position
             <-+ Velocity (0, 0)
             <-+ Acceleration (0, gravity)
-            <-+ green
-            <-+ Moving 0 1
+
             <-+ AxisType Horizontal (axis (button 'z') (button 'x'))
             <-+ ButtonType Jump ((button '.') { onPress = fireEvent JumpEvent })
+
+            <-+ Moving 0 1
+            <-+ FeelsGravity
             <-+ Airborne
