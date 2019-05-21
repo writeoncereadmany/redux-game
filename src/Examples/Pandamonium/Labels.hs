@@ -6,6 +6,7 @@ import ReduxGame.Entities
 data Horizontal = Horizontal
 data Jump = Jump
 
--- entity type markers
+-- entity type/aspect markers
 data Coin = Coin deriving Component
 data Hero = Hero deriving Component
+data FeelsGravity = FeelsGravity deriving Component

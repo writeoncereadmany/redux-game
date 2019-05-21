@@ -25,6 +25,7 @@ data GroundedState = Grounded | Airborne deriving Component
 hero :: Vector -> Entity
 hero position = entity
             <-+ Hero
+            <-+ FeelsGravity
             <-+ rectangle (-w/2, -h/2) (w, h)
             <-+ Position position
             <-+ Velocity (0, 0)

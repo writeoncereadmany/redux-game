@@ -8,6 +8,7 @@ import ReduxGame.Collisions
 import Examples.Pandamonium.Controllers.Pickups
 import Examples.Pandamonium.Controllers.HeroMovement
 import Examples.Pandamonium.Controllers.Controls
+import Examples.Pandamonium.Controllers.Physics
 
 import Examples.Pandamonium.Stages.Stage1
 
@@ -21,8 +22,7 @@ initialisePandas = do
 
 pandaGameRedux :: Redux World
 pandaGameRedux = worldRedux
-             |$> integrate
-             |:: collisionRedux
              |:: pickupRedux
              |:: heroRedux
              |:: controlRedux
+             |:: physicsRedux
