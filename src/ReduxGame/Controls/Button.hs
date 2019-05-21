@@ -3,7 +3,7 @@ module ReduxGame.Controls.Button where
 import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
-import ReduxGame.Entities.Entity
+import ReduxGame.Entities
 
 -- no lenses, because of Events () fields: ghc doesn't support impredicative polymorphism
 data Button = Button
@@ -28,3 +28,6 @@ keyPress (EventKey key pressed _ _) button =
      Up   -> do onRelease button
                 return (button { held = False })
 keyPress _ button = return button
+
+updateButton :: forall a . a -> Event -> Only (ButtonType a) -> Events (Only (ButtonType a))
+updateButton _ event (Only (ButtonType a button)) = Only . ButtonType a <$> keyPress event button

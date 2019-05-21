@@ -5,7 +5,7 @@ import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
 import ReduxGame.Controls.Button
-import ReduxGame.Controls.Axis hiding (updateAxis)
+import ReduxGame.Controls.Axis
 import ReduxGame.Collisions
 import ReduxGame.Components
 import ReduxGame.Entities
@@ -13,13 +13,6 @@ import ReduxGame.Entities
 import Examples.Pandamonium.Entities.Hero
 
 h_vel = 800
-
-
-updateAxis :: forall a . a -> Event -> Only (AxisType a) -> Events (Only (AxisType a))
-updateAxis _ event (Only (AxisType a axis)) = Only . AxisType a <$> axisPress event axis
-
-updateButton :: forall a . a -> Event -> Only (ButtonType a) -> Events (Only (ButtonType a))
-updateButton _ event (Only (ButtonType a button)) = Only . ButtonType a <$> keyPress event button
 
 move :: TimeStep -> (AxisType Horizontal, Velocity) -> Only Velocity
 move (TimeStep dt) (AxisType _ axis, Velocity (_, dy))

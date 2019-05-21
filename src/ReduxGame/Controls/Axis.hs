@@ -1,11 +1,19 @@
-module ReduxGame.Controls.Axis where
+module ReduxGame.Controls.Axis
+  ( Axis
+  , axis
+  , onAxis
+  , OnAxis (Min, Neutral, Max)
+  , AxisType (AxisType)
+  , axisPress
+  , updateAxis
+  ) where
 
 import Control.Lens
 import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
 import ReduxGame.Controls.Button
-import ReduxGame.Entities.Entity
+import ReduxGame.Entities
 
 data OnAxis = Min | Neutral | Max deriving (Eq)
 
@@ -22,14 +30,16 @@ data AxisType a = AxisType a Axis deriving Component
 axis :: Button -> Button -> Axis
 axis min max = Axis min max Neutral
 
-updateAxis :: Axis -> Axis
-updateAxis axis = case (held $ axis ^. minButton, held $ axis ^. maxButton) of
-  (True, False) -> onAxis .~ Min     $ axis
-  (False, True) -> onAxis .~ Max     $ axis
-  (_, _)        -> onAxis .~ Neutral $ axis
-
 axisPress :: Event -> Axis -> Events Axis
 axisPress event axis = return axis
                    >>= minButton %%~ keyPress event
                    >>= maxButton %%~ keyPress event
-                   <&> updateAxis
+                   <&> update where
+   update :: Axis -> Axis
+   update axis = case (held $ axis ^. minButton, held $ axis ^. maxButton) of
+     (True, False) -> onAxis .~ Min     $ axis
+     (False, True) -> onAxis .~ Max     $ axis
+     (_, _)        -> onAxis .~ Neutral $ axis
+
+updateAxis :: forall a . a -> Event -> Only (AxisType a) -> Events (Only (AxisType a))
+updateAxis _ event (Only (AxisType a axis)) = Only . AxisType a <$> axisPress event axis
