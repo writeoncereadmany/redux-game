@@ -23,3 +23,8 @@ infixl 1 <-+
 
 (<-+) :: Component c => Entity -> c -> Entity
 (<-+) (Entity props) comp = Entity $ Property comp : props
+
+infixl 1 <++
+
+(<++) :: Entity -> Entity -> Entity
+(<++) (Entity props1) (Entity props2) = Entity $ props1 ++ props2

@@ -1,5 +1,12 @@
 module ReduxGame.Entities
-  ( module ReduxGame.Entities.Entity
+  -- entity definitions
+  ( Component
+  , Property
+  , EntityId
+  , Entity
+  , entity
+  , (<-+)
+  , (<++)
   , Tagged (Tagged)
   -- entity redux combinators
   , (|$>)
