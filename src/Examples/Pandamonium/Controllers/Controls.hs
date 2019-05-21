@@ -4,7 +4,7 @@ import ReduxGame.Redux
 import ReduxGame.Entities
 import ReduxGame.Controls
 
-import Examples.Pandamonium.Entities.Hero
+import Examples.Pandamonium.Labels
 
 controlRedux :: Redux World
 controlRedux = redux

@@ -9,6 +9,8 @@ import ReduxGame.Controls.Axis
 import ReduxGame.Components
 import ReduxGame.Entities
 
+import Examples.Pandamonium.Labels
+import Examples.Pandamonium.Events
 import Examples.Pandamonium.Entities.Hero
 
 h_vel = 800

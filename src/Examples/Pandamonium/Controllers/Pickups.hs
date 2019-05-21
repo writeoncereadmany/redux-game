@@ -4,8 +4,7 @@ import ReduxGame.Redux
 import ReduxGame.Entities
 import ReduxGame.Collisions
 
-import Examples.Pandamonium.Entities.Coin
-import Examples.Pandamonium.Entities.Hero
+import Examples.Pandamonium.Labels
 
 collectCoins :: TimeStep -> World -> Events World
 collectCoins = fireOnCollision Hero Coin destroyCoin where

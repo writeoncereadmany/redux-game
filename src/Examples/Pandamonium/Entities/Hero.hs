@@ -12,18 +12,14 @@ import ReduxGame.Components
 import ReduxGame.Collisions
 import ReduxGame.Controls
 
-import Examples.Pandamonium.Entities.Coin
+import Examples.Pandamonium.Labels
+import Examples.Pandamonium.Events
 
 w = 64
 h = 64
 
 gravity = -2400
 
-data Hero = Hero deriving Component
-
-data Horizontal = Horizontal
-data Jump = Jump
-data JumpEvent = JumpEvent deriving ReduxEvent
 data GroundedState = Grounded | Airborne deriving Component
 
 hero :: Vector -> Entity

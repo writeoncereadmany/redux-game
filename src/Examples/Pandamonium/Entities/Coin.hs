@@ -7,7 +7,7 @@ import ReduxGame.Shape
 import ReduxGame.Components
 import ReduxGame.Collisions
 
-data Coin = Coin deriving Component
+import Examples.Pandamonium.Labels
 
 coin :: Vector -> Entity
 coin position = entity
