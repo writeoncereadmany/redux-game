@@ -5,9 +5,8 @@ import ReduxGame.Shape.Shape
 import ReduxGame.Redux
 import ReduxGame.Renderer.Renderable
 import ReduxGame.Renderer.ShapeRenderer
-import ReduxGame.Components.Components
-import ReduxGame.Collisions.CollisionEvents
-import ReduxGame.Collisions.CollisionRedux
+import ReduxGame.Components
+import ReduxGame.Collisions
 import Graphics.Gloss hiding (circle)
 
 import Examples.Balls.Paddle

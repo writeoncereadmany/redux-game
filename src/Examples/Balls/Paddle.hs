@@ -6,8 +6,8 @@ import ReduxGame.Redux
 import ReduxGame.Shape.Shape
 import ReduxGame.Entities
 import ReduxGame.InputEvents
-import ReduxGame.Components.Components
-import ReduxGame.Collisions.CollisionEvents
+import ReduxGame.Components
+import ReduxGame.Collisions
 
 data Controlled = Controlled Char Char Bool Bool deriving Component
 data Speed = Speed Float deriving Component
