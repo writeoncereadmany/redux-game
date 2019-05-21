@@ -3,6 +3,8 @@ module Examples.Pandamonium.Pandamonium where
 import Control.Lens
 import Control.Monad
 
+import Graphics.Gloss
+
 import ReduxGame.Redux
 import ReduxGame.Timer
 import ReduxGame.Exit
@@ -26,15 +28,18 @@ import Examples.Pandamonium.Stages.Stage2
 data PandaGame = PandaGame
   { _world :: World
   , _stages :: [ [Entity] ]
-  , _timer :: Timer
+  , _timeLeft :: Float
   }
 
 makeLenses ''PandaGame
 
 instance Renderable PandaGame where
-  render pg = render $ pg ^. world
+  render pg = Pictures
+    [ translate 1000 600 $ scale 0.5 0.5 $ color white $ text (show $ ceiling $ pg ^. timeLeft)
+    , render (pg ^. world)
+    ]
 
-initialPandas = PandaGame newWorld (cycle [stage1, stage2]) newTimer
+initialPandas = PandaGame newWorld (cycle [stage1, stage2]) 5
 
 countCoins :: World -> Int
 countCoins world = actuallyFold count 0 world where
@@ -46,13 +51,21 @@ checkForCompletion _ pg = do
   when (countCoins (pg ^. world) == 0) (fireEvent LevelComplete)
   return pg
 
+countdown :: TimeStep -> PandaGame -> PandaGame
+countdown (TimeStep t) pg = timeLeft -~ t $ pg
+
+timeout :: BeforeTimeStep -> PandaGame -> Events PandaGame
+timeout _ pg = do
+  when (pg ^. timeLeft < 0) quit
+  return pg
+
 nextLevel :: LevelComplete -> PandaGame -> Events PandaGame
 nextLevel _ pg@(PandaGame _ [] _) = do
   quit
   return pg
 nextLevel _ (PandaGame _ (next:rest) _) = do
   traverse spawn next
-  return $ PandaGame newWorld rest newTimer
+  return $ PandaGame newWorld rest 10
 
 pandaWorldRedux :: Redux World
 pandaWorldRedux = worldRedux
@@ -66,3 +79,5 @@ pandaGameRedux = redux
              |:: connect world pandaWorldRedux
              |=> checkForCompletion
              |=> nextLevel
+             |-> countdown
+             |=> timeout
