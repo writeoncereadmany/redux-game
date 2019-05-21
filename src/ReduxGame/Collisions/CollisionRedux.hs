@@ -10,7 +10,7 @@ import Graphics.Gloss.Data.Vector
 import ReduxGame.Entities
 import ReduxGame.Entities.Store.Interactions
 import ReduxGame.Components.Components
-import ReduxGame.Shape.Shape
+import ReduxGame.Shape
 import ReduxGame.Redux
 import ReduxGame.Collisions.CollisionEvents
 import ReduxGame.Collisions.CollisionDetection

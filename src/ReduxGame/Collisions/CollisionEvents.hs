@@ -5,7 +5,7 @@ import Graphics.Gloss.Interface.IO.Game
 import ReduxGame.Redux
 import ReduxGame.Entities
 import ReduxGame.Components.Components
-import ReduxGame.Shape.Shape
+import ReduxGame.Shape
 
 data Static = Static Float deriving Component
 data Moving = Moving Float Float deriving Component

@@ -3,7 +3,7 @@ module Examples.Pandamonium.Entities.Wall where
 import Graphics.Gloss
 
 import ReduxGame.Entities
-import ReduxGame.Shape.Shape
+import ReduxGame.Shape
 import ReduxGame.Components
 import ReduxGame.Collisions
 

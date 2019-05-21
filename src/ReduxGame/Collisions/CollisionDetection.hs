@@ -5,7 +5,7 @@ module ReduxGame.Collisions.CollisionDetection
 
 import Graphics.Gloss.Data.Vector
 import Data.Maybe
-import ReduxGame.Shape.Shape (Shape (Polygon, Circle))
+import ReduxGame.Shape (Shape (Polygon, Circle))
 import Control.Applicative
 
 -- to determine which vector is longer without bothering wih the expensive sqrt

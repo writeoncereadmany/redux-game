@@ -1,7 +1,7 @@
 module Examples.Balls.Balls where
 
 import ReduxGame.Entities
-import ReduxGame.Shape.Shape
+import ReduxGame.Shape
 import ReduxGame.Redux
 import ReduxGame.Renderer.Renderable
 import ReduxGame.Renderer.ShapeRenderer

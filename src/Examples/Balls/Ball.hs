@@ -4,7 +4,7 @@ import Graphics.Gloss (Vector, yellow)
 import ReduxGame.Entities
 import ReduxGame.Components
 import ReduxGame.Collisions
-import ReduxGame.Shape.Shape
+import ReduxGame.Shape
 
 ball :: Vector -> Vector -> Vector -> Entity
 ball pos vel acc = entity

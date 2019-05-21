@@ -3,7 +3,7 @@ module Examples.Balls.Paddle where
 import Graphics.Gloss (Vector, white)
 import Graphics.Gloss.Interface.IO.Game (Event)
 import ReduxGame.Redux
-import ReduxGame.Shape.Shape
+import ReduxGame.Shape
 import ReduxGame.Entities
 import ReduxGame.InputEvents
 import ReduxGame.Components

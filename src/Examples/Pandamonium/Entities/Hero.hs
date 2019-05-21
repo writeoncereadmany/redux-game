@@ -2,12 +2,12 @@ module Examples.Pandamonium.Entities.Hero where
 
 import Control.Lens
 
-import Graphics.Gloss hiding (circle)
+import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
 import ReduxGame.Entities
-import ReduxGame.Shape.Shape hiding (move)
+import ReduxGame.Shape (rectangle)
 import ReduxGame.Components
 import ReduxGame.Collisions
 import ReduxGame.Controls.Axis hiding (updateAxis)
