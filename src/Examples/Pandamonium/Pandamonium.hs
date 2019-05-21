@@ -4,6 +4,7 @@ import Control.Lens
 import Control.Monad
 
 import ReduxGame.Redux
+import ReduxGame.Timer
 import ReduxGame.Exit
 import ReduxGame.Entities
 import ReduxGame.Components
@@ -25,6 +26,7 @@ import Examples.Pandamonium.Stages.Stage2
 data PandaGame = PandaGame
   { _world :: World
   , _stages :: [ [Entity] ]
+  , _timer :: Timer
   }
 
 makeLenses ''PandaGame
@@ -32,7 +34,7 @@ makeLenses ''PandaGame
 instance Renderable PandaGame where
   render pg = render $ pg ^. world
 
-initialPandas = PandaGame newWorld [stage1, stage2]
+initialPandas = PandaGame newWorld (cycle [stage1, stage2]) newTimer
 
 countCoins :: World -> Int
 countCoins world = actuallyFold count 0 world where
@@ -45,12 +47,12 @@ checkForCompletion _ pg = do
   return pg
 
 nextLevel :: LevelComplete -> PandaGame -> Events PandaGame
-nextLevel _ pg@(PandaGame _ []) = do
+nextLevel _ pg@(PandaGame _ [] _) = do
   quit
   return pg
-nextLevel _ (PandaGame _ (next:rest)) = do
+nextLevel _ (PandaGame _ (next:rest) _) = do
   traverse spawn next
-  return $ PandaGame newWorld rest
+  return $ PandaGame newWorld rest newTimer
 
 pandaWorldRedux :: Redux World
 pandaWorldRedux = worldRedux
