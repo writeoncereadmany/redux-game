@@ -7,11 +7,10 @@ import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
 import ReduxGame.Entities
-import ReduxGame.Shape (rectangle)
+import ReduxGame.Shape
 import ReduxGame.Components
 import ReduxGame.Collisions
-import ReduxGame.Controls.Axis hiding (updateAxis)
-import ReduxGame.Controls.Button
+import ReduxGame.Controls
 
 import Examples.Pandamonium.Entities.Coin
 

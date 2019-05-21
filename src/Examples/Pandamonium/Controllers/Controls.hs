@@ -2,8 +2,7 @@ module Examples.Pandamonium.Controllers.Controls where
 
 import ReduxGame.Redux
 import ReduxGame.Entities
-import ReduxGame.Controls.Button
-import ReduxGame.Controls.Axis
+import ReduxGame.Controls
 
 import Examples.Pandamonium.Entities.Hero
 
