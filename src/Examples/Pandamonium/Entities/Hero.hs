@@ -8,9 +8,8 @@ import Graphics.Gloss.Interface.IO.Game
 import ReduxGame.Redux
 import ReduxGame.Entities
 import ReduxGame.Shape.Shape hiding (move)
-import ReduxGame.Components.Components
-import ReduxGame.Collisions.CollisionEvents
-import ReduxGame.Collisions.CollisionRedux
+import ReduxGame.Components
+import ReduxGame.Collisions
 import ReduxGame.Controls.Axis hiding (updateAxis)
 import ReduxGame.Controls.Button
 

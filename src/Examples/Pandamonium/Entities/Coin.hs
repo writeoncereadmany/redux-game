@@ -4,8 +4,8 @@ import Graphics.Gloss hiding (circle)
 
 import ReduxGame.Entities
 import ReduxGame.Shape.Shape
-import ReduxGame.Components.Components
-import ReduxGame.Collisions.CollisionEvents
+import ReduxGame.Components
+import ReduxGame.Collisions
 
 data Coin = Coin deriving Component
 

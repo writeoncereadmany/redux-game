@@ -1,9 +1,10 @@
 module ReduxGame.Entities
   ( module ReduxGame.Entities.Entity
   , Tagged (Tagged)
-  -- entity redux
+  -- entity redux combinators
   , (|$>)
   , (|*>)
+  -- entity events
   , spawn
   , spawnThen
   , destroy

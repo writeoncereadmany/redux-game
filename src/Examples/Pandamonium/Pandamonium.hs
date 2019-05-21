@@ -2,9 +2,9 @@ module Examples.Pandamonium.Pandamonium where
 
 import ReduxGame.Redux
 import ReduxGame.Entities
-import ReduxGame.Components.Components
-import ReduxGame.Collisions.CollisionRedux
-import Examples.Pandamonium.Entities.Hero (heroRedux)
+import ReduxGame.Components
+import ReduxGame.Collisions
+import Examples.Pandamonium.Entities.Hero
 
 import Examples.Pandamonium.Stages.Stage1
 

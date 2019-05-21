@@ -4,8 +4,8 @@ import Graphics.Gloss
 
 import ReduxGame.Entities
 import ReduxGame.Shape.Shape
-import ReduxGame.Components.Components
-import ReduxGame.Collisions.CollisionEvents
+import ReduxGame.Components
+import ReduxGame.Collisions
 
 wall :: Vector -> Vector -> Entity
 wall bottomLeft dimensions = entity
