@@ -20,6 +20,7 @@ module ReduxGame.Entities
   , Extractable (extract, extractWithId)
   , Persistable (persist, persistWithId)
   , foldStore
+  , actuallyFold
   , extract_2r1d
   , extract_2r2d
   , extractWithId_2r1d

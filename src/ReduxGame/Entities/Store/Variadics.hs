@@ -77,6 +77,13 @@ foldStore :: (Extractable a, Store s)
           -> [ b ]
 foldStore f cs = content <$> foldWithTags f cs
 
+actuallyFold :: (Extractable a, Store s)
+             => (a -> b -> b)
+             -> b
+             -> ComponentStore s
+             -> b
+actuallyFold f acc cs = foldr f acc (content <$> extract cs)
+
 apply :: (Extractable a, Persistable b, Store s )
       => (a -> b)
       -> ComponentStore s

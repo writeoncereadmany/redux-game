@@ -7,7 +7,7 @@ import ReduxGame.Renderer.Renderable
 import ReduxGame.Renderer.ShapeRenderer
 import ReduxGame.Components
 import ReduxGame.Collisions
-import Graphics.Gloss hiding (circle)
+import ReduxGame.WorldShapeRenderer
 
 import Examples.Balls.Paddle
 import Examples.Balls.Ball
@@ -24,13 +24,6 @@ initialiseBalls = do
   spawn $ wall (-1100, -600) (150, 1200)
   spawn $ wall (950, -600) (150, 1200)
   spawn $ paddle (-100, -300) (200, 50)
-
-data ShapeRender = ShapeRender Shape Color Position
-instance Extractable ShapeRender where extract = extract_2r1d ShapeRender
-
-instance Renderable World where
-  render world = Pictures $ foldStore render' world where
-    render' (ShapeRender s c (Position (x, y))) = translate x y $ color c $ render s
 
 ballsRedux :: Redux World
 ballsRedux = worldRedux
