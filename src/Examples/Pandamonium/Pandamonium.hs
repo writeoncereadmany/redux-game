@@ -1,6 +1,7 @@
 module Examples.Pandamonium.Pandamonium where
 
 import Control.Lens
+import Control.Monad
 
 import ReduxGame.Redux
 import ReduxGame.Exit
@@ -11,6 +12,7 @@ import ReduxGame.Renderer.Renderable
 import ReduxGame.WorldShapeRenderer
 
 import Examples.Pandamonium.Labels
+import Examples.Pandamonium.Events
 
 import Examples.Pandamonium.Controllers.Pickups
 import Examples.Pandamonium.Controllers.HeroMovement
@@ -38,16 +40,17 @@ countCoins world = actuallyFold count 0 world where
   count _ x = x + 1
 
 checkForCompletion :: TimeStep -> PandaGame -> Events PandaGame
-checkForCompletion _ pg =
-  if countCoins (pg ^. world) == 0
-    then case (pg ^. stages) of
-      [] -> do
-        quit
-        return pg
-      (next : rest) -> do
-        traverse spawn next
-        return $ PandaGame newWorld rest
-    else return pg
+checkForCompletion _ pg = do
+  when (countCoins (pg ^. world) == 0) (fireEvent LevelComplete)
+  return pg
+
+nextLevel :: LevelComplete -> PandaGame -> Events PandaGame
+nextLevel _ pg@(PandaGame _ []) = do
+  quit
+  return pg
+nextLevel _ (PandaGame _ (next:rest)) = do
+  traverse spawn next
+  return $ PandaGame newWorld rest
 
 pandaWorldRedux :: Redux World
 pandaWorldRedux = worldRedux
@@ -60,3 +63,4 @@ pandaGameRedux :: Redux PandaGame
 pandaGameRedux = redux
              |:: connect world pandaWorldRedux
              |=> checkForCompletion
+             |=> nextLevel
