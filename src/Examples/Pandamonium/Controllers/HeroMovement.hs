@@ -4,9 +4,8 @@ import Control.Lens
 import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
-import ReduxGame.Controls.Button
-import ReduxGame.Controls.Axis
 import ReduxGame.Collisions
+import ReduxGame.Controls.Axis
 import ReduxGame.Components
 import ReduxGame.Entities
 
@@ -37,7 +36,5 @@ heroRedux :: Redux World
 heroRedux = redux
          |$> resetGroundedState
          |$> updateGroundedState
-         |*> updateAxis Horizontal
-         |*> updateButton Jump
          |$> jump
          |$> move

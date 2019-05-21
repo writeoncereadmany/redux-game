@@ -7,6 +7,7 @@ import ReduxGame.Collisions
 
 import Examples.Pandamonium.Controllers.Pickups
 import Examples.Pandamonium.Controllers.HeroMovement
+import Examples.Pandamonium.Controllers.Controls
 
 import Examples.Pandamonium.Stages.Stage1
 
@@ -24,3 +25,4 @@ pandaGameRedux = worldRedux
              |:: collisionRedux
              |:: pickupRedux
              |:: heroRedux
+             |:: controlRedux
