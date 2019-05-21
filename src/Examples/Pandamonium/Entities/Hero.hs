@@ -10,8 +10,11 @@ import ReduxGame.Entities
 import ReduxGame.Shape.Shape hiding (move)
 import ReduxGame.Components.Components
 import ReduxGame.Collisions.CollisionEvents
+import ReduxGame.Collisions.CollisionRedux
 import ReduxGame.Controls.Axis hiding (updateAxis)
 import ReduxGame.Controls.Button
+
+import Examples.Pandamonium.Entities.Coin
 
 w = 64
 h = 64
@@ -72,3 +75,4 @@ heroRedux = redux
          |*> updateButton Jump
          |$> jump
          |$> move
+         |=> fireOnCollision Hero Coin (\h_id c_id -> destroy c_id)
