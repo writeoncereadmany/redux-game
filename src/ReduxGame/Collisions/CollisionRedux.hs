@@ -1,4 +1,7 @@
-module ReduxGame.Collisions.CollisionRedux where
+module ReduxGame.Collisions.CollisionRedux
+  ( collisionRedux
+  , fireOnCollision
+  ) where
 
 import Control.Monad
 import Control.Monad.Trans

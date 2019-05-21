@@ -1,4 +1,7 @@
-module ReduxGame.Collisions.CollisionReaction where
+module ReduxGame.Collisions.CollisionReaction
+  ( staticBounce
+  , movingBounce
+  ) where
 
 import Data.Maybe
 
