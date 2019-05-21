@@ -33,7 +33,7 @@ staticBounce' s_id (StaticObject (Static s_el) s_shp (Position s_pos))
       let m_pos'      = m_pos + pushout'
       let unit_push   = normalizeV pushout
       let normal_proj = (1 + elasticity) * (m_vel `dotV` unit_push)
-      let m_vel'      = m_vel + (negate $ mulSV normal_proj unit_push)
+      let m_vel'      = if (normal_proj > 0) then m_vel else m_vel + (negate $ mulSV normal_proj unit_push)
       fireEvent $ Pushed m_id pushout'
       return $ AfterCollision (Position m_pos') (Velocity m_vel')
 
