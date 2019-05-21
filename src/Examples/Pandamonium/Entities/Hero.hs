@@ -1,4 +1,4 @@
-module Examples.Pandamonium.Entities.Panda where
+module Examples.Pandamonium.Entities.Hero where
 
 import Control.Lens
 
@@ -19,22 +19,25 @@ h = 64
 h_vel = 800
 gravity = -2400
 
+data Hero = Hero deriving Component
+
 data Horizontal = Horizontal
 data Jump = Jump
 data JumpEvent = JumpEvent deriving ReduxEvent
 data GroundedState = Grounded | Airborne deriving Component
 
-panda :: Vector -> Entity
-panda position = entity
-             <-+ rectangle (-w/2, -h/2) (w, h)
-             <-+ Position position
-             <-+ Velocity (0, 0)
-             <-+ Acceleration (0, gravity)
-             <-+ green
-             <-+ Moving 0 1
-             <-+ AxisType Horizontal (axis (button 'z') (button 'x'))
-             <-+ ButtonType Jump ((button '.') { onPress = fireEvent JumpEvent })
-             <-+ Airborne
+hero :: Vector -> Entity
+hero position = entity
+            <-+ Hero
+            <-+ rectangle (-w/2, -h/2) (w, h)
+            <-+ Position position
+            <-+ Velocity (0, 0)
+            <-+ Acceleration (0, gravity)
+            <-+ green
+            <-+ Moving 0 1
+            <-+ AxisType Horizontal (axis (button 'z') (button 'x'))
+            <-+ ButtonType Jump ((button '.') { onPress = fireEvent JumpEvent })
+            <-+ Airborne
 
 updateAxis :: forall a . a -> Event -> Only (AxisType a) -> Events (Only (AxisType a))
 updateAxis _ event (Only (AxisType a axis)) = Only . AxisType a <$> axisPress event axis
@@ -61,8 +64,8 @@ updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId (oldState, oldColo
     then (Grounded, green)
     else (oldState, oldColor)
 
-pandaRedux :: Redux World
-pandaRedux = redux
+heroRedux :: Redux World
+heroRedux = redux
          |$> resetGroundedState
          |$> updateGroundedState
          |*> updateAxis Horizontal

@@ -3,7 +3,7 @@ module Examples.Pandamonium.Stages.Stage1 where
 import ReduxGame.Entities
 import Examples.Pandamonium.Entities.Wall
 import Examples.Pandamonium.Entities.Coin
-import Examples.Pandamonium.Entities.Panda
+import Examples.Pandamonium.Entities.Hero
 
 stage1 :: [Entity]
 stage1 =
@@ -16,5 +16,5 @@ stage1 =
   , wall (-250, 100) (500, 50)
 
   , coin (0, 250)
-  , panda (0, 0)
+  , hero (0, 0)
   ]

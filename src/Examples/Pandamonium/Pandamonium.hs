@@ -4,7 +4,7 @@ import ReduxGame.Redux
 import ReduxGame.Entities
 import ReduxGame.Components.Components
 import ReduxGame.Collisions.CollisionRedux
-import Examples.Pandamonium.Entities.Panda (pandaRedux)
+import Examples.Pandamonium.Entities.Hero (heroRedux)
 
 import Examples.Pandamonium.Stages.Stage1
 
@@ -20,4 +20,4 @@ pandaGameRedux :: Redux World
 pandaGameRedux = worldRedux
              |$> integrate
              |:: collisionRedux
-             |:: pandaRedux
+             |:: heroRedux
