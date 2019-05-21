@@ -67,6 +67,10 @@ updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId (oldState, oldColo
     then (Grounded, green)
     else (oldState, oldColor)
 
+collectCoins :: TimeStep -> World -> Events World
+collectCoins = fireOnCollision Hero Coin destroyCoin where
+  destroyCoin hero_id coin_id = destroy coin_id
+
 heroRedux :: Redux World
 heroRedux = redux
          |$> resetGroundedState
@@ -75,4 +79,4 @@ heroRedux = redux
          |*> updateButton Jump
          |$> jump
          |$> move
-         |=> fireOnCollision Hero Coin (\h_id c_id -> destroy c_id)
+         |=> collectCoins
