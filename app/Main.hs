@@ -16,5 +16,5 @@ main = getArgs >>= run where
   run ["screens"] = initialiseGame session sessionRedux initialiseLoadingScreen
   run ["balls"] = initialiseGame balls ballsRedux initialiseBalls
   run ["fountain"] = initialiseGame fountain fountainRedux initialiseFountain
-  run ["panda"] = initialiseGame initialPandas pandaGameRedux (return ())
+  run ["panda"] = initialiseGame initialPandas pandaGameRedux initialisePandas
   run _ = exitFailure

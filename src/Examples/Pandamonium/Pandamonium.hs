@@ -2,6 +2,7 @@ module Examples.Pandamonium.Pandamonium where
 
 import Control.Lens
 import Control.Monad
+import Control.Monad.Trans
 
 import Graphics.Gloss
 
@@ -28,18 +29,22 @@ import Examples.Pandamonium.Stages.Stage2
 data PandaGame = PandaGame
   { _world :: World
   , _stages :: [ [Entity] ]
-  , _timeLeft :: Float
+  , _timeLeft :: Integer
+  , _timer :: Timer
   }
 
 makeLenses ''PandaGame
 
 instance Renderable PandaGame where
   render pg = Pictures
-    [ translate 1000 600 $ scale 0.5 0.5 $ color white $ text (show $ ceiling $ pg ^. timeLeft)
+    [ translate 1000 600 $ scale 0.5 0.5 $ color white $ text (show $ pg ^. timeLeft)
     , render (pg ^. world)
     ]
 
-initialPandas = PandaGame newWorld (take 5 $ cycle [stage1, stage2]) 5
+initialPandas = PandaGame newWorld (take 5 $ cycle [stage1, stage2]) 10 newTimer
+
+initialisePandas :: Events ()
+initialisePandas = schedule 0.1 (fireEvent Pulse)
 
 countCoins :: World -> Int
 countCoins world = actuallyFold count 0 world where
@@ -51,8 +56,8 @@ checkForCompletion _ pg = do
   when (countCoins (pg ^. world) == 0) (fireEvent LevelComplete)
   return pg
 
-countdown :: TimeStep -> PandaGame -> PandaGame
-countdown (TimeStep t) pg = timeLeft -~ t $ pg
+countdown :: Pulse -> PandaGame -> PandaGame
+countdown _ = timeLeft -~ 1
 
 timeout :: BeforeTimeStep -> PandaGame -> Events PandaGame
 timeout _ pg = do
@@ -60,12 +65,12 @@ timeout _ pg = do
   return pg
 
 nextLevel :: LevelComplete -> PandaGame -> Events PandaGame
-nextLevel _ pg@(PandaGame _ [] _) = do
+nextLevel _ pg@(PandaGame _ [] _ timer) = do
   fireEvent GameOver
   return pg
-nextLevel _ (PandaGame _ (next:rest) _) = do
+nextLevel _ (PandaGame _ (next:rest) _ timer) = do
   traverse spawn next
-  return $ PandaGame newWorld rest 10
+  return $ PandaGame newWorld rest 100 timer
 
 exitOnGameOver :: GameOver -> PandaGame -> Events PandaGame
 exitOnGameOver _ pg = do
@@ -87,3 +92,4 @@ pandaGameRedux = redux
              |-> countdown
              |=> timeout
              |=> exitOnGameOver
+             |:: connect timer timerRedux
