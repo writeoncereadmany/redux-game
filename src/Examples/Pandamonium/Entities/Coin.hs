@@ -9,9 +9,17 @@ import ReduxGame.Collisions
 
 import Examples.Pandamonium.Labels
 
+radii = cycle [20, 25, 30, 35, 40]
+
+shapes :: [ Shape ]
+shapes = (\r -> circle (0, 0) r) <$> radii
+
+data AnimationFrames = AnimationFrames [ Shape ] deriving Component
+
 coin :: Vector -> Entity
 coin position = entity
             <-+ Coin
-            <-+ circle 0 30
+            <-+ head shapes
+            <-+ (AnimationFrames $ tail shapes)
             <-+ Position position
             <-+ yellow

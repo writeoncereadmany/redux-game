@@ -22,6 +22,7 @@ import Examples.Pandamonium.Controllers.Pickups
 import Examples.Pandamonium.Controllers.HeroMovement
 import Examples.Pandamonium.Controllers.Controls
 import Examples.Pandamonium.Controllers.Physics
+import Examples.Pandamonium.Controllers.CoinAnimation
 
 import Examples.Pandamonium.Stages.Stage1
 import Examples.Pandamonium.Stages.Stage2
@@ -83,6 +84,7 @@ pandaWorldRedux = worldRedux
               |:: heroRedux
               |:: controlRedux
               |:: physicsRedux
+              |$> animateCoin
 
 pandaGameRedux :: Redux PandaGame
 pandaGameRedux = redux
