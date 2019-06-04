@@ -19,8 +19,8 @@ module ReduxGame.Entities
   , Only (Only)
   , Extractable (extract, extractWithId)
   , Persistable (persist, persistWithId)
+  , mapStore
   , foldStore
-  , actuallyFold
   , extract_2r1d
   , extract_2r2d
   , extractWithId_2r1d

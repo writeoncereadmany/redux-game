@@ -65,24 +65,24 @@ instance (Component a, Component b) => Persistable (a, b) where
   persist xs = merge (fmap fst <$> xs)
              . merge (fmap snd <$> xs)
 
-foldWithTags :: (Extractable a, Store s)
+mapWithTags :: (Extractable a, Store s)
              => (a -> b)
              -> ComponentStore s
              -> [ Tagged b ]
-foldWithTags f cs = fmap f <$> extract cs
+mapWithTags f cs = fmap f <$> extract cs
 
-foldStore :: (Extractable a, Store s)
+mapStore :: (Extractable a, Store s)
           => (a -> b)
           -> ComponentStore s
           -> [ b ]
-foldStore f cs = content <$> foldWithTags f cs
+mapStore f cs = content <$> mapWithTags f cs
 
-actuallyFold :: (Extractable a, Store s)
+foldStore :: (Extractable a, Store s)
              => (a -> b -> b)
              -> b
              -> ComponentStore s
              -> b
-actuallyFold f acc cs = foldr f acc (content <$> extract cs)
+foldStore f acc cs = foldr f acc (content <$> extract cs)
 
 apply :: (Extractable a, Persistable b, Store s )
       => (a -> b)

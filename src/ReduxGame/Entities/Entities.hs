@@ -6,7 +6,7 @@ module ReduxGame.Entities.Entities
   , createEntity
   , destroyEntity
   , updateEntity
-  , foldStore
+  , mapStore
   , Only (Only)
   , apply
   , applyM

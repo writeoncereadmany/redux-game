@@ -51,7 +51,7 @@ initialisePandas :: Events ()
 initialisePandas = schedule 0.1 (fireEvent Pulse)
 
 countCoins :: World -> Int
-countCoins world = actuallyFold count 0 world where
+countCoins world = foldStore count 0 world where
   count :: Only Coin -> Int -> Int
   count _ x = x + 1
 

@@ -24,7 +24,7 @@ fountain :: Fountain
 fountain = Fountain newWorld newTimer
 
 instance Renderable Fountain where
-  render fountain = Pictures $ foldStore render' (fountain ^. world) where
+  render fountain = Pictures $ mapStore render' (fountain ^. world) where
     render' :: (Position, Shape, Color) -> Picture
     render' ((Position x y), s, c) = translate x y $ color c $ render s
 
