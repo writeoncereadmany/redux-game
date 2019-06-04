@@ -1,6 +1,6 @@
 module ReduxGame.Components.Components where
 
-import Graphics.Gloss (Vector, Color)
+import Graphics.Gloss (Vector, Color, Picture)
 
 import ReduxGame.Redux
 import ReduxGame.Entities.Entity
@@ -18,6 +18,7 @@ instance Default Acceleration where defaultValue = Acceleration (0,0)
 
 instance Component Shape
 instance Component Color
+instance Component Picture
 
 applyAcceleration :: TimeStep -> (Acceleration, Velocity) -> Only Velocity
 applyAcceleration (TimeStep t) (Acceleration (ddx, ddy), Velocity (dx, dy)) =

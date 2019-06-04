@@ -16,11 +16,11 @@ data Bounds = Bounds
 
 makeLenses ''Bounds
 
-loadBMP :: String -> IO BMP
-loadBMP filename = do picture <- readBMP filename
-                      case picture of
-                        (Right sprite) -> return sprite
-                        (Left e)       -> error $ show e
+loadBMP' :: String -> IO BMP
+loadBMP' filename = do picture <- readBMP filename
+                       case picture of
+                         (Right sprite) -> return sprite
+                         (Left e)       -> error $ show e
 
 extract_sprite :: BMP -> Bounds -> BMP
 extract_sprite sheet sprite_bounds = let

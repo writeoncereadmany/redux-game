@@ -45,7 +45,7 @@ instance Renderable PandaGame where
     ]
 
 initialPandas :: PandaAssets -> PandaGame
-initialPandas assets = PandaGame newWorld (take 5 $ cycle [stage1, stage2]) 10 newTimer
+initialPandas assets = PandaGame newWorld (take 5 $ cycle [stage1 assets, stage2 assets]) 10 newTimer
 
 initialisePandas :: Events ()
 initialisePandas = schedule 0.1 (fireEvent Pulse)
