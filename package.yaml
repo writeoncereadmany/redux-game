@@ -29,6 +29,8 @@ dependencies:
 - mtl
 - constrained-dynamic
 - HList
+- bmp
+- bytestring
 
 default-extensions:
 - TemplateHaskell
@@ -39,6 +41,7 @@ default-extensions:
 - ScopedTypeVariables
 - MultiParamTypeClasses
 - DataKinds
+- ViewPatterns
 
 library:
   source-dirs: src
