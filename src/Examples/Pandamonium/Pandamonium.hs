@@ -18,6 +18,8 @@ import ReduxGame.WorldShapeRenderer
 import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
 
+import Examples.Pandamonium.Assets.PandaAssets
+
 import Examples.Pandamonium.Controllers.Pickups
 import Examples.Pandamonium.Controllers.HeroMovement
 import Examples.Pandamonium.Controllers.Controls
@@ -42,7 +44,8 @@ instance Renderable PandaGame where
     , render (pg ^. world)
     ]
 
-initialPandas = PandaGame newWorld (take 5 $ cycle [stage1, stage2]) 10 newTimer
+initialPandas :: PandaAssets -> PandaGame
+initialPandas assets = PandaGame newWorld (take 5 $ cycle [stage1, stage2]) 10 newTimer
 
 initialisePandas :: Events ()
 initialisePandas = schedule 0.1 (fireEvent Pulse)

@@ -9,6 +9,7 @@ import Examples.ScreenManagement.ScreenManagement
 import Examples.Balls.Balls
 import Examples.Fountain.Fountain
 import Examples.Pandamonium.Pandamonium
+import Examples.Pandamonium.Assets.PandaAssets
 
 main :: IO ()
 main = getArgs >>= run where
@@ -16,5 +17,7 @@ main = getArgs >>= run where
   run ["screens"] = initialiseGame session sessionRedux initialiseLoadingScreen
   run ["balls"] = initialiseGame balls ballsRedux initialiseBalls
   run ["fountain"] = initialiseGame fountain fountainRedux initialiseFountain
-  run ["panda"] = initialiseGame initialPandas pandaGameRedux initialisePandas
+  run ["panda"] = do
+    assets <- loadAssets
+    initialiseGame (initialPandas assets) pandaGameRedux initialisePandas
   run _ = exitFailure
