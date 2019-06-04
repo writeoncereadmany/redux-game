@@ -26,9 +26,3 @@ applyAcceleration (TimeStep t) (Acceleration (ddx, ddy), Velocity (dx, dy)) =
 applyVelocity :: TimeStep -> (Velocity, Position) -> Only Position
 applyVelocity (TimeStep t) (Velocity (dx, dy), Position (x, y)) =
   Only $ Position (x + dx * t, y + dy * t)
-
-integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
-integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy)), (Acceleration (ddx, ddy))) =
-  let (dx', dy') = (dx + ddx * t, dy + ddy * t)
-      (x', y') = (x + dx' * t, y + dy' * t)
-   in (Position (x', y'), Velocity (dx', dy'))
