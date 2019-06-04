@@ -21,5 +21,6 @@ physicsRedux :: Redux World
 physicsRedux = redux
            |$> resetAcceleration
            |$> gravity
-           |$> integrate
+           |$> applyAcceleration
+           |$> applyVelocity
            |:: collisionRedux

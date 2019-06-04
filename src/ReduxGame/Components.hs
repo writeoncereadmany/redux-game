@@ -2,7 +2,8 @@ module ReduxGame.Components
   ( Position (Position)
   , Velocity (Velocity)
   , Acceleration (Acceleration)
-  , integrate
+  , applyAcceleration
+  , applyVelocity
   ) where
 
 import ReduxGame.Components.Components

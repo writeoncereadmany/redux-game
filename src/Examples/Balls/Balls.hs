@@ -27,6 +27,7 @@ initialiseBalls = do
 
 ballsRedux :: Redux World
 ballsRedux = worldRedux
-         |$> integrate
+         |$> applyAcceleration
+         |$> applyVelocity
          |:: collisionRedux
          |:: paddleRedux

@@ -19,6 +19,14 @@ instance Default Acceleration where defaultValue = Acceleration (0,0)
 instance Component Shape
 instance Component Color
 
+applyAcceleration :: TimeStep -> (Acceleration, Velocity) -> Only Velocity
+applyAcceleration (TimeStep t) (Acceleration (ddx, ddy), Velocity (dx, dy)) =
+  Only $ Velocity (dx + ddx * t, dy + ddy * t)
+
+applyVelocity :: TimeStep -> (Velocity, Position) -> Only Position
+applyVelocity (TimeStep t) (Velocity (dx, dy), Position (x, y)) =
+  Only $ Position (x + dx * t, y + dy * t)
+
 integrate :: TimeStep -> (Position, Velocity, Acceleration) -> (Position, Velocity)
 integrate (TimeStep t) ((Position (x, y)), (Velocity (dx, dy)), (Acceleration (ddx, ddy))) =
   let (dx', dy') = (dx + ddx * t, dy + ddy * t)
