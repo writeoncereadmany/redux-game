@@ -1,9 +1,8 @@
 module Examples.Pandamonium.Assets.PandaAssets where
 
 import Control.Lens
+import Codec.BMP
 import Graphics.Gloss
-
-import ReduxGame.Sprites.SpriteSheet
 
 data PandaAssets = PandaAssets
   { _coin_sprites :: BitmapData
@@ -11,6 +10,12 @@ data PandaAssets = PandaAssets
   }
 
 makeLenses ''PandaAssets
+
+loadBitmapData :: String -> IO BitmapData
+loadBitmapData filename = do bmp <- readBMP filename
+                             case bmp of
+                               (Right bitmap) -> return $ bitmapDataOfBMP bitmap
+                               (Left e)       -> error $ show e
 
 loadAssets :: IO PandaAssets
 loadAssets = do
