@@ -6,7 +6,7 @@ import Graphics.Gloss
 import ReduxGame.Sprites.SpriteSheet
 
 data PandaAssets = PandaAssets
-  { _coin_sprites :: Picture
+  { _coin_sprites :: BitmapData
 
   }
 
@@ -14,5 +14,5 @@ makeLenses ''PandaAssets
 
 loadAssets :: IO PandaAssets
 loadAssets = do
-  coins <- loadBMP' "resources/Examples/Pandamonium/Sprites/coin.bmp"
-  return $ PandaAssets (bitmapOfBMP coins)
+  coins <- loadBitmapData "resources/Examples/Pandamonium/Sprites/coin.bmp"
+  return $ PandaAssets coins

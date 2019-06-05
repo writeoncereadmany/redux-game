@@ -22,6 +22,12 @@ loadBMP' filename = do picture <- readBMP filename
                          (Right sprite) -> return sprite
                          (Left e)       -> error $ show e
 
+loadBitmapData :: String -> IO BitmapData
+loadBitmapData filename = do bmp <- readBMP filename
+                             case bmp of
+                               (Right bitmap) -> return $ bitmapDataOfBMP bitmap
+                               (Left e)       -> error $ show e
+
 extract_sprite :: BMP -> Bounds -> BMP
 extract_sprite sheet sprite_bounds = let
      sheet_bytes = unpackBMPToRGBA32 sheet
