@@ -12,10 +12,7 @@ data PandaAssets = PandaAssets
 makeLenses ''PandaAssets
 
 loadBitmapData :: String -> IO BitmapData
-loadBitmapData filename = do bmp <- readBMP filename
-                             case bmp of
-                               (Right bitmap) -> return $ bitmapDataOfBMP bitmap
-                               (Left e)       -> error $ show e
+loadBitmapData filename = either (error . show) bitmapDataOfBMP <$> readBMP filename
 
 loadAssets :: IO PandaAssets
 loadAssets = do
