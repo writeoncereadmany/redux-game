@@ -54,7 +54,7 @@ infixl 1 |::
 
 infixl 1 |=>
 (|=>) :: ReduxEvent a => Redux w -> (a -> w -> Events w) -> Redux w
-(|=>) = reduxBind
+(|=>) r f = r |:: (reduxFocus f)
 
 infixl 1 |!>
 (|!>) :: ReduxEvent a => Redux w -> (a -> Events ()) -> Redux w

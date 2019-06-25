@@ -5,7 +5,7 @@ module ReduxGame.WrappedReduxImpl
   , redux
   , reduxDo
   , reduxCons
-  , reduxBind
+  , reduxFocus
   , connect
   ) where
 
@@ -39,19 +39,10 @@ handleRemainingEvents f world events = do
     Nil -> return world'
     otherwise -> handleRemainingEvents f world' events'
 
-redux' :: ReduxW a
-redux' = ReduxW $ const return
-
 reduxDo' :: ReduxW w -> w -> Events () -> IO w
 reduxDo' (ReduxW r) w a = do
   ((), events) <- runWriterT a
   handleRemainingEvents r w events
-
-reduxCons' :: ReduxW w -> ReduxW w -> ReduxW w
-reduxCons' (ReduxW redux1) (ReduxW redux2) = ReduxW $ \e w -> return w >>= redux1 e >>= redux2 e
-
-reduxBind' :: ReduxEvent a => ReduxW w -> (a -> w -> Events w) -> ReduxW w
-reduxBind' (ReduxW redux) f = ReduxW $ \e w -> return w >>= redux e >>= focus f e
 
 connect' :: Updater a b -> ReduxW a -> ReduxW b
 connect' lens (ReduxW f) = ReduxW $ \e w -> (lens %%~ (f e)) w
@@ -60,12 +51,12 @@ class ARedux r where
   redux :: r a
   reduxDo :: r a -> a -> Events () -> IO a
   reduxCons :: r a -> r a -> r a
-  reduxBind :: ReduxEvent e => r a -> (e -> a -> Events a) -> r a
+  reduxFocus :: ReduxEvent e => (e -> a -> Events a) -> r a
   connect :: Updater a b -> r a -> r b
 
 instance ARedux ReduxW where
-  redux = redux'
+  redux = ReduxW (const return)
   reduxDo = reduxDo'
-  reduxCons = reduxCons'
-  reduxBind = reduxBind'
+  reduxCons (ReduxW a) (ReduxW b) = ReduxW $ \e w -> return w >>= a e >>= b e
+  reduxFocus = ReduxW . focus
   connect = connect'
