@@ -55,14 +55,14 @@ infixl 1 |::
 (|::) = reduxCons
 
 infixl 1 |=>
-(|=>) :: ReduxEvent a => Redux w -> (a -> w -> Events w) -> Redux w
+(|=>) :: (ReduxEvent a, Typeable w) => Redux w -> (a -> w -> Events w) -> Redux w
 (|=>) r f = r |:: (reduxFocus f)
 
 infixl 1 |!>
-(|!>) :: ReduxEvent a => Redux w -> (a -> Events ()) -> Redux w
+(|!>) :: (ReduxEvent a, Typeable w) => Redux w -> (a -> Events ()) -> Redux w
 (|!>) redux f = redux |=> doing f where
   doing action a b = do action a; return b
 
 infixl 1 |->
-(|->) :: ReduxEvent a => Redux w -> (a -> w -> w) -> Redux w
+(|->) :: (ReduxEvent a, Typeable w) => Redux w -> (a -> w -> w) -> Redux w
 (|->) redux f = redux |=> (\a w -> return $ f a w)

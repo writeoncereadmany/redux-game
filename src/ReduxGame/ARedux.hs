@@ -16,5 +16,5 @@ class ARedux r where
   redux :: r a
   reduxDo :: r a -> a -> Events () -> IO a
   reduxCons :: r a -> r a -> r a
-  reduxFocus :: ReduxEvent e => (e -> a -> Events a) -> r a
+  reduxFocus :: (ReduxEvent e, Typeable a) => (e -> a -> Events a) -> r a
   connect :: Updater a b -> r a -> r b
