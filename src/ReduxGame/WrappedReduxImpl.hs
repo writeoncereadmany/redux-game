@@ -14,18 +14,10 @@ import Control.Monad.Writer
 import Data.Typeable
 import Data.ConstrainedDynamic
 import Data.DList
+import ReduxGame.ARedux
 
-import Graphics.Gloss.Interface.IO.Game
-
-class (Typeable a) => ReduxEvent a
-
-type DynEvent = ConstrainedDynamic ReduxEvent
-type Events w = WriterT (DList DynEvent) IO w
-type Updater a b = forall l . (Functor l, Applicative l) => LensLike' l b a
 type ReduxFun w = DynEvent -> w -> Events w
 data ReduxW a = ReduxW (ReduxFun a)
-
-instance ReduxEvent Event
 
 focus :: (ReduxEvent a) => (a -> b -> Events b) -> DynEvent -> b -> Events b
 focus f e w = case (fromDynamic e) of
@@ -43,13 +35,6 @@ reduxDo' :: ReduxW w -> w -> Events () -> IO w
 reduxDo' (ReduxW r) w a = do
   ((), events) <- runWriterT a
   handleRemainingEvents r w events
-
-class ARedux r where
-  redux :: r a
-  reduxDo :: r a -> a -> Events () -> IO a
-  reduxCons :: r a -> r a -> r a
-  reduxFocus :: ReduxEvent e => (e -> a -> Events a) -> r a
-  connect :: Updater a b -> r a -> r b
 
 instance ARedux ReduxW where
   redux = ReduxW (const return)

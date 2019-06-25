@@ -24,10 +24,12 @@ import Control.Monad.Writer
 import Control.Lens
 import Data.DList
 
+import ReduxGame.ARedux
 import ReduxGame.WrappedReduxImpl
 
 data BeforeTimeStep = BeforeTimeStep deriving ReduxEvent
 data TimeStep = TimeStep Float deriving ReduxEvent
+instance ReduxEvent Event
 
 type Redux w = ReduxW w
 
