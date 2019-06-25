@@ -24,12 +24,12 @@ import Control.Monad.Writer
 import Control.Lens
 import Data.DList
 
-import ReduxGame.ReduxImpl
+import ReduxGame.WrappedReduxImpl
 
 data BeforeTimeStep = BeforeTimeStep deriving ReduxEvent
 data TimeStep = TimeStep Float deriving ReduxEvent
 
-type Redux w = ReduxFun w
+type Redux w = ReduxW w
 
 fireEvent :: ReduxEvent a => a -> Events ()
 fireEvent = tell . singleton . toDyn
@@ -63,4 +63,4 @@ infixl 1 |!>
 
 infixl 1 |->
 (|->) :: ReduxEvent a => Redux w -> (a -> w -> w) -> Redux w
-(|->) redux f e w = (|=>) redux (\a w -> return $ f a w) e w
+(|->) redux f = redux |=> (\a w -> return $ f a w)
