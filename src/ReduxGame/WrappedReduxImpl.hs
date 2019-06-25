@@ -44,9 +44,6 @@ reduxDo' (ReduxW r) w a = do
   ((), events) <- runWriterT a
   handleRemainingEvents r w events
 
-connect' :: Updater a b -> ReduxW a -> ReduxW b
-connect' lens (ReduxW f) = ReduxW $ \e w -> (lens %%~ (f e)) w
-
 class ARedux r where
   redux :: r a
   reduxDo :: r a -> a -> Events () -> IO a
@@ -59,4 +56,4 @@ instance ARedux ReduxW where
   reduxDo = reduxDo'
   reduxCons (ReduxW a) (ReduxW b) = ReduxW $ \e w -> return w >>= a e >>= b e
   reduxFocus = ReduxW . focus
-  connect = connect'
+  connect lens (ReduxW f) = ReduxW $ \e w -> (lens %%~ (f e)) w
