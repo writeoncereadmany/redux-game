@@ -25,13 +25,13 @@ import Control.Lens
 import Data.DList
 
 import ReduxGame.ARedux
-import ReduxGame.WrappedReduxImpl
+import ReduxGame.MapReduxImpl
 
 data BeforeTimeStep = BeforeTimeStep deriving ReduxEvent
 data TimeStep = TimeStep Float deriving ReduxEvent
 instance ReduxEvent Event
 
-type Redux w = ReduxW w
+type Redux w = MapRedux w
 
 fireEvent :: ReduxEvent a => a -> Events ()
 fireEvent = tell . singleton . toDyn
