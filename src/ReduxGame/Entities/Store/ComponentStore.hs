@@ -13,28 +13,25 @@ module ReduxGame.Entities.Store.ComponentStore
 
 import Data.Maybe
 import Data.Typeable
-import ReduxGame.Entities.Store.Store
+import qualified Data.Map as M
+import ReduxGame.Entities.Store.Store as S
 import ReduxGame.Entities.Entity
 
 data DynStore s where
   DynStore :: forall s a . (Store s, Component a) => s a -> DynStore s
 
-data ComponentStore s = ComponentStore EntityId [ DynStore s ]
+data ComponentStore s = ComponentStore EntityId (M.Map TypeRep (DynStore s))
 
 emptyComponents :: ComponentStore s
-emptyComponents = ComponentStore 0 []
+emptyComponents = ComponentStore 0 M.empty
 
 storeOf :: (Store s, Component a) => ComponentStore s -> [ Tagged a ]
-storeOf = components . storeOf' where
+storeOf = components . storeOf'
 
-replaceStore :: (Store s, Component a) => s a -> ComponentStore s -> ComponentStore s
+replaceStore :: forall a s . (Store s, Component a) => s a -> ComponentStore s -> ComponentStore s
 replaceStore newStore (ComponentStore nextId oldStores) =
-  ComponentStore nextId $ replaceStore' newStore oldStores where
-    replaceStore' newStore [] = [ DynStore newStore ]
-    replaceStore' newStore (oldStore : oldStores) =
-      if (typesMatch newStore (fromStore oldStore))
-        then (DynStore newStore) : oldStores
-        else oldStore : replaceStore' newStore oldStores
+  let typeKey = typeRep (Proxy :: Proxy a)
+   in ComponentStore nextId (M.insert typeKey (DynStore newStore) oldStores)
 
 merge :: (Store s, Component a) => [ Tagged a ] -> ComponentStore s -> ComponentStore s
 merge xs cs = replaceStore (mergeComponents xs $ storeOf' cs) cs
@@ -61,9 +58,8 @@ maybeGetComponent entId cs = withId entId $ storeOf' cs
 fromStore :: (Store s, Component a) => DynStore s -> Maybe (s a)
 fromStore (DynStore b) = cast b
 
-storeOf' :: (Store s, Component a) => ComponentStore s -> s a
-storeOf' (ComponentStore _ stores) = storeOf'' stores where
-  storeOf'' [] = emptyStore
-  storeOf'' (x:xs) = case fromStore x of
-    Just a  -> a
-    Nothing -> storeOf'' xs
+storeOf' :: forall a s . (Store s, Component a) => ComponentStore s -> s a
+storeOf' (ComponentStore _ stores) = let typeKey = typeRep (Proxy :: Proxy a)
+  in case M.lookup typeKey stores >>= fromStore of
+    (Just store) -> store
+    (Nothing) -> emptyStore
