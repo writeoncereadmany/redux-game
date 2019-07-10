@@ -46,9 +46,6 @@ destroyAll :: (Store s) => EntityId -> ComponentStore s -> ComponentStore s
 destroyAll entId (ComponentStore nextId stores) = ComponentStore nextId (deleteFrom <$> stores) where
   deleteFrom (DynStore as) = DynStore $ delete entId as
 
-typesMatch :: a -> Maybe a -> Bool
-typesMatch _ x = isJust x
-
 getComponent :: (Component a, Default a, Store s) => EntityId -> ComponentStore s -> a
 getComponent entId cs = withId' entId $ storeOf' cs
 
