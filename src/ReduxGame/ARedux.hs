@@ -14,7 +14,7 @@ type Updater a b = forall l . (Functor l, Applicative l) => LensLike' l b a
 
 class ARedux r where
   redux :: r a
-  reduxDo :: r a -> a -> Events () -> IO a
+  reduxDo :: r a -> Events () -> a -> IO a
   reduxCons :: r a -> r a -> r a
   reduxFocus :: (ReduxEvent e, Typeable a) => (e -> a -> Events a) -> r a
   connect :: Updater a b -> r a -> r b

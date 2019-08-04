@@ -37,7 +37,8 @@ updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId (Only oldState)) =
 animate :: AfterTimeStep -> (PandaFrames, GroundedState, Facing, Position, Velocity) -> Only Picture
 animate _ (frames, grounded, facing, Position (x, y), Velocity (dx, dy))
   | grounded == Grounded = Only $ frames ^. standing
-  | otherwise = Only $ frames ^. jumping
+  | dy > 0 = Only $ frames ^. jumping
+  | otherwise = Only $ frames ^. falling  
 
 heroRedux :: Redux World
 heroRedux = redux

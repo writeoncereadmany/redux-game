@@ -40,13 +40,12 @@ fireEvent = tell . singleton . toDyn
 
 reduxUpdate :: Redux w -> Float -> w -> IO w
 reduxUpdate f timestep world = return world
-    >>= doRedux (fireEvent BeforeTimeStep)
-    >>= doRedux (fireEvent $ TimeStep timestep)
-    >>= doRedux (fireEvent AfterTimeStep)
-    where doRedux = flip (reduxDo f)
+    >>= reduxDo f (fireEvent BeforeTimeStep)
+    >>= reduxDo f (fireEvent $ TimeStep timestep)
+    >>= reduxDo f (fireEvent AfterTimeStep)
 
 reduxListen :: Redux w -> Event -> w -> IO w
-reduxListen f event world = reduxDo f world (fireEvent event)
+reduxListen f event world = reduxDo f (fireEvent event) world
 
 onButton :: Char -> Events () -> Event -> a -> Events a
 onButton expected action (EventKey (Char actual) _ _ _) a = do

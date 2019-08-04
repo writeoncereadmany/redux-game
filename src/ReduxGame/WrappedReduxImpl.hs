@@ -31,8 +31,8 @@ handleRemainingEvents f world events = do
     Nil -> return world'
     otherwise -> handleRemainingEvents f world' events'
 
-reduxDo' :: ReduxW w -> w -> Events () -> IO w
-reduxDo' (ReduxW r) w a = do
+reduxDo' :: ReduxW w -> Events () -> w -> IO w
+reduxDo' (ReduxW r) a w = do
   ((), events) <- runWriterT a
   handleRemainingEvents r w events
 

@@ -43,8 +43,8 @@ handleRemainingEvents f world events = do
     Nil -> return world'
     otherwise -> handleRemainingEvents f world' events'
 
-reduxDo' :: MapRedux state -> state -> Events () -> IO state
-reduxDo' redux state eventsAction = do
+reduxDo' :: MapRedux state -> Events () -> state -> IO state
+reduxDo' redux eventsAction state = do
   ((), events) <- runWriterT eventsAction
   handleRemainingEvents redux state events
 
