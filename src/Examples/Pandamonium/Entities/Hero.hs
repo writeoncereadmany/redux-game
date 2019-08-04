@@ -16,8 +16,8 @@ import Examples.Pandamonium.Assets.PandaAssets
 import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
 
-w = 80
-h = 80
+w = 120
+h = 120
 
 gravity = -2400
 
@@ -28,7 +28,7 @@ hero assets position = entity
             <-+ Hero
 
             <-+ rectangle (-w/2, -h/2) (w, h)
-            <-+ scale 4 4 (BitmapSection (Rectangle (140, 0) (20, 20)) (assets ^. panda_sprites))
+            <-+ scale 6 6 (BitmapSection (Rectangle (140, 0) (20, 20)) (assets ^. panda_sprites))
 
             <-+ Position position
             <-+ Velocity (0, 0)
