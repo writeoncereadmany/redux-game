@@ -25,14 +25,14 @@ jump :: JumpEvent -> (GroundedState, Velocity) -> Only Velocity
 jump _ (Grounded, Velocity (x, _)) = Only $ Velocity (x, 2000)
 jump _ (_, v) = Only v
 
-resetGroundedState :: BeforeTimeStep -> (GroundedState, Color) -> (GroundedState, Color)
-resetGroundedState _ _ = (Airborne, cyan)
+resetGroundedState :: BeforeTimeStep -> (Only GroundedState) -> (Only GroundedState)
+resetGroundedState _ _ = (Only Airborne)
 
-updateGroundedState :: Pushed -> Tagged (GroundedState, Color) -> (GroundedState, Color)
-updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId (oldState, oldColor)) =
+updateGroundedState :: Pushed -> Tagged (Only GroundedState) -> (Only GroundedState)
+updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId (Only oldState)) =
   if pushedEntId == entId && y > 0
-    then (Grounded, green)
-    else (oldState, oldColor)
+    then (Only Grounded)
+    else (Only oldState)
 
 heroRedux :: Redux World
 heroRedux = redux

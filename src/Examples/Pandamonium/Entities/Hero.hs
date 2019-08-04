@@ -12,22 +12,23 @@ import ReduxGame.Components
 import ReduxGame.Collisions
 import ReduxGame.Controls
 
+import Examples.Pandamonium.Assets.PandaAssets
 import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
 
-w = 64
-h = 64
+w = 80
+h = 80
 
 gravity = -2400
 
 data GroundedState = Grounded | Airborne deriving Component
 
-hero :: Vector -> Entity
-hero position = entity
+hero :: PandaAssets -> Vector -> Entity
+hero assets position = entity
             <-+ Hero
 
             <-+ rectangle (-w/2, -h/2) (w, h)
-            <-+ green
+            <-+ scale 4 4 (BitmapSection (Rectangle (140, 0) (20, 20)) (assets ^. panda_sprites))
 
             <-+ Position position
             <-+ Velocity (0, 0)

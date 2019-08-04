@@ -18,5 +18,5 @@ stage2 assets =
 
   , coin assets (-650, -200)
   , coin assets (650, -200)
-  , hero (0, 0)
+  , hero assets (0, 0)
   ]

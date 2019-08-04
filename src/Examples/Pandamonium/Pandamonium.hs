@@ -48,7 +48,7 @@ initialPandas :: PandaAssets -> PandaGame
 initialPandas assets = PandaGame newWorld (take 5 $ cycle [stage1 assets, stage2 assets]) 10 newTimer
 
 initialisePandas :: Events ()
-initialisePandas = schedule 0.05 (fireEvent Pulse)
+initialisePandas = schedule 0.1 (fireEvent Pulse)
 
 countCoins :: World -> Int
 countCoins world = foldStore count 0 world where

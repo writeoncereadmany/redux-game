@@ -17,5 +17,5 @@ stage1 assets =
   , wall (-250, 100) (500, 50)
 
   , coin assets (0, 250)
-  , hero (0, 0)
+  , hero assets (0, 0)
   ]
