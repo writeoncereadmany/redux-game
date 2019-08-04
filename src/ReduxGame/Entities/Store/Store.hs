@@ -56,3 +56,7 @@ combine3 as bs cs = (flatten <$>) <$> (combine2 as (combine2 bs cs)) where
 combine4 :: [ Tagged a ] -> [ Tagged b ] -> [Tagged c ] -> [ Tagged d ] -> [ Tagged (a, b, c, d)]
 combine4 as bs cs ds = (flatten <$>) <$> (combine2 (combine2 as bs) (combine2 cs ds)) where
   flatten ((a, b), (c, d)) = (a, b, c, d)
+
+combine5 :: [ Tagged a ] -> [ Tagged b ] -> [Tagged c ] -> [ Tagged d ] -> [ Tagged e ] -> [ Tagged (a, b, c, d, e)]
+combine5 as bs cs ds es = (flatten <$>) <$> (combine2 (combine2 as bs) (combine3 cs ds es)) where
+  flatten ((a, b), (c, d, e)) = (a, b, c, d, e)

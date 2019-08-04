@@ -3,6 +3,7 @@ module ReduxGame.Redux
   , ReduxEvent
   , BeforeTimeStep (BeforeTimeStep)
   , TimeStep (TimeStep)
+  , AfterTimeStep (AfterTimeStep)
   , Events
   , fireEvent
   , reduxDo
@@ -29,6 +30,7 @@ import ReduxGame.MapReduxImpl
 
 data BeforeTimeStep = BeforeTimeStep deriving ReduxEvent
 data TimeStep = TimeStep Float deriving ReduxEvent
+data AfterTimeStep = AfterTimeStep deriving ReduxEvent
 instance ReduxEvent Event
 
 type Redux w = MapRedux w
@@ -37,9 +39,11 @@ fireEvent :: ReduxEvent a => a -> Events ()
 fireEvent = tell . singleton . toDyn
 
 reduxUpdate :: Redux w -> Float -> w -> IO w
-reduxUpdate f timestep world = reduxDo f world $ do
-  fireEvent BeforeTimeStep
-  fireEvent $ TimeStep timestep
+reduxUpdate f timestep world = return world
+    >>= doRedux (fireEvent BeforeTimeStep)
+    >>= doRedux (fireEvent $ TimeStep timestep)
+    >>= doRedux (fireEvent AfterTimeStep)
+    where doRedux = flip (reduxDo f)
 
 reduxListen :: Redux w -> Event -> w -> IO w
 reduxListen f event world = reduxDo f world (fireEvent event)

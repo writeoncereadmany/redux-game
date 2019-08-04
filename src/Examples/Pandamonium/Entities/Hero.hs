@@ -21,7 +21,32 @@ h = 120
 
 gravity = -2400
 
-data GroundedState = Grounded | Airborne deriving Component
+data GroundedState = Grounded | Airborne deriving (Eq, Component)
+
+data PandaFrames = PandaFrames
+  { _run_animation :: [Picture]
+  , _standing :: Picture
+  , _jumping :: Picture
+  , _falling :: Picture
+  , _sliding :: Picture
+  } deriving Component
+
+makeLenses ''PandaFrames
+
+frame :: BitmapData -> Int -> Picture
+frame bmp n = scale 6 6 (BitmapSection (Rectangle (n*20, 0) (20, 20)) bmp)
+
+loadFrames :: PandaAssets -> PandaFrames
+loadFrames assets = let frame' = frame $ assets ^. panda_sprites
+  in PandaFrames
+    { _run_animation = [ frame' n | n <- [0..5]]
+    , _standing = frame' 7
+    , _jumping = frame' 0
+    , _falling = frame' 6
+    , _sliding = frame' 8
+    }
+
+data Facing = FacingLeft | FacingRight deriving Component
 
 hero :: PandaAssets -> Vector -> Entity
 hero assets position = entity
@@ -29,6 +54,7 @@ hero assets position = entity
 
             <-+ rectangle (-w/2, -h/2) (w, h)
             <-+ scale 6 6 (BitmapSection (Rectangle (140, 0) (20, 20)) (assets ^. panda_sprites))
+            <-+ loadFrames assets
 
             <-+ Position position
             <-+ Velocity (0, 0)
@@ -40,3 +66,4 @@ hero assets position = entity
             <-+ Moving 0 1
             <-+ FeelsGravity
             <-+ Airborne
+            <-+ FacingRight
