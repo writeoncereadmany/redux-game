@@ -34,11 +34,28 @@ updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId (Only oldState)) =
     then (Only Grounded)
     else (Only oldState)
 
+updateFacing :: AfterTimeStep -> (Velocity, Facing) -> Only Facing
+updateFacing _ (Velocity (dx, dy), facing)
+  | dx < 0 = Only FacingLeft
+  | dx > 0 = Only FacingRight
+  | otherwise = Only facing
+
+xmod :: Facing -> Float
+xmod FacingRight = 1
+xmod FacingLeft = (-1)
+
+face :: Facing -> Picture -> Picture
+face f = scale (xmod f) 1
+
+runFrame :: Float -> Facing -> [ Picture ] -> Picture
+runFrame xPos facing pictures = face facing $ pictures !! (mod (floor $ (xmod facing * xPos) / 50)) (length pictures)
+
 animate :: AfterTimeStep -> (PandaFrames, GroundedState, Facing, Position, Velocity) -> Only Picture
 animate _ (frames, grounded, facing, Position (x, y), Velocity (dx, dy))
-  | grounded == Grounded = Only $ frames ^. standing
-  | dy > 0 = Only $ frames ^. jumping
-  | otherwise = Only $ frames ^. falling  
+  | grounded == Grounded && abs dx < 50 = Only $ face facing $ frames ^. standing
+  | grounded == Grounded = Only $ runFrame x facing (frames ^. run_animation)
+  | dy > 0 = Only $ face facing $ frames ^. jumping
+  | otherwise = Only $ face facing $ frames ^. falling
 
 heroRedux :: Redux World
 heroRedux = redux
@@ -46,4 +63,5 @@ heroRedux = redux
          |$> updateGroundedState
          |$> jump
          |$> move
+         |$> updateFacing
          |$> animate
