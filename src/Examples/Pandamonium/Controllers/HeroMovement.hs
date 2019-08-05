@@ -34,10 +34,10 @@ updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId (Only oldState)) =
     then (Only Grounded)
     else (Only oldState)
 
-updateFacing :: AfterTimeStep -> (Velocity, Facing) -> Only Facing
-updateFacing _ (Velocity (dx, dy), facing)
-  | dx < 0 = Only FacingLeft
-  | dx > 0 = Only FacingRight
+updateFacing :: AfterTimeStep -> (Velocity, GroundedState, Facing) -> Only Facing
+updateFacing _ (Velocity (dx, dy), grounded, facing)
+  | grounded == Grounded && dx < 0 = Only FacingLeft
+  | grounded == Grounded && dx > 0 = Only FacingRight
   | otherwise = Only facing
 
 xmod :: Facing -> Float
