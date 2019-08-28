@@ -11,5 +11,7 @@ instance Store MapStore where
   withId entId (MapStore m) = M.lookup entId m
   components (MapStore m) = fromPair <$> M.toList m
   mergeComponents news (MapStore m) = MapStore $ M.union (M.fromList $ toPair <$> news) m
+  updateComponents maybes (MapStore m) = MapStore $ foldr update m maybes where
+    update (Tagged entId maybeA) m = M.alter (const maybeA) entId m
   emptyStore = MapStore M.empty
   delete entId (MapStore m) = MapStore $ M.delete entId m

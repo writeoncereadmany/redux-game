@@ -9,9 +9,6 @@ instance Eq a => Eq (Tagged a) where
 instance Show a => Show (Tagged a) where
   show (Tagged id_a a) = show (id_a, a)
 
-instance Functor Tagged where
-  fmap f (Tagged entId a) = Tagged entId (f a)
-
 instance Foldable Tagged where
   foldMap f (Tagged entId a) = f a
 
@@ -35,6 +32,7 @@ class Typeable t => Store t where
   withId' :: Default a => EntityId -> t a -> a
   withId' entId s = orDefault $ withId entId s
   mergeComponents :: [ Tagged a ] -> t a -> t a
+  updateComponents :: [ Tagged (Maybe a) ] -> t a -> t a
   components :: t a -> [ Tagged a ]
   emptyStore :: t a
   delete :: EntityId -> t a -> t a

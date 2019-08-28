@@ -36,6 +36,9 @@ replaceStore newStore (ComponentStore nextId oldStores) =
 merge :: (Store s, Component a) => [ Tagged a ] -> ComponentStore s -> ComponentStore s
 merge xs cs = replaceStore (mergeComponents xs $ storeOf' cs) cs
 
+update :: (Store s, Component a) => [ Tagged (Maybe a)] -> ComponentStore s -> ComponentStore s
+update maybes cs = replaceStore (S.updateComponents maybes $ storeOf' cs) cs
+
 createAll :: (Store s) => Entity -> ComponentStore s -> (EntityId, ComponentStore s)
 createAll (Entity properties) store@(ComponentStore nextId _) =
   let newStore = (foldr (\(Property p) s -> merge [ Tagged nextId p] s) store properties)
@@ -64,4 +67,4 @@ storeOf' (ComponentStore _ stores) = let typeKey = typeRep (Proxy :: Proxy a)
 instance Store s => Components (ComponentStore s) where
   allComponents = storeOf
   componentById = maybeGetComponent
-  updateComponents = merge
+  updateComponents = update

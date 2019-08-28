@@ -5,20 +5,38 @@ import Data.Maybe
 
 data Tagged a = Tagged EntityId a
 
+instance Functor Tagged where
+  fmap f (Tagged entId a) = Tagged entId (f a)
+
 class Components c where
   allComponents :: Component a => c -> [ Tagged a ]
   componentById :: Component a => EntityId -> c -> Maybe a
-  updateComponents :: Component a => [ Tagged a ] -> c -> c
+  updateComponents :: Component a => [ Tagged (Maybe a) ] -> c -> c
 
 class Typeable a => Component a where
   getAll :: Components c => c -> [ Tagged a ]
   getAll = allComponents
   getById :: Components c => EntityId -> c -> Maybe a
   getById = componentById
-  setAll :: Components c => [ Tagged a ] -> c -> c
+  setAll :: Components c => [ Tagged (Maybe a) ] -> c -> c
   setAll = updateComponents
-  setById :: Components c => EntityId -> a -> c -> c
-  setById e a = updateComponents [ Tagged e a ]
+
+instance (Component a, Component b) => Component (a, b) where
+  getAll c = catMaybes $ addB <$> getAll c where
+    addB :: Tagged a -> Maybe (Tagged (a, b))
+    addB (Tagged e a) = do
+      b <- getById e c
+      return $ Tagged e (a, b)
+  getById e c = do
+    a <- getById e c
+    b <- getById e c
+    return (a, b)
+  setAll xs c = setAll (((fst <$>) <$>) <$> xs) . setAll (((snd <$>) <$>) <$> xs) $ c
+
+instance (Component a) => Component (Maybe a) where
+  getAll _ = []  -- ignoring for now
+  getById e c = Just $ getById e c
+  setAll xs c = c -- also ignoring for now
 
 class Default a where
   defaultValue :: a
