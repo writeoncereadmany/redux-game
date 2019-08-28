@@ -18,8 +18,8 @@ class Typeable a => Component a where
   getAll = allComponents
   getById :: Components c => EntityId -> c -> Maybe a
   getById = componentById
-  setAll :: Components c => [ Tagged (Maybe a) ] -> c -> c
-  setAll = updateComponents
+  setAll :: Components c => [ Tagged a ] -> c -> c
+  setAll xs c = updateComponents (fmap Just <$> xs) c
 
 instance (Component a, Component b) => Component (a, b) where
   getAll c = catMaybes $ addB <$> getAll c where
@@ -31,12 +31,21 @@ instance (Component a, Component b) => Component (a, b) where
     a <- getById e c
     b <- getById e c
     return (a, b)
-  setAll xs c = setAll (((fst <$>) <$>) <$> xs) . setAll (((snd <$>) <$>) <$> xs) $ c
+  setAll xs c = setAll (fmap fst <$> xs) . setAll (fmap snd <$> xs) $ c
 
 instance (Component a) => Component (Maybe a) where
   getAll _ = []  -- ignoring for now
   getById e c = Just $ getById e c
-  setAll xs c = c -- also ignoring for now
+  setAll = updateComponents
+
+data Not a = Not
+
+instance (Component a) => Component (Not a) where
+  getAll _ = []
+  getById e c = case (getById e c :: Maybe a) of
+    (Just _) -> Nothing
+    Nothing  -> Just Not
+  setAll xs c = updateComponents (fmap (const (Nothing :: Maybe a)) <$> xs) c
 
 class Default a where
   defaultValue :: a
