@@ -38,14 +38,14 @@ entityRedux = redux
           |=> handleEntityThenEvent
 
 infixl 1 |$>
-(|$>) :: (ReduxEvent a, Extractable b, Persistable c, Store s)
+(|$>) :: (ReduxEvent a, Component b, Component c, Store s)
       => Redux (ComponentStore s)
       -> (a -> b -> c)
       -> Redux (ComponentStore s)
 redux |$> f = redux |-> apply . f
 
 infixl 1 |*>
-(|*>) :: (ReduxEvent a, Extractable b, Persistable c, Store s)
+(|*>) :: (ReduxEvent a, Component b, Component c, Store s)
       => Redux (ComponentStore s)
       -> (a -> b -> Events c)
       -> Redux (ComponentStore s)

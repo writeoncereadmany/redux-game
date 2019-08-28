@@ -29,5 +29,5 @@ keyPress (EventKey key pressed _ _) button =
                 return (button { held = False })
 keyPress _ button = return button
 
-updateButton :: forall a . a -> Event -> Only (ButtonType a) -> Events (Only (ButtonType a))
-updateButton _ event (Only (ButtonType a button)) = Only . ButtonType a <$> keyPress event button
+updateButton :: forall a . a -> Event -> ButtonType a -> Events (ButtonType a)
+updateButton _ event (ButtonType a button) = ButtonType a <$> keyPress event button

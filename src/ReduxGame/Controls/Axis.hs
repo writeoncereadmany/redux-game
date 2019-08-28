@@ -41,5 +41,5 @@ axisPress event axis = return axis
      (False, True) -> onAxis .~ Max     $ axis
      (_, _)        -> onAxis .~ Neutral $ axis
 
-updateAxis :: forall a . a -> Event -> Only (AxisType a) -> Events (Only (AxisType a))
-updateAxis _ event (Only (AxisType a axis)) = Only . AxisType a <$> axisPress event axis
+updateAxis :: forall a . a -> Event -> AxisType a -> Events (AxisType a)
+updateAxis _ event (AxisType a axis) = AxisType a <$> axisPress event axis

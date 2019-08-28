@@ -23,20 +23,20 @@ paddle bottomLeft dimensions = entity
                            <-+ Static 0.95
                            <-+ Controlled 'z' 'x' False False
 
-listenToMove :: Event -> Only Controlled -> Only Controlled
-listenToMove event controlled@(Only (Controlled left right ldown rdown))
-  | isKeyPress left event    = Only $ Controlled left right True  rdown
-  | isKeyPress right event   = Only $ Controlled left right ldown True
-  | isKeyRelease left event  = Only $ Controlled left right False rdown
-  | isKeyRelease right event = Only $ Controlled left right ldown False
+listenToMove :: Event -> Controlled -> Controlled
+listenToMove event controlled@(Controlled left right ldown rdown)
+  | isKeyPress left event    = Controlled left right True  rdown
+  | isKeyPress right event   = Controlled left right ldown True
+  | isKeyRelease left event  = Controlled left right False rdown
+  | isKeyRelease right event = Controlled left right ldown False
   | otherwise = controlled
 
-movePaddle :: TimeStep -> (Controlled, Speed) -> Only Velocity
+movePaddle :: TimeStep -> (Controlled, Speed) -> Velocity
 movePaddle (TimeStep t) (Controlled _ _ left right, Speed v)
-  | left && right = Only $ Velocity (0, 0)
-  | left = Only $ Velocity (-v, 0)
-  | right = Only $ Velocity (v, 0)
-  | otherwise = Only $ Velocity (0, 0)
+  | left && right = Velocity (0, 0)
+  | left = Velocity (-v, 0)
+  | right = Velocity (v, 0)
+  | otherwise = Velocity (0, 0)
 
 paddleRedux :: Redux World
 paddleRedux = redux

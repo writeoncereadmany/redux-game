@@ -20,10 +20,10 @@ instance Component Shape
 instance Component Color
 instance Component Picture
 
-applyAcceleration :: TimeStep -> (Acceleration, Velocity) -> Only Velocity
+applyAcceleration :: TimeStep -> (Acceleration, Velocity) -> Velocity
 applyAcceleration (TimeStep t) (Acceleration (ddx, ddy), Velocity (dx, dy)) =
-  Only $ Velocity (dx + ddx * t, dy + ddy * t)
+  Velocity (dx + ddx * t, dy + ddy * t)
 
-applyVelocity :: TimeStep -> (Velocity, Position) -> Only Position
+applyVelocity :: TimeStep -> (Velocity, Position) -> Position
 applyVelocity (TimeStep t) (Velocity (dx, dy), Position (x, y)) =
-  Only $ Position (x + dx * t, y + dy * t)
+  Position (x + dx * t, y + dy * t)

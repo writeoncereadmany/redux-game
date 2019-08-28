@@ -96,19 +96,19 @@ foldStore :: (Extractable a, Store s)
              -> b
 foldStore f acc cs = foldr f acc (content <$> extract cs)
 
-apply :: (Extractable a, Persistable b, Store s )
+apply :: (Component a, Component b, Store s )
       => (a -> b)
       -> ComponentStore s
       -> ComponentStore s
-apply f cs = persist (fmap f <$> (extract cs)) cs
+apply f cs = setAll (fmap f <$> (getAll cs)) cs
 
-applyM :: (Extractable a, Persistable b, Monad m, Store s)
+applyM :: (Component a, Component b, Monad m, Store s)
        => (a -> m b)
        -> ComponentStore s
        -> m (ComponentStore s)
 applyM f cs = do
-  bs <- sequence $ (mapM f) <$> (extract cs)
-  return $ persist bs cs
+  bs <- sequence $ (mapM f) <$> (getAll cs)
+  return $ setAll bs cs
 
 extract_2r1d f cs = catMaybes $ build <$> storeOf cs where
   build (Tagged entId a) = do
