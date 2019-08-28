@@ -3,8 +3,6 @@ module ReduxGame.Entities.Store.Store where
 import Data.Typeable
 import ReduxGame.Entities.Entity
 
-data Tagged a = Tagged EntityId a
-
 instance Eq a => Eq (Tagged a) where
   (Tagged id_a a) == (Tagged id_b b) = id_a == id_b && a == b
 

@@ -60,3 +60,8 @@ storeOf' (ComponentStore _ stores) = let typeKey = typeRep (Proxy :: Proxy a)
   in case M.lookup typeKey stores >>= fromStore of
     (Just store) -> store
     (Nothing) -> emptyStore
+
+instance Store s => Components (ComponentStore s) where
+  allComponents = storeOf
+  componentById = maybeGetComponent
+  updateComponents = merge

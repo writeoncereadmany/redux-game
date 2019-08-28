@@ -1,5 +1,6 @@
 module ReduxGame.Entities.Store.Interactions where
 
+import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.ComponentStore
 import ReduxGame.Entities.Store.Variadics

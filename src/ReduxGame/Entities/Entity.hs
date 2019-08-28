@@ -3,7 +3,22 @@ module ReduxGame.Entities.Entity where
 import Data.Typeable
 import Data.Maybe
 
-class Typeable a => Component a
+data Tagged a = Tagged EntityId a
+
+class Components c where
+  allComponents :: Component a => c -> [ Tagged a ]
+  componentById :: Component a => EntityId -> c -> Maybe a
+  updateComponents :: Component a => [ Tagged a ] -> c -> c
+
+class Typeable a => Component a where
+  getAll :: Components c => c -> [ Tagged a ]
+  getAll = allComponents
+  getById :: Components c => EntityId -> c -> Maybe a
+  getById = componentById
+  setAll :: Components c => [ Tagged a ] -> c -> c
+  setAll = updateComponents
+  setById :: Components c => EntityId -> a -> c -> c
+  setById e a = updateComponents [ Tagged e a ]
 
 class Default a where
   defaultValue :: a
