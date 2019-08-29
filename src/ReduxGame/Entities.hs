@@ -8,6 +8,7 @@ module ReduxGame.Entities
   , (<-+)
   , (<++)
   , Tagged (Tagged)
+  , Not (Not)
   -- entity redux combinators
   , (|$>)
   , (|*>)
