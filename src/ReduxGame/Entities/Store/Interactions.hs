@@ -5,24 +5,22 @@ import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.ComponentStore
 import ReduxGame.Entities.Store.Variadics
 
-class (Extractable a, Persistable a) => Replaceable a
-
-relate :: (Extractable a, Extractable b, Monad m, Store s)
+relate :: (Component a, Component b, Monad m, Store s)
        => (a -> b -> m ())
        -> ComponentStore s
        -> m (ComponentStore s)
 relate f cs = do
-  let as = content <$> extract cs
-  let bs = content <$> extract cs
+  let as = content <$> getAll cs
+  let bs = content <$> getAll cs
   sequence [f a b | a <- as, b <- bs]
   return cs
 
-selfRelate :: (Extractable a, Monad m, Store s)
+selfRelate :: (Component a, Monad m, Store s)
            => (a -> a -> m ())
            -> ComponentStore s
            -> m (ComponentStore s)
 selfRelate f cs = do
-  let as = content <$> extract cs
+  let as = content <$> getAll cs
   disjointPairs as
   return cs where
     disjointPairs [] = return []
@@ -30,13 +28,13 @@ selfRelate f cs = do
       mapM (f x) xs
       disjointPairs xs
 
-selfRelate2 :: (Extractable a, Monad m, Store s)
+selfRelate2 :: (Component a, Monad m, Store s)
             => (a -> a -> m ())
             -> ([a] -> [(a, a)])
             -> ComponentStore s
             -> m (ComponentStore s)
 selfRelate2 f broadphase cs = do
-  traverse (uncurry f) (broadphase $ content <$> extract cs)
+  traverse (uncurry f) (broadphase $ content <$> getAll cs)
   return cs
 
 naiveBroadphase :: [Tagged a] -> [(Tagged a, Tagged a)]

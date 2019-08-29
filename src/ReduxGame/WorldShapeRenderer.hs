@@ -9,11 +9,10 @@ import ReduxGame.Shape
 import ReduxGame.Components
 import ReduxGame.Entities
 
-data ShapeRender = ShapeRender Shape Color Position
-instance Extractable ShapeRender where extract = extract_2r1d ShapeRender
-
 instance Renderable World where
   render world = Pictures (mapStore renderShapes world ++ mapStore renderSprites world) where
-    renderShapes (ShapeRender s c (Position (x, y))) = translate x y $ color c $ render s
+    renderShapes :: (Shape, Color, Maybe Position) -> Picture
+    renderShapes (s, c, (Just (Position (x, y)))) = translate x y $ color c $ render s
+    renderShapes (s, c, Nothing) = color c $ render s
     renderSprites :: (Picture, Position) -> Picture
     renderSprites (p, Position (x, y)) = translate x y $ p

@@ -17,12 +17,20 @@ import ReduxGame.Collisions.CollisionDetection
 import ReduxGame.Collisions.CollisionReaction
 
 
-detectStaticCollisions :: Tagged StaticObject -> Tagged MovingObject -> Events ()
-detectStaticCollisions (Tagged s_id (StaticObject _ s_shp (Position s_pos))) (Tagged m_id (MovingObject _ m_shp (Position m_pos) _)) =
+detectStaticCollisions :: Tagged (Static, Shape, Maybe Position)
+                       -> Tagged (Moving, Shape, Maybe Position, Maybe Velocity)
+                       -> Events ()
+detectStaticCollisions (Tagged s_id (_, s_shp, maybe_sp)) (Tagged m_id (_, m_shp, maybe_mp, _)) = do
+  let s_pos = maybe (0, 0) unwrap maybe_sp
+  let m_pos = maybe (0, 0) unwrap maybe_mp
   when (move s_pos s_shp !!! move m_pos m_shp) (fireEvent $ StaticCollision s_id m_id)
 
-detectMovingCollisions :: Tagged MovingObject -> Tagged MovingObject -> Events ()
-detectMovingCollisions (Tagged a_id (MovingObject _ a_shp (Position a_pos) _)) (Tagged b_id (MovingObject _ b_shp (Position b_pos) _)) = do
+detectMovingCollisions :: Tagged (Moving, Shape, Maybe Position, Maybe Velocity)
+                       -> Tagged (Moving, Shape, Maybe Position, Maybe Velocity)
+                       -> Events ()
+detectMovingCollisions (Tagged a_id (_, a_shp, maybe_ap, _)) (Tagged b_id (_, b_shp, maybe_bp, _)) = do
+  let a_pos = maybe (0,0) unwrap maybe_ap
+  let b_pos = maybe (0,0) unwrap maybe_bp
   when (move a_pos a_shp !!! move b_pos b_shp) (fireEvent $ MovingCollision a_id b_id)
 
 detectEventCollisions :: forall a b . (Component a, Component b)

@@ -7,11 +7,8 @@ module ReduxGame.Entities.Entities
   , destroyEntity
   , updateEntity
   , mapStore
-  , Only (Only)
   , apply
   , applyM
-  , Extractable
-  , Persistable
   , EntityId
   , Component
   , ComponentStore
@@ -61,6 +58,6 @@ createEntity entity = Entities $ \components -> createAll entity components
 destroyEntity :: EntityId -> Entities ()
 destroyEntity entity = Entities $ \components -> ((), destroyAll entity components)
 
-updateEntity :: (Extractable a, Persistable b) => EntityId -> (a -> b) -> Entities ()
+updateEntity :: (Component a, Component b) => EntityId -> (a -> b) -> Entities ()
 updateEntity entId f = Entities $ \components ->
-  ((), maybe components (flip persist components . (: []) . Tagged entId . f) (extractWithId entId components))
+  ((), maybe components (flip setAll components . (: []) . Tagged entId . f) (getById entId components))

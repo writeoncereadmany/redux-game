@@ -7,10 +7,15 @@ import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.Variadics
 import ReduxGame.Shape.Shape
 
+class NamedBox a b where
+  unwrap :: a -> b
+
 data Position = Position Vector deriving Component
+instance NamedBox Position Vector where unwrap (Position p) = p
 instance Default Position where defaultValue = Position (0,0)
 
 data Velocity = Velocity Vector deriving Component
+instance NamedBox Velocity Vector where unwrap (Velocity v) = v
 instance Default Velocity where defaultValue = Velocity (0,0)
 
 data Acceleration = Acceleration Vector deriving Component

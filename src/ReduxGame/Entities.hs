@@ -1,6 +1,6 @@
 module ReduxGame.Entities
   -- entity definitions
-  ( Component
+  ( Component (getAll, getById, setAll)
   , Property
   , EntityId
   , Entity
@@ -16,15 +16,8 @@ module ReduxGame.Entities
   , spawnThen
   , destroy
   -- variadics support
-  , Only (Only)
-  , Extractable (extract, extractWithId)
-  , Persistable (persist, persistWithId)
   , mapStore
   , foldStore
-  , extract_2r1d
-  , extract_2r2d
-  , extractWithId_2r1d
-  , extractWithId_2r2d
   -- definition of world type
   , World
   , newWorld

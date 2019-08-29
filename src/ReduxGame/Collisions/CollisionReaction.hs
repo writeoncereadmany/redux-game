@@ -15,18 +15,18 @@ import ReduxGame.Redux
 import ReduxGame.Collisions.CollisionDetection
 import ReduxGame.Collisions.CollisionEvents
 
-data AfterCollision = AfterCollision Position Velocity
-
-collisionToTuple (AfterCollision pos vel) = (pos, vel)
-
-instance Persistable AfterCollision where
-  persist as = persist $ fmap collisionToTuple <$> as
-
-staticBounce' :: EntityId -> StaticObject -> EntityId -> MovingObject -> Events AfterCollision
-staticBounce' s_id (StaticObject (Static s_el) s_shp (Position s_pos))
-              m_id (MovingObject (Moving m_el _) m_shp (Position m_pos) (Velocity m_vel))
-  = case (move s_pos s_shp !!> move m_pos m_shp) of
-    Nothing -> return $ AfterCollision (Position m_pos) (Velocity m_vel)
+staticBounce' :: EntityId
+              -> (Static, Shape, Maybe Position)
+              -> EntityId
+              -> (Moving, Shape, Maybe Position, Maybe Velocity)
+              -> Events (Position, Velocity)
+staticBounce' s_id ((Static s_el), s_shp, maybe_s_pos)
+              m_id ((Moving m_el _), m_shp, maybe_m_pos, maybe_m_vel)
+  = let s_pos = maybe (0, 0) unwrap maybe_s_pos
+        m_pos = maybe (0, 0) unwrap maybe_m_pos
+        m_vel = maybe (0, 0) unwrap maybe_m_vel
+    in case (move s_pos s_shp !!> move m_pos m_shp) of
+    Nothing -> return $ (Position m_pos, Velocity m_vel)
     (Just pushout) -> do
       let elasticity  = s_el * m_el
       let pushout'    = mulSV (1 + elasticity) pushout
@@ -35,21 +35,29 @@ staticBounce' s_id (StaticObject (Static s_el) s_shp (Position s_pos))
       let normal_proj = (1 + elasticity) * (m_vel `dotV` unit_push)
       let m_vel'      = if (normal_proj > 0) then m_vel else m_vel + (negate $ mulSV normal_proj unit_push)
       fireEvent $ Pushed m_id pushout'
-      return $ AfterCollision (Position m_pos') (Velocity m_vel')
+      return (Position m_pos', Velocity m_vel')
 
 staticBounce :: StaticCollision -> World -> Events World
 staticBounce (StaticCollision s_id m_id) cs = do
-  case (extractWithId s_id cs, extractWithId m_id cs) of
+  case (getById s_id cs, getById m_id cs) of
     (Just static, Just moving) -> do
       moving' <- staticBounce' s_id static m_id moving
-      return $ persistWithId m_id moving' cs
+      return $ setAll [ Tagged m_id moving' ] cs
     otherwise -> return cs
 
-movingBounce' :: EntityId -> MovingObject -> EntityId -> MovingObject -> Events (AfterCollision, AfterCollision)
-movingBounce' a_id (MovingObject (Moving ae am) as (Position ap) (Velocity av))
-              b_id (MovingObject (Moving be bm) bs (Position bp) (Velocity bv)) =
-  case (move ap as !!> move bp bs) of
-    Nothing -> return (AfterCollision (Position ap) (Velocity av), AfterCollision (Position bp) (Velocity bv))
+movingBounce' :: EntityId
+              -> (Moving, Shape, Maybe Position, Maybe Velocity)
+              -> EntityId
+              -> (Moving, Shape, Maybe Position, Maybe Velocity)
+              -> Events ((Position, Velocity), (Position, Velocity))
+movingBounce' a_id ((Moving ae am), as, maybe_ap, maybe_av)
+              b_id ((Moving be bm), bs, maybe_bp, maybe_bv) =
+  let ap = maybe (0,0) unwrap maybe_ap
+      av = maybe (0,0) unwrap maybe_av
+      bp = maybe (0,0) unwrap maybe_bp
+      bv = maybe (0,0) unwrap maybe_bv
+  in case (move ap as !!> move bp bs) of
+    Nothing -> return ((Position ap, Velocity av), (Position bp, Velocity bv))
     (Just pushout) -> do
       let elasticity          = ae * be
       let totalMass           = am + bm
@@ -67,12 +75,12 @@ movingBounce' a_id (MovingObject (Moving ae am) as (Position ap) (Velocity av))
       let dbv                 = negate $ mulSV ((1 + elasticity) * (rel_bv `dotV` unit_push)) unit_push
       fireEvent $ Pushed a_id pushout_a
       fireEvent $ Pushed b_id pushout_b
-      return (AfterCollision (Position ap') (Velocity (av + dav)), AfterCollision (Position bp') (Velocity (bv + dbv)))
+      return ((Position ap', Velocity (av + dav)), (Position bp', Velocity (bv + dbv)))
 
 movingBounce :: MovingCollision -> World -> Events World
 movingBounce (MovingCollision a_id b_id) cs = do
-  case (extractWithId a_id cs, extractWithId b_id cs) of
+  case (getById a_id cs, getById b_id cs) of
     (Just as, Just bs) -> do
       (as', bs') <- movingBounce' a_id as b_id bs
-      return $ persistWithId a_id as' $ persistWithId b_id bs' $ cs
+      return $ setAll [ Tagged a_id as' ] $ setAll [Tagged b_id bs' ] $ cs
     otherwise -> return cs
