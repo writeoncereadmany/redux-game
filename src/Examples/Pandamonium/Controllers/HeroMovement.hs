@@ -48,7 +48,7 @@ face :: Facing -> Picture -> Picture
 face f = scale (xmod f) 1
 
 runFrame :: Float -> Facing -> [ Picture ] -> Picture
-runFrame xPos facing pictures = face facing $ pictures !! (mod (floor $ (xmod facing * xPos) / 50)) (length pictures)
+runFrame xPos facing pictures = face facing $ pictures !! (mod (floor $ (xmod facing * xPos) / 80)) (length pictures)
 
 animate :: AfterTimeStep -> (PandaFrames, GroundedState, Facing, Position, Velocity) -> Picture
 animate _ (frames, grounded, facing, Position (x, y), Velocity (dx, dy))

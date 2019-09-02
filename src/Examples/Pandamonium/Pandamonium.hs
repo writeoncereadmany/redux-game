@@ -94,7 +94,7 @@ pandaGameRedux = redux
              |:: connect world pandaWorldRedux
              |=> checkForCompletion
              |=> nextLevel
-             |-> countdown
+             -- |-> countdown
              |=> timeout
              |=> exitOnGameOver
              |:: connect timer timerRedux

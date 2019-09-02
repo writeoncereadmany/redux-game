@@ -34,16 +34,16 @@ data PandaFrames = PandaFrames
 makeLenses ''PandaFrames
 
 frame :: BitmapData -> Int -> Picture
-frame bmp n = scale 6 6 (BitmapSection (Rectangle (n*20, 0) (20, 20)) bmp)
+frame bmp n = scale 4 4 (BitmapSection (Rectangle (n*25, 0) (25, 28)) bmp)
 
 loadFrames :: PandaAssets -> PandaFrames
 loadFrames assets = let frame' = frame $ assets ^. panda_sprites
   in PandaFrames
-    { _run_animation = [ frame' n | n <- [0..5]]
-    , _standing = frame' 7
+    { _run_animation = [ frame' n | n <- [0,1,2,1]]
+    , _standing = frame' 1
     , _jumping = frame' 0
-    , _falling = frame' 6
-    , _sliding = frame' 8
+    , _falling = frame' 0
+    , _sliding = frame' 1
     }
 
 data Facing = FacingLeft | FacingRight deriving Component

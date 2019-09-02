@@ -44,5 +44,5 @@ unpixels = B.pack . join
 loadAssets :: IO PandaAssets
 loadAssets = do
   coins <- loadBitmapData "resources/Examples/Pandamonium/Sprites/coin.bmp"
-  pandas <- loadBitmapData "resources/Examples/Pandamonium/Sprites/panda.bmp"
+  pandas <- loadBitmapData "resources/Examples/Pandamonium/Sprites/pandas.bmp"
   return $ PandaAssets coins pandas
