@@ -20,7 +20,7 @@ instance Traversable Tagged where
 content :: Tagged a -> a
 content (Tagged _ a) = a
 
-class Components c where
+class Typeable c => Components c where
   allComponents :: Component a => c -> [ Tagged a ]
   componentById :: Component a => EntityId -> c -> Maybe a
   updateComponents :: Component a => [ Tagged (Maybe a) ] -> c -> c

@@ -22,30 +22,30 @@ destroy entId = fireEvent $ EntityEvent (doDestroyEntity entId)
 update :: (Component a, Component b) => EntityId -> (a -> b) -> Events ()
 update entId f = fireEvent $ EntityEvent (doUpdateEntity entId f)
 
-handleEntityEvent :: Store s => EntityEvent -> ComponentStore s -> ComponentStore s
+handleEntityEvent :: Components c => EntityEvent -> c -> c
 handleEntityEvent (EntityEvent action) store = updateState action store
 
-handleEntityThenEvent :: Store s => EntityThenEvent -> ComponentStore s -> Events (ComponentStore s)
+handleEntityThenEvent :: Components c => EntityThenEvent -> c -> Events c
 handleEntityThenEvent (EntityThenEvent action followup) store = do
   let (a, store') = runEntities action store
   followup a
   return store'
 
-entityRedux :: Store s => Redux (ComponentStore s)
+entityRedux :: Components c => Redux c
 entityRedux = redux
           |-> handleEntityEvent
           |=> handleEntityThenEvent
 
 infixl 1 |$>
-(|$>) :: (ReduxEvent a, Component b, Component c, Store s)
-      => Redux (ComponentStore s)
+(|$>) :: (ReduxEvent a, Component b, Component c, Components s)
+      => Redux s
       -> (a -> b -> c)
-      -> Redux (ComponentStore s)
+      -> Redux s
 redux |$> f = redux |-> apply . f
 
 infixl 1 |*>
-(|*>) :: (ReduxEvent a, Component b, Component c, Store s)
-      => Redux (ComponentStore s)
+(|*>) :: (ReduxEvent a, Component b, Component c, Components s)
+      => Redux s
       -> (a -> b -> Events c)
-      -> Redux (ComponentStore s)
+      -> Redux s
 redux |*> f = redux |=> applyM . f
