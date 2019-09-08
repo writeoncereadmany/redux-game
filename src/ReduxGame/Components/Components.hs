@@ -12,14 +12,12 @@ class NamedBox a b where
 
 data Position = Position Vector deriving Component
 instance NamedBox Position Vector where unwrap (Position p) = p
-instance Default Position where defaultValue = Position (0,0)
 
 data Velocity = Velocity Vector deriving Component
 instance NamedBox Velocity Vector where unwrap (Velocity v) = v
-instance Default Velocity where defaultValue = Velocity (0,0)
 
 data Acceleration = Acceleration Vector deriving Component
-instance Default Acceleration where defaultValue = Acceleration (0,0)
+instance NamedBox Acceleration Vector where unwrap (Acceleration a) = a
 
 instance Component Shape
 instance Component Color

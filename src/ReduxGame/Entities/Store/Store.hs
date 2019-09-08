@@ -29,8 +29,6 @@ fromPair (i, a) = Tagged i a
 
 class Typeable t => Store t where
   withId :: EntityId -> t a -> Maybe a
-  withId' :: Default a => EntityId -> t a -> a
-  withId' entId s = orDefault $ withId entId s
   mergeComponents :: [ Tagged a ] -> t a -> t a
   updateComponents :: [ Tagged (Maybe a) ] -> t a -> t a
   components :: t a -> [ Tagged a ]

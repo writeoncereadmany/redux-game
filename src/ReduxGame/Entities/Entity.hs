@@ -115,11 +115,6 @@ instance (Component a) => Component (Not a) where
     Nothing  -> Just Not
   setAll xs c = updateComponents (fmap (const (Nothing :: Maybe a)) <$> xs) c
 
-class Default a where
-  defaultValue :: a
-  orDefault :: Maybe a -> a
-  orDefault = fromMaybe defaultValue
-
 type EntityId = Integer
 
 data Property = forall c . Component c => Property c

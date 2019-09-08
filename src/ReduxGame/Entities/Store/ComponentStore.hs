@@ -8,7 +8,6 @@ module ReduxGame.Entities.Store.ComponentStore
  , createAll
  , destroyAll
  , getComponent
- , maybeGetComponent
  ) where
 
 import Data.Maybe
@@ -49,11 +48,8 @@ destroyAll :: (Store s) => EntityId -> ComponentStore s -> ComponentStore s
 destroyAll entId (ComponentStore nextId stores) = ComponentStore nextId (deleteFrom <$> stores) where
   deleteFrom (DynStore as) = DynStore $ delete entId as
 
-getComponent :: (Component a, Default a, Store s) => EntityId -> ComponentStore s -> a
-getComponent entId cs = withId' entId $ storeOf' cs
-
-maybeGetComponent :: (Component a, Store s) => EntityId -> ComponentStore s -> Maybe a
-maybeGetComponent entId cs = withId entId $ storeOf' cs
+getComponent :: (Component a, Store s) => EntityId -> ComponentStore s -> Maybe a
+getComponent entId cs = withId entId $ storeOf' cs
 
 fromStore :: (Store s, Component a) => DynStore s -> Maybe (s a)
 fromStore (DynStore b) = cast b
@@ -66,5 +62,5 @@ storeOf' (ComponentStore _ stores) = let typeKey = typeRep (Proxy :: Proxy a)
 
 instance Store s => Components (ComponentStore s) where
   allComponents = storeOf
-  componentById = maybeGetComponent
+  componentById = getComponent
   updateComponents = update
