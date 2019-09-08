@@ -1,9 +1,9 @@
 module ReduxGame.Entities.Store.Interactions where
 
+import ReduxGame.Entities.Component
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.ComponentStore
-import ReduxGame.Entities.Store.Variadics
 
 relate :: (Component a, Component b, Monad m, Store s)
        => (a -> b -> m ())

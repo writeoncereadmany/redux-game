@@ -6,24 +6,7 @@ import Control.Lens.Tuple
 import Data.Typeable
 import Data.Maybe
 
-data Tagged a = Tagged EntityId a
-
-instance Functor Tagged where
-  fmap f (Tagged entId a) = Tagged entId (f a)
-
-class Components c where
-  allComponents :: Component a => c -> [ Tagged a ]
-  componentById :: Component a => EntityId -> c -> Maybe a
-  updateComponents :: Component a => [ Tagged (Maybe a) ] -> c -> c
-
-class Typeable a => Component a where
-  getAll :: Components c => c -> [ Tagged a ]
-  getAll = allComponents
-  getById :: Components c => EntityId -> c -> Maybe a
-  getById = componentById
-  setAll :: Components c => [ Tagged a ] -> c -> c
-  setAll xs c = updateComponents (fmap Just <$> xs) c
-
+import ReduxGame.Entities.Component
 
 instance Component a => Component (Tagged a) where
   getAll c = wrap <$> getAll c where
@@ -114,8 +97,6 @@ instance (Component a) => Component (Not a) where
     (Just _) -> Nothing
     Nothing  -> Just Not
   setAll xs c = updateComponents (fmap (const (Nothing :: Maybe a)) <$> xs) c
-
-type EntityId = Integer
 
 data Property = forall c . Component c => Property c
 

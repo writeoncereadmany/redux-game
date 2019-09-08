@@ -20,11 +20,11 @@ module ReduxGame.Entities.Entities
 
 import Data.Typeable
 
+import ReduxGame.Entities.Component
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.MapStore
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.ComponentStore
-import ReduxGame.Entities.Store.Variadics
 
 data Entities a = Entities { runEntities :: forall s . Store s => ComponentStore s -> (a, ComponentStore s)}
 

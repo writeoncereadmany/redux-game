@@ -3,8 +3,8 @@ module ReduxGame.Components.Components where
 import Graphics.Gloss (Vector, Color, Picture)
 
 import ReduxGame.Redux
+import ReduxGame.Entities.Component
 import ReduxGame.Entities.Entity
-import ReduxGame.Entities.Store.Variadics
 import ReduxGame.Shape.Shape
 
 class NamedBox a b where

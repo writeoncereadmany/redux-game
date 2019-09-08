@@ -1,7 +1,7 @@
 module ReduxGame.Entities.Store.MapStore where
 
 import ReduxGame.Entities.Store.Store
-import ReduxGame.Entities.Entity
+import ReduxGame.Entities.Component
 import qualified Data.Map as M
 import Data.List
 

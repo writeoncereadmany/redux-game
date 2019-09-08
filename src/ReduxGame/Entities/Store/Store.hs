@@ -1,22 +1,13 @@
 module ReduxGame.Entities.Store.Store where
 
 import Data.Typeable
-import ReduxGame.Entities.Entity
+import ReduxGame.Entities.Component
 
 instance Eq a => Eq (Tagged a) where
   (Tagged id_a a) == (Tagged id_b b) = id_a == id_b && a == b
 
 instance Show a => Show (Tagged a) where
   show (Tagged id_a a) = show (id_a, a)
-
-instance Foldable Tagged where
-  foldMap f (Tagged entId a) = f a
-
-instance Traversable Tagged where
-  traverse f (Tagged entId a) = pure (Tagged entId) <*> f a
-
-content :: Tagged a -> a
-content (Tagged _ a) = a
 
 idOf :: Tagged a -> EntityId
 idOf (Tagged entId _) = entId
