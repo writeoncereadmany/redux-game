@@ -3,9 +3,9 @@ module ReduxGame.Entities.Entities
   , runEntities
   , evaluate
   , updateState
-  , createEntity
-  , destroyEntity
-  , updateEntity
+  , doCreateEntity
+  , doDestroyEntity
+  , doUpdateEntity
   , mapStore
   , apply
   , applyM
@@ -26,7 +26,7 @@ import ReduxGame.Entities.Store.MapStore
 import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.ComponentStore
 
-data Entities a = Entities { runEntities :: forall s . Store s => ComponentStore s -> (a, ComponentStore s)}
+data Entities a = Entities { runEntities :: forall c . Components c => c -> (a, c)}
 
 instance Functor Entities where
   fmap f entities = Entities $ \components ->
@@ -46,18 +46,18 @@ instance Monad Entities where
     let (val, components') = runEntities entities components
      in runEntities (f val) components'
 
-evaluate :: Store s => Entities a -> ComponentStore s -> a
+evaluate :: Components c => Entities a -> c -> a
 evaluate e c = fst $ runEntities e c
 
-updateState :: Store s => Entities () -> ComponentStore s -> ComponentStore s
+updateState :: Components c => Entities () -> c -> c
 updateState e c = snd $ runEntities e c
 
-createEntity :: Entity -> Entities EntityId
-createEntity entity = Entities $ \components -> createAll entity components
+doCreateEntity :: Entity -> Entities EntityId
+doCreateEntity entity = Entities $ \components -> createEntity entity components
 
-destroyEntity :: EntityId -> Entities ()
-destroyEntity entity = Entities $ \components -> ((), destroyAll entity components)
+doDestroyEntity :: EntityId -> Entities ()
+doDestroyEntity entity = Entities $ \components -> ((), destroyEntity entity components)
 
-updateEntity :: (Component a, Component b) => EntityId -> (a -> b) -> Entities ()
-updateEntity entId f = Entities $ \components ->
+doUpdateEntity :: (Component a, Component b) => EntityId -> (a -> b) -> Entities ()
+doUpdateEntity entId f = Entities $ \components ->
   ((), maybe components (flip setAll components . (: []) . Tagged entId . f) (getById entId components))

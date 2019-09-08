@@ -97,20 +97,3 @@ instance (Component a) => Component (Not a) where
     (Just _) -> Nothing
     Nothing  -> Just Not
   setAll xs c = updateComponents (fmap (const (Nothing :: Maybe a)) <$> xs) c
-
-data Property = forall c . Component c => Property c
-
-data Entity = Entity [ Property ]
-
-entity :: Entity
-entity = Entity []
-
-infixl 1 <-+
-
-(<-+) :: Component c => Entity -> c -> Entity
-(<-+) (Entity props) comp = Entity $ Property comp : props
-
-infixl 1 <++
-
-(<++) :: Entity -> Entity -> Entity
-(<++) (Entity props1) (Entity props2) = Entity $ props1 ++ props2

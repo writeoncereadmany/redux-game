@@ -65,3 +65,5 @@ instance Store s => Components (ComponentStore s) where
   allComponents = storeOf
   componentById = getComponent
   updateComponents = update
+  createEntity = createAll
+  destroyEntity = destroyAll

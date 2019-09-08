@@ -20,11 +20,12 @@ instance Traversable Tagged where
 content :: Tagged a -> a
 content (Tagged _ a) = a
 
-
 class Components c where
   allComponents :: Component a => c -> [ Tagged a ]
   componentById :: Component a => EntityId -> c -> Maybe a
   updateComponents :: Component a => [ Tagged (Maybe a) ] -> c -> c
+  createEntity :: Entity -> c -> (EntityId, c)
+  destroyEntity :: EntityId -> c -> c
 
 class Typeable a => Component a where
   getAll :: Components c => c -> [ Tagged a ]
@@ -33,6 +34,24 @@ class Typeable a => Component a where
   getById = componentById
   setAll :: Components c => [ Tagged a ] -> c -> c
   setAll xs c = updateComponents (fmap Just <$> xs) c
+
+data Property = forall c . Component c => Property c
+
+data Entity = Entity [ Property ]
+
+entity :: Entity
+entity = Entity []
+
+infixl 1 <-+
+
+(<-+) :: Component c => Entity -> c -> Entity
+(<-+) (Entity props) comp = Entity $ Property comp : props
+
+infixl 1 <++
+
+(<++) :: Entity -> Entity -> Entity
+(<++) (Entity props1) (Entity props2) = Entity $ props1 ++ props2
+
 
 mapWithTags :: (Component a, Components c) => (a -> b) -> c -> [ Tagged b ]
 mapWithTags f cs = fmap f <$> getAll cs
