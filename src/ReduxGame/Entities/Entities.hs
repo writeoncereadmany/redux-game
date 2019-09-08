@@ -23,7 +23,6 @@ import Data.Typeable
 import ReduxGame.Entities.Component
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.MapStore
-import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Store.ComponentStore
 
 data Entities a = Entities { runEntities :: forall c . Components c => c -> (a, c)}

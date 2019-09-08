@@ -27,7 +27,7 @@ module ReduxGame.Entities
 
 -- for exporting
 import ReduxGame.Entities.Component
-import ReduxGame.Entities.Entity
+import ReduxGame.Entities.Components
 import ReduxGame.Entities.Entities
 import ReduxGame.Entities.EntityRedux
 import ReduxGame.Entities.Store.Interactions

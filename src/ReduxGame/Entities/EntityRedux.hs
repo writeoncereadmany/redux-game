@@ -3,7 +3,6 @@ module ReduxGame.Entities.EntityRedux where
 import ReduxGame.Redux
 import ReduxGame.Entities.Store.Store
 import ReduxGame.Entities.Store.ComponentStore
-import ReduxGame.Entities.Entity
 import ReduxGame.Entities.Component
 import ReduxGame.Entities.Entities
 

@@ -15,7 +15,6 @@ import Data.Typeable
 import qualified Data.Map as M
 import ReduxGame.Entities.Store.Store as S
 import ReduxGame.Entities.Component
-import ReduxGame.Entities.Entity
 
 data DynStore s where
   DynStore :: forall s a . (Store s, Component a) => s a -> DynStore s

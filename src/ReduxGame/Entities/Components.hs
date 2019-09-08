@@ -1,4 +1,4 @@
-module ReduxGame.Entities.Entity where
+module ReduxGame.Entities.Components where
 
 import Control.Lens
 import Control.Lens.Tuple
@@ -82,7 +82,6 @@ instance (Component a, Component b, Component c, Component d, Component e) => Co
               . setAll (fmap (^. _4) <$> xs)
               . setAll (fmap (^. _5) <$> xs)
               $ s
-
 
 instance (Component a) => Component (Maybe a) where
   getAll _ = []  -- ignoring for now
