@@ -30,7 +30,7 @@ import ReduxGame.Entities.Component
 import ReduxGame.Entities.Components
 import ReduxGame.Entities.Entities
 import ReduxGame.Entities.EntityRedux
-import ReduxGame.Entities.Store.Interactions
+import ReduxGame.Entities.Interactions
 
 -- to support new definitions, linking all these bits together
 import ReduxGame.Entities.Store.ComponentStore

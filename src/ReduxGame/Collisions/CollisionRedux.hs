@@ -8,7 +8,7 @@ import Control.Monad.Trans
 import Graphics.Gloss.Data.Vector
 
 import ReduxGame.Entities
-import ReduxGame.Entities.Store.Interactions
+import ReduxGame.Entities.Interactions
 import ReduxGame.Components.Components
 import ReduxGame.Shape
 import ReduxGame.Redux
@@ -46,7 +46,7 @@ fireOnCollision a b f _ = relate $ detectEventCollisions a b f
 
 detectCollisions :: TimeStep -> World -> Events World
 detectCollisions _ = relate detectStaticCollisions
-                 >=> selfRelate2 detectMovingCollisions naiveBroadphase
+                 >=> selfRelate detectMovingCollisions naiveBroadphase
 
 collisionRedux :: Redux World
 collisionRedux = redux

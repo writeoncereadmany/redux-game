@@ -8,6 +8,11 @@ import Data.Maybe
 
 import ReduxGame.Entities.Component
 
+instance Component () where
+  getAll c = []
+  getById e c = Nothing
+  setAll xs c = c
+
 instance Component a => Component (Tagged a) where
   getAll c = wrap <$> getAll c where
     wrap (Tagged e a) = Tagged e (Tagged e a)
