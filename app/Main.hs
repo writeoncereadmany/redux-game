@@ -20,7 +20,7 @@ main = getArgs >>= run where
   run ["screens"] = initialiseGame session sessionRedux initialiseLoadingScreen
   run ["balls"] = initialiseGame balls ballsRedux initialiseBalls
   run ["fountain"] = initialiseGame fountain fountainRedux initialiseFountain
-  run ["pong"] = initialiseGame newWorld pongRedux initialisePong
+  run ["pong"] = initialiseGame newPong pongRedux initialisePong
   run ["panda"] = do
     assets <- loadAssets
     initialiseGame (initialPandas assets) pandaGameRedux initialisePandas

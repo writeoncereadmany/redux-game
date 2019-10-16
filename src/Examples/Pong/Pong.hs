@@ -1,15 +1,31 @@
 module Examples.Pong.Pong where
 
+import Control.Lens
+
+import ReduxGame.Renderer.Renderable
 import ReduxGame.Redux
 import ReduxGame.Entities
 import ReduxGame.WorldShapeRenderer
 import ReduxGame.Components
 import ReduxGame.Collisions
+import ReduxGame.Timer
 
 import Examples.Pong.Bat
 import Examples.Pong.Ball
 import Examples.Pong.Wall
 import Examples.Pong.Goal
+
+data Pong = Pong
+  { _world :: World
+  , _timer :: Timer
+  }
+
+makeLenses ''Pong
+
+instance Renderable Pong where
+  render pong = render (pong ^. world)
+
+newPong = Pong newWorld newTimer
 
 initialisePong :: Events ()
 initialisePong = do
@@ -29,13 +45,16 @@ checkForGoals = fireOnCollision' Goal Ball GoalScored
 resetBallOnScore :: GoalScored -> Events ()
 resetBallOnScore (GoalScored goal_id ball_id) = do
   destroy ball_id
-  spawn $ ball 0 0 700 450
+  await 2 $ spawn $ ball 0 0 700 450
 
+pongRedux :: Redux Pong
+pongRedux = connect world entityRedux
+        |:: connect timer timerRedux
 
-pongRedux :: Redux World
-pongRedux = worldRedux
-        |:: batRedux
-        |:: collisionRedux
-        |=> checkForGoals
-        |!> resetBallOnScore
-        |$> applyVelocity
+entityRedux :: Redux World
+entityRedux = worldRedux
+          |:: batRedux
+          |:: collisionRedux
+          |=> checkForGoals
+          |!> resetBallOnScore
+          |$> applyVelocity
