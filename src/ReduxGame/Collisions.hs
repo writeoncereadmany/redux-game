@@ -1,6 +1,7 @@
 module ReduxGame.Collisions
   ( collisionRedux
   , fireOnCollision
+  , fireOnCollision'
   , Static (Static)
   , Moving (Moving)
   , Pushed (Pushed)

@@ -1,6 +1,7 @@
 module ReduxGame.Collisions.CollisionRedux
   ( collisionRedux
   , fireOnCollision
+  , fireOnCollision'
   ) where
 
 import Control.Monad
@@ -43,6 +44,11 @@ fireOnCollision :: forall a b . (Component a, Component b)
                 => a -> b -> (EntityId -> EntityId -> Events ())
                 -> TimeStep -> World -> Events World
 fireOnCollision a b f _ = relate $ detectEventCollisions a b f
+
+fireOnCollision' :: forall a b e . (Component a, Component b, ReduxEvent e)
+                 => a -> b -> (EntityId -> EntityId -> e)
+                 -> TimeStep -> World -> Events World
+fireOnCollision' a b f = fireOnCollision a b (\c d -> fireEvent $ f c d)
 
 detectCollisions :: TimeStep -> World -> Events World
 detectCollisions _ = relate detectStaticCollisions
