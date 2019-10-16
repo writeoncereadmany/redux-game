@@ -1,4 +1,8 @@
-module Examples.Pong.Pong where
+module Examples.Pong.Pong
+  ( pongRedux
+  , newPong
+  , initialisePong
+  ) where
 
 import Control.Lens
 
@@ -10,10 +14,9 @@ import ReduxGame.Components
 import ReduxGame.Collisions
 import ReduxGame.Timer
 
-import Examples.Pong.Bat
-import Examples.Pong.Ball
-import Examples.Pong.Wall
-import Examples.Pong.Goal
+import Examples.Pong.Levels.Court
+import Examples.Pong.Controllers.Bats
+import Examples.Pong.Controllers.Scoring
 
 data Pong = Pong
   { _world :: World
@@ -27,25 +30,6 @@ instance Renderable Pong where
 
 newPong = Pong newWorld newTimer
 
-initialisePong :: Events ()
-initialisePong = do
-  spawn $ bat (-1100) 0 'a' 'z'
-  spawn $ bat 1100 0 '\'' '/'
-  spawn $ ball 0 0 700 450
-  spawn $ goal (-1180) (-680) 30 1360
-  spawn $ goal (1150) (-680) 30 1360
-  spawn $ wall (-1200) (-700) 2400 20
-  spawn $ wall (-1200) (680) 2400 20
-  spawn $ wall (-1200) (-700) 20 1400
-  spawn $ wall (1180) (-700) 20 1400
-
-checkForGoals :: TimeStep -> World -> Events World
-checkForGoals = fireOnCollision' Goal Ball GoalScored
-
-resetBallOnScore :: GoalScored -> Events ()
-resetBallOnScore (GoalScored goal_id ball_id) = do
-  destroy ball_id
-  await 2 $ spawn $ ball 0 0 700 450
 
 pongRedux :: Redux Pong
 pongRedux = connect world entityRedux
@@ -55,6 +39,5 @@ entityRedux :: Redux World
 entityRedux = worldRedux
           |:: batRedux
           |:: collisionRedux
-          |=> checkForGoals
-          |!> resetBallOnScore
+          |:: scoringRedux
           |$> applyVelocity

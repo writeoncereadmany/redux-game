@@ -1,4 +1,4 @@
-module Examples.Pong.Wall where
+module Examples.Pong.Entities.Wall where
 
 import Graphics.Gloss (white)
 
