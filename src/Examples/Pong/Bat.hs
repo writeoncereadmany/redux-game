@@ -34,6 +34,6 @@ bat x y up down = entity
 
 
 batRedux :: Redux World
-batRedux = worldRedux
+batRedux = redux
        |$> moveBat
        |*> updateAxis Vertical
