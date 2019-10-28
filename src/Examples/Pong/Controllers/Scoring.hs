@@ -13,6 +13,7 @@ import ReduxGame.Entities.Store.ComponentStore
 import Examples.Pong.Entities.Ball
 import Examples.Pong.Entities.Goal
 import Examples.Pong.Entities.Particle
+import Examples.Pong.Util.Random
 
 data GoalScored = GoalScored EntityId EntityId deriving ReduxEvent
 
@@ -28,12 +29,14 @@ resetBallOnScore (GoalScored goal_id ball_id) world = do
 
 generateParticles :: EntityId -> World -> Events ()
 generateParticles ball_id world = case getComponent ball_id world of
-  (Just (Position (x, y))) -> times 6 (spawnParticle x y)
+  (Just (Position (x, y))) -> do
+    angles <- (2*pi*) <<$>> liftIO (evenIsh 6)
+    sequence $ spawnParticle x y <$> angles
+    return ()
   Nothing -> return ()
 
-spawnParticle :: Float -> Float -> Events ()
-spawnParticle x y = do
-  angle <- randomFloat 0 (2*pi)
+spawnParticle :: Float -> Float -> Float -> Events ()
+spawnParticle x y angle = do
   let dx = sin angle * 400
   let dy = cos angle * 400
   spawnThen (particle x y dx dy) (await 3 . destroy) where
@@ -42,10 +45,9 @@ spawnParticle x y = do
       val <- liftIO randomIO
       return $ val * (max - min) + min
 
-times :: Monad m => Int -> m () -> m ()
-times n f = do
-  sequence (replicate n f)
-  return ()
+infixl 6 <<$>>
+(<<$>>) :: (Functor f, Functor g) => (a -> b) -> f (g a) -> f (g b)
+(<<$>>) = fmap . fmap
 
 scoringRedux :: Redux World
 scoringRedux = redux
