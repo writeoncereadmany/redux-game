@@ -62,6 +62,9 @@ mapStore f cs = content <$> mapWithTags f cs
 foldStore :: (Component a, Components c) => (a -> b -> b) -> b -> c -> b
 foldStore f acc cs = foldr f acc (content <$> getAll cs)
 
+firstComponent :: (Component a, Components c) => c -> Maybe a
+firstComponent cs = listToMaybe (content <$> getAll cs)
+
 apply :: (Component a, Component b, Components c) => (a -> b) -> c -> c
 apply f cs = setAll (fmap f <$> (getAll cs)) cs
 

@@ -19,6 +19,7 @@ module ReduxGame.Entities
   -- variadics support
   , mapStore
   , foldStore
+  , firstComponent
   -- definition of world type
   , World
   , newWorld
