@@ -22,6 +22,7 @@ import Examples.Pandamonium.Assets.PandaAssets
 
 import Examples.Pandamonium.Controllers.Pickups
 import Examples.Pandamonium.Controllers.HeroMovement
+import Examples.Pandamonium.Controllers.HeroAnimation
 import Examples.Pandamonium.Controllers.Controls
 import Examples.Pandamonium.Controllers.Physics
 import Examples.Pandamonium.Controllers.CoinAnimation
@@ -84,7 +85,8 @@ exitOnGameOver _ pg = do
 pandaWorldRedux :: Redux World
 pandaWorldRedux = worldRedux
               |:: pickupRedux
-              |:: heroRedux
+              |:: heroMovementRedux
+              |:: heroAnimationRedux
               |:: controlRedux
               |:: physicsRedux
               |$> animateCoin

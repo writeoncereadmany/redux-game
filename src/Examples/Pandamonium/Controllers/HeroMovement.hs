@@ -34,34 +34,9 @@ updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId oldState) =
     then Grounded
     else oldState
 
-updateFacing :: AfterTimeStep -> (Velocity, GroundedState, Facing) -> Facing
-updateFacing _ (Velocity (dx, dy), grounded, facing)
-  | grounded == Grounded && dx < 0 = FacingLeft
-  | grounded == Grounded && dx > 0 = FacingRight
-  | otherwise = facing
-
-xmod :: Facing -> Float
-xmod FacingRight = 1
-xmod FacingLeft = (-1)
-
-face :: Facing -> Picture -> Picture
-face f = scale (xmod f) 1
-
-runFrame :: Float -> Facing -> [ Picture ] -> Picture
-runFrame xPos facing pictures = face facing $ pictures !! (mod (floor $ (xmod facing * xPos) / 80)) (length pictures)
-
-animate :: AfterTimeStep -> (PandaFrames, GroundedState, Facing, Position, Velocity) -> Picture
-animate _ (frames, grounded, facing, Position (x, y), Velocity (dx, dy))
-  | grounded == Grounded && abs dx < 50 = face facing $ frames ^. standing
-  | grounded == Grounded = runFrame x facing (frames ^. run_animation)
-  | dy > 0 = face facing $ frames ^. jumping
-  | otherwise = face facing $ frames ^. falling
-
-heroRedux :: Redux World
-heroRedux = redux
-         |$> resetGroundedState
-         |$> updateGroundedState
-         |$> jump
-         |$> move
-         |$> updateFacing
-         |$> animate
+heroMovementRedux :: Redux World
+heroMovementRedux = redux
+                |$> resetGroundedState
+                |$> updateGroundedState
+                |$> jump
+                |$> move
