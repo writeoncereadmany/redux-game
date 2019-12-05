@@ -1,0 +1,2 @@
+./play.sh panda
+
