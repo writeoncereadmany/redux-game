@@ -22,7 +22,7 @@ h = 120
 
 gravity = -2400
 
-data GroundedState = Grounded | Airborne deriving (Eq, Component)
+data GroundedState = Grounded | Ascending | Falling deriving (Eq, Component)
 
 data PandaFrames = PandaFrames
   { _run_animation :: [Picture]
@@ -67,5 +67,5 @@ hero assets position = entity
 
             <-+ Moving 0 1
             <-+ FeelsGravity
-            <-+ Airborne
+            <-+ Falling
             <-+ FacingRight

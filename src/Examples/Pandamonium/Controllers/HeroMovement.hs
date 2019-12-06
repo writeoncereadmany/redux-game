@@ -6,6 +6,7 @@ import Graphics.Gloss.Interface.IO.Game
 import ReduxGame.Redux
 import ReduxGame.Collisions
 import ReduxGame.Controls.Axis
+import ReduxGame.Controls.Button
 import ReduxGame.Components
 import ReduxGame.Entities
 
@@ -14,6 +15,8 @@ import Examples.Pandamonium.Events
 import Examples.Pandamonium.Entities.Hero
 
 h_vel = 800
+initial_jump = 1200
+uplift = 2000
 
 move :: TimeStep -> (AxisType Horizontal, Velocity) -> Velocity
 move (TimeStep dt) (AxisType _ axis, Velocity (_, dy))
@@ -21,12 +24,22 @@ move (TimeStep dt) (AxisType _ axis, Velocity (_, dy))
   | axis ^. onAxis == Neutral = Velocity (0, dy)
   | axis ^. onAxis == Max = Velocity (h_vel, dy)
 
-jump :: JumpEvent -> (GroundedState, Velocity) -> Velocity
-jump _ (Grounded, Velocity (x, _)) = Velocity (x, 2000)
-jump _ (_, v) = v
+jump :: JumpEvent -> (GroundedState, Velocity) -> (GroundedState, Velocity)
+jump _ (Grounded, Velocity (x, _)) = (Ascending, Velocity (x, initial_jump))
+jump _ (s, v) = (s, v)
+
+reach :: TimeStep -> (GroundedState, Acceleration) -> Acceleration
+reach _ (Ascending, (Acceleration (ddx, ddy))) = Acceleration (ddx, ddy + uplift)
+reach _ (s, a) = a
+
+release :: TimeStep -> (GroundedState, ButtonType Jump, Velocity) -> GroundedState
+release _ (gs, (ButtonType _ button), Velocity (_, dy))
+  | gs == Ascending && (dy < 0 || not (held button)) = Falling
+  | otherwise = gs
 
 resetGroundedState :: BeforeTimeStep -> GroundedState -> GroundedState
-resetGroundedState _ _ = Airborne
+resetGroundedState _ Ascending = Ascending
+resetGroundedState _ _ = Falling
 
 updateGroundedState :: Pushed -> Tagged (GroundedState) -> GroundedState
 updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId oldState) =
@@ -39,4 +52,6 @@ heroMovementRedux = redux
                 |$> resetGroundedState
                 |$> updateGroundedState
                 |$> jump
+                |$> reach
+                |$> release
                 |$> move
