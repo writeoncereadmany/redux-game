@@ -9,7 +9,7 @@ import ReduxGame.Collisions
 
 import Examples.Pandamonium.Labels
 
-g = 3000
+g = 6000
 
 resetAcceleration :: BeforeTimeStep -> Acceleration -> Acceleration
 resetAcceleration _ _ = Acceleration (0, 0)

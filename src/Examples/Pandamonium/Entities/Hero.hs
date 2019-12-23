@@ -52,7 +52,6 @@ data Facing = FacingLeft | FacingRight deriving Component
 hero :: PandaAssets -> Vector -> Entity
 hero assets position = entity
             <-+ Hero
-            <-+ Camera
 
             <-+ rectangle (-w/2, -h/2) (w, h)
             <-+ scale 6 6 (BitmapSection (Rectangle (140, 0) (20, 20)) (assets ^. panda_sprites))

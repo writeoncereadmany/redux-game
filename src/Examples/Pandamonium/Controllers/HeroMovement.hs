@@ -16,7 +16,7 @@ import Examples.Pandamonium.Entities.Hero
 
 h_vel = 800
 initial_jump = 1200
-uplift = 2000
+uplift = 5000
 
 move :: TimeStep -> (AxisType Horizontal, Velocity) -> Velocity
 move (TimeStep dt) (AxisType _ axis, Velocity (_, dy))

@@ -49,7 +49,7 @@ initialPandas :: PandaAssets -> PandaGame
 initialPandas assets = PandaGame newWorld (take 5 $ cycle [stage1 assets, stage2 assets]) 10 newTimer
 
 initialisePandas :: Events ()
-initialisePandas = schedule 0.1 (fireEvent Pulse)
+initialisePandas = return ()
 
 countCoins :: World -> Int
 countCoins world = foldStore count 0 world where
@@ -59,14 +59,6 @@ countCoins world = foldStore count 0 world where
 checkForCompletion :: TimeStep -> PandaGame -> Events PandaGame
 checkForCompletion _ pg = do
   when (countCoins (pg ^. world) == 0) (fireEvent LevelComplete)
-  return pg
-
-countdown :: Pulse -> PandaGame -> PandaGame
-countdown _ = timeLeft -~ 1
-
-timeout :: BeforeTimeStep -> PandaGame -> Events PandaGame
-timeout _ pg = do
-  when (pg ^. timeLeft < 0) (fireEvent GameOver)
   return pg
 
 nextLevel :: LevelComplete -> PandaGame -> Events PandaGame
@@ -96,7 +88,5 @@ pandaGameRedux = redux
              |:: connect world pandaWorldRedux
              |=> checkForCompletion
              |=> nextLevel
-             |-> countdown
-             |=> timeout
              |=> exitOnGameOver
              |:: connect timer timerRedux
