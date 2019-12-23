@@ -16,25 +16,40 @@ import Examples.Pandamonium.Entities.Hero
 
 h_vel = 800
 initial_jump = 1200
-uplift = 5000
+uplift = 5500
+uplift_fuel = 0.5
+velocity_cap = 1000
+accel = 2400
+mu = 2
 
-move :: TimeStep -> (AxisType Horizontal, Velocity) -> Velocity
-move (TimeStep dt) (AxisType _ axis, Velocity (_, dy))
-  | axis ^. onAxis == Min = Velocity (-h_vel, dy)
-  | axis ^. onAxis == Neutral = Velocity (0, dy)
-  | axis ^. onAxis == Max = Velocity (h_vel, dy)
+data Fuel = Fuel Float deriving Component
 
-jump :: JumpEvent -> (GroundedState, Velocity) -> (GroundedState, Velocity)
-jump _ (Grounded, Velocity (x, _)) = (Ascending, Velocity (x, initial_jump))
-jump _ (s, v) = (s, v)
+move :: TimeStep -> (AxisType Horizontal, Velocity, Acceleration) -> Acceleration
+move (TimeStep dt) (AxisType _ axis, Velocity (_, dy), Acceleration (ddx, ddy))
+  | axis ^. onAxis == Min = Acceleration (ddx - accel, ddy)
+  | axis ^. onAxis == Neutral = Acceleration (ddx, dy)
+  | axis ^. onAxis == Max = Acceleration (ddx + accel, ddy)
 
-reach :: TimeStep -> (GroundedState, Acceleration) -> Acceleration
-reach _ (Ascending, (Acceleration (ddx, ddy))) = Acceleration (ddx, ddy + uplift)
-reach _ (s, a) = a
+capHorizontalSpeed :: TimeStep -> Velocity -> Velocity
+capHorizontalSpeed _ (Velocity (dx, dy))
+  | dx < (-velocity_cap) = Velocity (-velocity_cap, dy)
+  | dx > velocity_cap = Velocity (velocity_cap, dy)
+  | otherwise = Velocity (dx, dy)
 
-release :: TimeStep -> (GroundedState, ButtonType Jump, Velocity) -> GroundedState
-release _ (gs, (ButtonType _ button), Velocity (_, dy))
-  | gs == Ascending && (dy < 0 || not (held button)) = Falling
+friction :: TimeStep -> (Velocity, Acceleration) -> Acceleration
+friction _ (Velocity (dx, _), Acceleration (ddx, ddy)) = Acceleration (ddx - (dx * mu), ddy)
+
+jump :: JumpEvent -> (GroundedState, Velocity) -> (GroundedState, Velocity, Fuel)
+jump _ (Grounded, Velocity (x, _)) = (Ascending, Velocity (x, initial_jump), Fuel uplift_fuel)
+jump _ (s, v) = (s, v, Fuel 0)
+
+reach :: TimeStep -> (GroundedState, Fuel, Acceleration) -> (Fuel, Acceleration)
+reach (TimeStep t) (Ascending, Fuel fuel, (Acceleration (ddx, ddy))) = (Fuel (fuel - t), Acceleration (ddx, ddy + uplift))
+reach _ (s, f, a) = (Fuel 0, a)
+
+release :: TimeStep -> (GroundedState, ButtonType Jump, Fuel) -> GroundedState
+release _ (gs, (ButtonType _ button), Fuel fuel)
+  | gs == Ascending && (fuel <= 0 || not (held button)) = Falling
   | otherwise = gs
 
 resetGroundedState :: BeforeTimeStep -> GroundedState -> GroundedState
@@ -55,3 +70,4 @@ heroMovementRedux = redux
                 |$> reach
                 |$> release
                 |$> move
+                |$> friction
