@@ -28,7 +28,6 @@ dependencies:
 - gloss >= 1.13
 - mtl
 - constrained-dynamic
-- HList
 - bmp
 - bytestring
 
