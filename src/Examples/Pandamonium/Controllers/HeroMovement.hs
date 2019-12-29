@@ -26,25 +26,25 @@ newtype Fuel = Fuel Float deriving Component
 
 move :: TimeStep -> (AxisType Horizontal, Acceleration) -> Acceleration
 move (TimeStep dt) (AxisType _ axis, a)
-  | axis ^. onAxis == Min = x -~ accel $ a
+  | axis ^. onAxis == Min = a & x -~ accel
   | axis ^. onAxis == Neutral = a
-  | axis ^. onAxis == Max = x +~ accel $ a
+  | axis ^. onAxis == Max = a & x +~ accel
 
 capHorizontalSpeed :: TimeStep -> Velocity -> Velocity
 capHorizontalSpeed _ v
-  | v ^. x < (-velocity_cap) = x .~ (-velocity_cap) $ v
-  | v ^. x > velocity_cap = x .~ velocity_cap $ v
+  | v ^. x < (-velocity_cap) = v & x .~ (-velocity_cap)
+  | v ^. x > velocity_cap = v & x .~ velocity_cap
   | otherwise = v
 
 friction :: TimeStep -> (Velocity, Acceleration) -> Acceleration
-friction _ (v, a) = x -~ (v ^. x * mu) $ a
+friction _ (v, a) = a & x -~ (v ^. x * mu)
 
 jump :: JumpEvent -> (GroundedState, Velocity) -> (GroundedState, Velocity, Fuel)
-jump _ (Grounded, v) = (Ascending, y .~ initial_jump $ v, Fuel uplift_fuel)
+jump _ (Grounded, v) = (Ascending, v & y .~ initial_jump, Fuel uplift_fuel)
 jump _ (s, v) = (s, v, Fuel 0)
 
 reach :: TimeStep -> (GroundedState, Fuel, Acceleration) -> (Fuel, Acceleration)
-reach (TimeStep t) (Ascending, Fuel fuel, a) = (Fuel (fuel - t), y +~ uplift $ a)
+reach (TimeStep t) (Ascending, Fuel fuel, a) = (Fuel (fuel - t), a & y +~ uplift)
 reach _ (s, f, a) = (Fuel 0, a)
 
 release :: TimeStep -> (GroundedState, ButtonType Jump, Fuel) -> GroundedState
