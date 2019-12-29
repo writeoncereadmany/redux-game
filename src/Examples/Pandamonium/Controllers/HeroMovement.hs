@@ -22,7 +22,7 @@ velocity_cap = 1000
 accel = 2400
 mu = 2
 
-data Fuel = Fuel Float deriving Component
+newtype Fuel = Fuel Float deriving Component
 
 move :: TimeStep -> (AxisType Horizontal, Velocity, Acceleration) -> Acceleration
 move (TimeStep dt) (AxisType _ axis, Velocity (_, dy), Acceleration (ddx, ddy))
