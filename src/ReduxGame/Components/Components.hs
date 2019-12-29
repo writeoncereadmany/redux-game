@@ -19,17 +19,17 @@ instance TwoD Vector where x = _1; y = _2
 newtype Position = Position { _pos :: Vector } deriving Component
 makeLenses ''Position
 instance TwoD Position where x = pos . x; y = pos . y
-instance NamedBox Position Vector where unwrap (Position p) = p
+instance NamedBox Position Vector where unwrap = view pos
 
 newtype Velocity = Velocity { _vel :: Vector } deriving Component
 makeLenses ''Velocity
 instance TwoD Velocity where x = vel . x; y = vel . y
-instance NamedBox Velocity Vector where unwrap (Velocity v) = v
+instance NamedBox Velocity Vector where unwrap = view vel
 
 newtype Acceleration = Acceleration { _acc :: Vector } deriving Component
 makeLenses ''Acceleration
 instance TwoD Acceleration where x = acc . x; y = acc . y
-instance NamedBox Acceleration Vector where unwrap (Acceleration a) = a
+instance NamedBox Acceleration Vector where unwrap = view acc
 
 instance Component Shape
 instance Component Color
