@@ -17,8 +17,12 @@ import Examples.Pandamonium.Assets.PandaAssets
 import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
 
-w = 120
-h = 120
+scale_factor = 8
+sprite_width = 22
+sprite_height = 22
+
+w = scale_factor * sprite_width
+h = scale_factor * sprite_height
 
 gravity = -2400
 
@@ -28,23 +32,23 @@ data PandaFrames = PandaFrames
   { _run_animation :: [Picture]
   , _standing :: Picture
   , _jumping :: Picture
+  , _floating :: Picture
   , _falling :: Picture
-  , _sliding :: Picture
   } deriving Component
 
 makeLenses ''PandaFrames
 
 frame :: BitmapData -> Int -> Picture
-frame bmp n = scale 4 4 (BitmapSection (Rectangle (n*25, 0) (25, 28)) bmp)
+frame bmp n = scale scale_factor scale_factor (BitmapSection (Rectangle (n*22, 0) (22, 22)) bmp)
 
 loadFrames :: PandaAssets -> PandaFrames
 loadFrames assets = let frame' = frame $ assets ^. panda_sprites
   in PandaFrames
-    { _run_animation = [ frame' n | n <- [0,1,2,1]]
-    , _standing = frame' 1
-    , _jumping = frame' 0
-    , _falling = frame' 0
-    , _sliding = frame' 1
+    { _run_animation = [ frame' n | n <- [0,1,2,3,2,1]]
+    , _standing = frame' 4
+    , _jumping = frame' 5
+    , _floating = frame' 6
+    , _falling = frame' 7
     }
 
 data Facing = FacingLeft | FacingRight deriving Component

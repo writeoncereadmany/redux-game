@@ -15,14 +15,10 @@ import Examples.Pandamonium.Events
 import Examples.Pandamonium.Entities.Hero
 
 h_vel = 800
-initial_jump = 1200
-uplift = 5500
-uplift_fuel = 0.5
+initial_jump = 2000
 velocity_cap = 1000
 accel = 2400
 mu = 2
-
-newtype Fuel = Fuel Float deriving Component
 
 move :: TimeStep -> (AxisType Horizontal, Acceleration) -> Acceleration
 move (TimeStep dt) (AxisType _ axis, a)
@@ -39,21 +35,12 @@ capHorizontalSpeed _ v
 friction :: TimeStep -> (Velocity, Acceleration) -> Acceleration
 friction _ (v, a) = a & x -~ (v ^. x * mu)
 
-jump :: JumpEvent -> (GroundedState, Velocity) -> (GroundedState, Velocity, Fuel)
-jump _ (Grounded, v) = (Ascending, v & y .~ initial_jump, Fuel uplift_fuel)
-jump _ (s, v) = (s, v, Fuel 0)
+jump :: JumpEvent -> (GroundedState, Velocity) -> (GroundedState, Velocity)
+jump _ (Grounded, v) = (Falling, v & y .~ initial_jump)
+jump _ (s, v) = (s, v)
 
-reach :: TimeStep -> (GroundedState, Fuel, Acceleration) -> (Fuel, Acceleration)
-reach (TimeStep t) (Ascending, Fuel fuel, a) = (Fuel (fuel - t), a & y +~ uplift)
-reach _ (s, f, a) = (Fuel 0, a)
-
-release :: TimeStep -> (GroundedState, ButtonType Jump, Fuel) -> GroundedState
-release _ (gs, (ButtonType _ button), Fuel fuel)
-  | gs == Ascending && (fuel <= 0 || not (held button)) = Falling
-  | otherwise = gs
 
 resetGroundedState :: BeforeTimeStep -> GroundedState -> GroundedState
-resetGroundedState _ Ascending = Ascending
 resetGroundedState _ _ = Falling
 
 updateGroundedState :: Pushed -> Tagged (GroundedState) -> GroundedState
@@ -67,7 +54,5 @@ heroMovementRedux = redux
                 |$> resetGroundedState
                 |$> updateGroundedState
                 |$> jump
-                |$> reach
-                |$> release
                 |$> move
                 |$> friction

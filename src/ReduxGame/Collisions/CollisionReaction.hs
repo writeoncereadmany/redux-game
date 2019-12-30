@@ -22,9 +22,9 @@ staticBounce' :: EntityId
               -> Events (Position, Velocity)
 staticBounce' s_id ((Static s_el), s_shp, maybe_s_pos)
               m_id ((Moving m_el _), m_shp, maybe_m_pos, maybe_m_vel)
-  = let s_pos = maybe (0, 0) unwrap maybe_s_pos
-        m_pos = maybe (0, 0) unwrap maybe_m_pos
-        m_vel = maybe (0, 0) unwrap maybe_m_vel
+  = let s_pos = maybe 0 unwrap maybe_s_pos
+        m_pos = maybe 0 unwrap maybe_m_pos
+        m_vel = maybe 0 unwrap maybe_m_vel
     in case (move s_pos s_shp !!> move m_pos m_shp) of
     Nothing -> return $ (Position m_pos, Velocity m_vel)
     (Just pushout) -> do
@@ -33,7 +33,7 @@ staticBounce' s_id ((Static s_el), s_shp, maybe_s_pos)
       let m_pos'      = m_pos + pushout'
       let unit_push   = normalizeV pushout
       let normal_proj = (1 + elasticity) * (m_vel `dotV` unit_push)
-      let m_vel'      = if (normal_proj > 0) then m_vel else m_vel + (negate $ mulSV normal_proj unit_push)
+      let m_vel'      = if (normal_proj > 0) then m_vel else m_vel - (mulSV normal_proj unit_push)
       fireEvent $ Pushed m_id pushout'
       return (Position m_pos', Velocity m_vel')
 
@@ -52,30 +52,29 @@ movingBounce' :: EntityId
               -> Events ((Position, Velocity), (Position, Velocity))
 movingBounce' a_id ((Moving ae am), as, maybe_ap, maybe_av)
               b_id ((Moving be bm), bs, maybe_bp, maybe_bv) =
-  let ap = maybe (0,0) unwrap maybe_ap
-      av = maybe (0,0) unwrap maybe_av
-      bp = maybe (0,0) unwrap maybe_bp
-      bv = maybe (0,0) unwrap maybe_bv
+  let ap = maybe 0 unwrap maybe_ap
+      av = maybe 0 unwrap maybe_av
+      bp = maybe 0 unwrap maybe_bp
+      bv = maybe 0 unwrap maybe_bv
   in case (move ap as !!> move bp bs) of
     Nothing -> return ((Position ap, Velocity av), (Position bp, Velocity bv))
     (Just pushout) -> do
       let elasticity          = ae * be
-      let totalMass           = am + bm
-      let a_mass_share        = am / totalMass
-      let b_mass_share        = bm / totalMass
+      let a_mass_share        = am / (am + bm)
+      let b_mass_share        = bm / (am + bm)
       let zero_momentum_frame = mulSV a_mass_share av + mulSV b_mass_share bv
       let rel_av              = av - zero_momentum_frame
       let rel_bv              = bv - zero_momentum_frame
-      let pushout_a           = mulSV a_mass_share (negate pushout)
+      let pushout_a           = mulSV a_mass_share (-pushout)
       let pushout_b           = mulSV b_mass_share pushout
       let ap'                 = ap + pushout_a
       let bp'                 = bp + pushout_b
       let unit_push           = normalizeV pushout
-      let dav                 = negate $ mulSV ((1 + elasticity) * (rel_av `dotV` unit_push)) unit_push
-      let dbv                 = negate $ mulSV ((1 + elasticity) * (rel_bv `dotV` unit_push)) unit_push
+      let dav                 = mulSV ((1 + elasticity) * (rel_av `dotV` unit_push)) unit_push
+      let dbv                 = mulSV ((1 + elasticity) * (rel_bv `dotV` unit_push)) unit_push
       fireEvent $ Pushed a_id pushout_a
       fireEvent $ Pushed b_id pushout_b
-      return ((Position ap', Velocity (av + dav)), (Position bp', Velocity (bv + dbv)))
+      return ((Position ap', Velocity (av - dav)), (Position bp', Velocity (bv - dbv)))
 
 movingBounce :: MovingCollision -> World -> Events World
 movingBounce (MovingCollision a_id b_id) cs = do
