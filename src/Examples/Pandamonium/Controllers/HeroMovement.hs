@@ -15,7 +15,7 @@ import Examples.Pandamonium.Events
 import Examples.Pandamonium.Entities.Hero
 
 h_vel = 800
-initial_jump = 2000
+initial_jump = 2200
 velocity_cap = 1000
 accel = 2400
 mu = 2

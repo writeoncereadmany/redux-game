@@ -18,7 +18,7 @@ import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
 
 scale_factor = 8
-sprite_width = 22
+sprite_width = 18
 sprite_height = 22
 
 w = scale_factor * sprite_width
