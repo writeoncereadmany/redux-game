@@ -27,9 +27,9 @@ updateFacing _ (Velocity (dx, dy), grounded, facing)
   | otherwise = facing
 
 runFrame :: Float -> Facing -> [ Picture ] -> Picture
-runFrame xPos facing pictures = face facing $ pictures !! (mod (floor $ (xmod facing * xPos) / 80)) (length pictures)
+runFrame xPos facing pictures = face facing $ pictures !! (mod (floor $ (xmod facing * xPos) / 10)) (length pictures)
 
-float_range = 400
+float_range = 50
 
 animate :: AfterTimeStep -> (PandaFrames, GroundedState, Facing, Position, Velocity) -> Picture
 animate _ (frames, grounded, facing, Position (x, y), Velocity (dx, dy))

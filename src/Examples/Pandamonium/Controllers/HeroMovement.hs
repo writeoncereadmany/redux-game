@@ -14,10 +14,9 @@ import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
 import Examples.Pandamonium.Entities.Hero
 
-h_vel = 800
-initial_jump = 2200
-velocity_cap = 1000
-accel = 2400
+initial_jump = 270
+velocity_cap = 100
+accel = 500
 mu = 2
 
 move :: TimeStep -> (AxisType Horizontal, Acceleration) -> Acceleration

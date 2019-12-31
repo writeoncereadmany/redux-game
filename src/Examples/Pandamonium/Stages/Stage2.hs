@@ -8,15 +8,12 @@ import Examples.Pandamonium.Entities.Hero
 
 stage2 :: PandaAssets -> [Entity]
 stage2 assets =
-  [ wall (-1300, -800) (2600, 50)
-  , wall (-1300, 750) (2600, 50)
-  , wall (-1300, -800) (50, 1600)
-  , wall (1250, -800) (50, 1600)
-  , wall (-900, -800) (500, 550)
-  , wall (400, -800) (500, 550)
-  , wall (-250, 100) (500, 50)
+  [ wall (-180, -100) (360, 5)
+  , wall (-180, 95) (360, 5)
+  , wall (-180, -100) (5, 200)
+  , wall (175, -100) (5, 200)
 
-  , coin assets (-650, -200)
-  , coin assets (650, -200)
+  , coin assets (-80, -25)
+  , coin assets (80, -25)
   , hero assets (0, 0)
   ]

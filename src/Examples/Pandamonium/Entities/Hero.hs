@@ -17,14 +17,13 @@ import Examples.Pandamonium.Assets.PandaAssets
 import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
 
-scale_factor = 8
 sprite_width = 18
 sprite_height = 22
 
-w = scale_factor * sprite_width
-h = scale_factor * sprite_height
+w = sprite_width
+h = sprite_height
 
-gravity = -2400
+gravity = -300
 
 data GroundedState = Grounded | Ascending | Falling deriving (Eq, Component)
 
@@ -39,7 +38,7 @@ data PandaFrames = PandaFrames
 makeLenses ''PandaFrames
 
 frame :: BitmapData -> Int -> Picture
-frame bmp n = scale scale_factor scale_factor (BitmapSection (Rectangle (n*22, 0) (22, 22)) bmp)
+frame bmp n = BitmapSection (Rectangle (n*22, 0) (22, 22)) bmp
 
 loadFrames :: PandaAssets -> PandaFrames
 loadFrames assets = let frame' = frame $ assets ^. panda_sprites
@@ -62,8 +61,8 @@ hero assets position = entity
             <-+ loadFrames assets
 
             <-+ Position position
-            <-+ Velocity (0, 0)
-            <-+ Acceleration (0, gravity)
+            <-+ Velocity 0
+            <-+ Acceleration 0
 
             <-+ AxisType Horizontal (axis (button 'z') (button 'x'))
             <-+ ButtonType Jump ((button '.') { onPress = fireEvent JumpEvent })
