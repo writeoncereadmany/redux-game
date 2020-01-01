@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7
 - random
 - containers
+- vector
 - dlist
 - lens
 - gloss >= 1.13
