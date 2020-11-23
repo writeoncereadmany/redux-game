@@ -2,7 +2,6 @@ module Examples.Pandamonium.Pandamonium where
 
 import Control.Lens
 import Control.Monad
-import Control.Monad.Trans
 
 import Graphics.Gloss
 
@@ -10,10 +9,7 @@ import ReduxGame.Redux
 import ReduxGame.Timer
 import ReduxGame.Exit
 import ReduxGame.Entities
-import ReduxGame.Components
-import ReduxGame.Collisions
 import ReduxGame.Renderer.Renderable
-import ReduxGame.WorldShapeRenderer
 
 import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
@@ -41,8 +37,8 @@ makeLenses ''PandaGame
 
 instance Renderable PandaGame where
   render pg = Pictures
-    [ translate 1000 600 $ scale 0.5 0.5 $ color white $ text (show $ pg ^. timeLeft)
-    , scale 8 8 $ render (pg ^. world)
+    [ translate 400 150 $ scale 0.2 0.2 $ color white $ text (show $ pg ^. timeLeft)
+    , scale 4.5 4.5 $ render (pg ^. world)
     ]
 
 initialPandas :: PandaAssets -> PandaGame
