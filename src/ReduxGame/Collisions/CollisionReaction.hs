@@ -20,43 +20,43 @@ staticBounce' :: EntityId
               -> EntityId
               -> (Moving, Shape, Maybe Position, Maybe Velocity)
               -> Events (Position, Velocity)
-staticBounce' s_id ((Static s_el), s_shp, maybe_s_pos)
-              m_id ((Moving m_el _), m_shp, maybe_m_pos, maybe_m_vel)
+staticBounce' _ (Static s_el, s_shp, maybe_s_pos)
+              m_id (Moving m_el _, m_shp, maybe_m_pos, maybe_m_vel)
   = let s_pos = maybe 0 unwrap maybe_s_pos
         m_pos = maybe 0 unwrap maybe_m_pos
         m_vel = maybe 0 unwrap maybe_m_vel
-    in case (move s_pos s_shp !!> move m_pos m_shp) of
-    Nothing -> return $ (Position m_pos, Velocity m_vel)
+    in case move s_pos s_shp !!> move m_pos m_shp of
+    Nothing -> return (Position m_pos, Velocity m_vel)
     (Just pushout) -> do
       let elasticity  = s_el * m_el
       let pushout'    = mulSV (1 + elasticity) pushout
       let m_pos'      = m_pos + pushout'
       let unit_push   = normalizeV pushout
       let normal_proj = (1 + elasticity) * (m_vel `dotV` unit_push)
-      let m_vel'      = if (normal_proj > 0) then m_vel else m_vel - (mulSV normal_proj unit_push)
+      let m_vel'      = if normal_proj > 0 then m_vel else m_vel - mulSV normal_proj unit_push
       fireEvent $ Pushed m_id pushout'
       return (Position m_pos', Velocity m_vel')
 
 staticBounce :: StaticCollision -> World -> Events World
-staticBounce (StaticCollision s_id m_id) cs = do
+staticBounce (StaticCollision s_id m_id) cs =
   case (getById s_id cs, getById m_id cs) of
-    (Just static, Just moving) -> do
-      moving' <- staticBounce' s_id static m_id moving
+    (Just stat, Just moving) -> do
+      moving' <- staticBounce' s_id stat m_id moving
       return $ setAll [ Tagged m_id moving' ] cs
-    otherwise -> return cs
+    _ -> return cs
 
 movingBounce' :: EntityId
               -> (Moving, Shape, Maybe Position, Maybe Velocity)
               -> EntityId
               -> (Moving, Shape, Maybe Position, Maybe Velocity)
               -> Events ((Position, Velocity), (Position, Velocity))
-movingBounce' a_id ((Moving ae am), as, maybe_ap, maybe_av)
-              b_id ((Moving be bm), bs, maybe_bp, maybe_bv) =
+movingBounce' a_id (Moving ae am, as, maybe_ap, maybe_av)
+              b_id (Moving be bm, bs, maybe_bp, maybe_bv) =
   let ap = maybe 0 unwrap maybe_ap
       av = maybe 0 unwrap maybe_av
       bp = maybe 0 unwrap maybe_bp
       bv = maybe 0 unwrap maybe_bv
-  in case (move ap as !!> move bp bs) of
+  in case move ap as !!> move bp bs of
     Nothing -> return ((Position ap, Velocity av), (Position bp, Velocity bv))
     (Just pushout) -> do
       let elasticity          = ae * be
@@ -77,9 +77,9 @@ movingBounce' a_id ((Moving ae am), as, maybe_ap, maybe_av)
       return ((Position ap', Velocity (av - dav)), (Position bp', Velocity (bv - dbv)))
 
 movingBounce :: MovingCollision -> World -> Events World
-movingBounce (MovingCollision a_id b_id) cs = do
+movingBounce (MovingCollision a_id b_id) cs = 
   case (getById a_id cs, getById b_id cs) of
     (Just as, Just bs) -> do
       (as', bs') <- movingBounce' a_id as b_id bs
-      return $ setAll [ Tagged a_id as' ] $ setAll [Tagged b_id bs' ] $ cs
-    otherwise -> return cs
+      return $ setAll [ Tagged a_id as' ] $ setAll [Tagged b_id bs' ] cs
+    _ -> return cs

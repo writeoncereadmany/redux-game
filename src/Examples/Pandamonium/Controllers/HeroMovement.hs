@@ -1,12 +1,10 @@
 module Examples.Pandamonium.Controllers.HeroMovement where
 
 import Control.Lens
-import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
 import ReduxGame.Collisions
 import ReduxGame.Controls.Axis
-import ReduxGame.Controls.Button
 import ReduxGame.Components
 import ReduxGame.Entities
 
@@ -42,8 +40,8 @@ jump _ (s, v) = (s, v)
 resetGroundedState :: BeforeTimeStep -> GroundedState -> GroundedState
 resetGroundedState _ _ = Falling
 
-updateGroundedState :: Pushed -> Tagged (GroundedState) -> GroundedState
-updateGroundedState (Pushed pushedEntId (x, y)) (Tagged entId oldState) =
+updateGroundedState :: Pushed -> Tagged GroundedState -> GroundedState
+updateGroundedState (Pushed pushedEntId (_, y)) (Tagged entId oldState) =
   if pushedEntId == entId && y > 0
     then Grounded
     else oldState

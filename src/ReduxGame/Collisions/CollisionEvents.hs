@@ -4,10 +4,8 @@ import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
 import ReduxGame.Entities
-import ReduxGame.Components.Components
-import ReduxGame.Shape
 
-data Static = Static Float deriving Component
+newtype Static = Static Float deriving Component
 data Moving = Moving Float Float deriving Component
 
 data StaticCollision = StaticCollision EntityId EntityId deriving ReduxEvent

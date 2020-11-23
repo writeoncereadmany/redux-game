@@ -4,7 +4,6 @@ import Graphics.Gloss
 
 import ReduxGame.Entities
 import ReduxGame.Shape
-import ReduxGame.Components
 import ReduxGame.Collisions
 
 wall :: Vector -> Vector -> Entity

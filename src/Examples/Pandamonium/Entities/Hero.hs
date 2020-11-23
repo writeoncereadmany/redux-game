@@ -3,7 +3,6 @@ module Examples.Pandamonium.Entities.Hero where
 import Control.Lens
 
 import Graphics.Gloss
-import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
 import ReduxGame.Entities
@@ -11,9 +10,9 @@ import ReduxGame.Shape
 import ReduxGame.Components
 import ReduxGame.Collisions
 import ReduxGame.Controls
-import ReduxGame.WorldShapeRenderer
 
 import Examples.Pandamonium.Assets.PandaAssets
+    ( panda_sprites, PandaAssets )
 import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
 

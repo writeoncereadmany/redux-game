@@ -5,10 +5,9 @@ import Data.Vector
 
 import Graphics.Gloss (Picture (Blank, Pictures), translate)
 
-import ReduxGame.Entities
 import ReduxGame.Renderer.Renderable
 
-data Tile = Tile Picture
+newtype Tile = Tile Picture
 
 emptyTile = Tile Blank
 

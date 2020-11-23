@@ -6,4 +6,4 @@ import Examples.Pandamonium.Entities.Coin
 
 animateCoin :: Pulse -> (Picture, AnimationFrames) -> (Picture, AnimationFrames)
 animateCoin _ (current, AnimationFrames []) = (current, AnimationFrames [])
-animateCoin _ (current, AnimationFrames (next:rest)) = (next, AnimationFrames rest)
+animateCoin _ (_, AnimationFrames (next:rest)) = (next, AnimationFrames rest)

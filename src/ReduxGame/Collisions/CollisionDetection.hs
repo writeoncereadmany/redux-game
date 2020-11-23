@@ -16,8 +16,8 @@ shorter :: Vector -> Vector -> Vector
 shorter x y = if sqMagV x < sqMagV y then x else y
 
 project :: Shape -> Vector -> (Float, Float)
-project (Polygon points _) normal = let projections = (dotV normal) <$> points
-                              in (foldl1 min projections, foldl1 max projections)
+project (Polygon points _) normal = let projections = dotV normal <$> points
+                              in (minimum projections, maximum projections)
 project (Circle c r) normal = let p = dotV normal c
                                in (p - r, p + r)
 
@@ -32,7 +32,7 @@ push :: Shape -> Shape -> Vector -> Maybe Vector
 push a b normal = let proj1 = project a normal
                       proj2 = project b normal
                       pushDist = pushProj proj1 proj2
-                   in (flip mulSV normal) <$> pushDist
+                   in flip mulSV normal <$> pushDist
 
 unitBetween :: Vector -> Vector -> Vector
 unitBetween a b = normalizeV (b - a)

@@ -10,6 +10,7 @@ import ReduxGame.Timer
 import ReduxGame.Exit
 import ReduxGame.Entities
 import ReduxGame.Renderer.Renderable
+import ReduxGame.WorldShapeRenderer ()
 
 import Examples.Pandamonium.Labels
 import Examples.Pandamonium.Events
@@ -48,7 +49,7 @@ initialisePandas :: Events ()
 initialisePandas = schedule 0.15 (fireEvent Pulse)
 
 countCoins :: World -> Int
-countCoins world = foldStore count 0 world where
+countCoins = foldStore count 0 where
   count :: Coin -> Int -> Int
   count _ x = x + 1
 

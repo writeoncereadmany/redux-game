@@ -5,8 +5,6 @@ module ReduxGame.Collisions.CollisionRedux
   ) where
 
 import Control.Monad
-import Control.Monad.Trans
-import Graphics.Gloss.Data.Vector
 
 import ReduxGame.Entities
 import ReduxGame.Entities.Interactions

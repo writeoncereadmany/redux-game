@@ -6,15 +6,14 @@ import Graphics.Gloss hiding (circle)
 import ReduxGame.Entities
 import ReduxGame.Shape
 import ReduxGame.Components
-import ReduxGame.Collisions
 
 import Examples.Pandamonium.Assets.PandaAssets
 import Examples.Pandamonium.Labels
 
-data AnimationFrames = AnimationFrames [ Picture ] deriving Component
+newtype AnimationFrames = AnimationFrames [ Picture ] deriving Component
 
 frames :: BitmapData -> [ Picture ]
-frames image = cycle [ (BitmapSection r image) | n <- [0..5], let r = Rectangle (n*16, 0) (16, 16) ]
+frames image = cycle [ BitmapSection r image | n <- [0..5], let r = Rectangle (n*16, 0) (16, 16) ]
 
 coin :: PandaAssets -> Vector -> Entity
 coin assets position = entity

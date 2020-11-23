@@ -1,7 +1,5 @@
 module Examples.Pandamonium.Controllers.Physics where
 
-import Graphics.Gloss
-
 import ReduxGame.Redux
 import ReduxGame.Entities
 import ReduxGame.Components

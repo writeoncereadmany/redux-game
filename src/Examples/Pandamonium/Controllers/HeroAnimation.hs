@@ -4,18 +4,13 @@ import Control.Lens
 import Graphics.Gloss.Interface.IO.Game
 
 import ReduxGame.Redux
-import ReduxGame.Collisions
-import ReduxGame.Controls.Axis
 import ReduxGame.Components
 import ReduxGame.Entities
-
-import Examples.Pandamonium.Labels
-import Examples.Pandamonium.Events
 import Examples.Pandamonium.Entities.Hero
 
 xmod :: Facing -> Float
 xmod FacingRight = 1
-xmod FacingLeft = (-1)
+xmod FacingLeft = -1
 
 face :: Facing -> Picture -> Picture
 face f = scale (xmod f) 1
@@ -27,7 +22,7 @@ updateFacing _ (Velocity (dx, dy), grounded, facing)
   | otherwise = facing
 
 runFrame :: Float -> Facing -> [ Picture ] -> Picture
-runFrame xPos facing pictures = face facing $ pictures !! (mod (floor $ (xmod facing * xPos) / 10)) (length pictures)
+runFrame xPos facing pictures = face facing $ pictures !! mod (floor $ (xmod facing * xPos) / 10) (length pictures)
 
 float_range = 50
 
