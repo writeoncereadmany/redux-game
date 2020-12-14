@@ -2,7 +2,6 @@ module ReduxGame.Entities.Component where
 
 import Data.Maybe
 import Data.Typeable
-import Data.Maybe
 
 type EntityId = Integer
 
@@ -12,10 +11,10 @@ instance Functor Tagged where
   fmap f (Tagged entId a) = Tagged entId (f a)
 
 instance Foldable Tagged where
-  foldMap f (Tagged entId a) = f a
+  foldMap f (Tagged _ a) = f a
 
 instance Traversable Tagged where
-  traverse f (Tagged entId a) = pure (Tagged entId) <*> f a
+  traverse f (Tagged entId a) = Tagged entId <$> f a
 
 content :: Tagged a -> a
 content (Tagged _ a) = a
@@ -33,11 +32,11 @@ class Typeable a => Component a where
   getById :: Components c => EntityId -> c -> Maybe a
   getById = componentById
   setAll :: Components c => [ Tagged a ] -> c -> c
-  setAll xs c = updateComponents (fmap Just <$> xs) c
+  setAll xs = updateComponents (fmap Just <$> xs) 
 
 data Property = forall c . Component c => Property c
 
-data Entity = Entity [ Property ]
+newtype Entity = Entity [ Property ]
 
 entity :: Entity
 entity = Entity []
@@ -66,10 +65,10 @@ firstComponent :: (Component a, Components c) => c -> Maybe a
 firstComponent cs = listToMaybe (content <$> getAll cs)
 
 apply :: (Component a, Component b, Components c) => (a -> b) -> c -> c
-apply f cs = setAll (fmap f <$> (getAll cs)) cs
+apply f cs = setAll (fmap f <$> getAll cs) cs
 
 applyM :: (Component a, Component b, Monad m, Components c)
        => (a -> m b) -> c -> m c
 applyM f cs = do
-  bs <- sequence $ (mapM f) <$> (getAll cs)
+  bs <- sequence $ mapM f <$> getAll cs
   return $ setAll bs cs

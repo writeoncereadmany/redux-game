@@ -20,7 +20,7 @@ button key = Button { boundKey = Char key, held = False, onPress = return (), on
 
 keyPress :: Event -> Button -> Events Button
 keyPress (EventKey key pressed _ _) button =
-    if key /= (boundKey button)
+    if key /= boundKey button
   then return button
   else case pressed of
      Down -> do onPress button

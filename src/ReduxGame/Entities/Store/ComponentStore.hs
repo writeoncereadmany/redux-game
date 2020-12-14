@@ -10,7 +10,6 @@ module ReduxGame.Entities.Store.ComponentStore
  , getComponent
  ) where
 
-import Data.Maybe
 import Data.Typeable
 import qualified Data.Map as M
 import ReduxGame.Entities.Store.Store as S
@@ -40,7 +39,7 @@ update maybes cs = replaceStore (S.updateComponents maybes $ storeOf' cs) cs
 
 createAll :: (Store s) => Entity -> ComponentStore s -> (EntityId, ComponentStore s)
 createAll (Entity properties) store@(ComponentStore nextId _) =
-  let newStore = (foldr (\(Property p) s -> merge [ Tagged nextId p] s) store properties)
+  let newStore = foldr (\(Property p) s -> merge [ Tagged nextId p] s) store properties
    in incrementId newStore where
      incrementId (ComponentStore nextId components) = (nextId, ComponentStore (succ nextId) components)
 
@@ -58,7 +57,7 @@ storeOf' :: forall a s . (Store s, Component a) => ComponentStore s -> s a
 storeOf' (ComponentStore _ stores) = let typeKey = typeRep (Proxy :: Proxy a)
   in case M.lookup typeKey stores >>= fromStore of
     (Just store) -> store
-    (Nothing) -> emptyStore
+    Nothing -> emptyStore
 
 instance Store s => Components (ComponentStore s) where
   allComponents = storeOf
