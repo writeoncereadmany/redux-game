@@ -1,9 +1,11 @@
 flags: {}
 packages:
 - .
-extra-deps:
+extra-deps: 
 - constrained-dynamic-0.1.0.0
-- gloss-1.13.0.1
-- gloss-rendering-1.13.0.2
-- primitive-0.6.4.0
-resolver: lts-14.18
+- gloss-1.13.2.1
+- primitive-0.7.1.0
+- HTF-0.14.0.3@sha256:ee5130d97376ed662de80fbf46636f2bc3a997a42efa058285fd049ab39ce0a7,6866
+- haskell-src-1.0.3.1@sha256:4f17c7a8c3989cbbe5a07facf7ee1080c7688c33fd6e8b8d8c9693a2d96726d2,1680
+- happy-1.19.12@sha256:acc67bfbf3af87892766781dd064c9447181ea81269a7a1e5fc9ace4a8fa4768,5691
+resolver: lts-17.4

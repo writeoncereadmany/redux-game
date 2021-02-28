@@ -39,7 +39,7 @@ makeLenses ''PandaGame
 instance Renderable PandaGame where
   render pg = Pictures
     [ translate 400 150 $ scale 0.2 0.2 $ color white $ text (show $ pg ^. timeLeft)
-    , scale 4.5 4.5 $ render (pg ^. world)
+    , scale 4 4 $ render (pg ^. world)
     ]
 
 initialPandas :: PandaAssets -> PandaGame
