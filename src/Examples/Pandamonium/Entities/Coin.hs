@@ -12,8 +12,8 @@ import Examples.Pandamonium.Labels
 
 newtype AnimationFrames = AnimationFrames [ Picture ] deriving Component
 
-frames :: BitmapData -> [ Picture ]
-frames image = cycle [ BitmapSection r image | n <- [0..5], let r = Rectangle (n*16, 0) (16, 16) ]
+frames :: [ BitmapData ] -> [ Picture ]
+frames images = cycle (Bitmap <$> images)
 
 coin :: PandaAssets -> Vector -> Entity
 coin assets position = entity
